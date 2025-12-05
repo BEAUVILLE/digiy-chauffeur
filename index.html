@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIGIY CHAUFFEUR PRO - Tout-en-un</title>
+    <title>DIGIY CHAUFFEUR PRO - Sans CDN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -29,7 +29,6 @@
             min-height: 100vh;
         }
 
-        /* Loading Screen */
         .loading-screen {
             position: fixed;
             inset: 0;
@@ -64,13 +63,6 @@
             to { transform: rotate(360deg); }
         }
 
-        .loading-text {
-            color: var(--text-muted);
-            text-align: center;
-            padding: 0 20px;
-        }
-
-        /* Auth Screens */
         .auth-screen {
             min-height: 100vh;
             display: flex;
@@ -112,11 +104,6 @@
             margin-bottom: 0.5rem;
         }
 
-        .auth-header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
         .auth-tabs {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -135,7 +122,6 @@
             font-weight: 600;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
         .auth-tab.active {
@@ -167,8 +153,7 @@
             color: var(--text-muted);
         }
 
-        .input-wrapper input,
-        .input-wrapper select {
+        .input-wrapper input {
             width: 100%;
             padding: 0.875rem 1rem 0.875rem 3rem;
             background: var(--dark);
@@ -176,14 +161,11 @@
             border-radius: 10px;
             color: var(--text);
             font-size: 1rem;
-            transition: all 0.3s;
         }
 
-        .input-wrapper input:focus,
-        .input-wrapper select:focus {
+        .input-wrapper input:focus {
             outline: none;
             border-color: var(--primary);
-            background: rgba(15, 23, 42, 0.8);
         }
 
         .btn-primary {
@@ -200,39 +182,18 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            transition: all 0.3s;
             box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(249, 115, 22, 0.6);
         }
 
         .btn-primary:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
 
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(148, 163, 184, 0.2);
-        }
-
-        /* App Container */
         .app-container {
             min-height: 100vh;
             padding-bottom: 80px;
@@ -248,7 +209,6 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(10px);
         }
 
         .header-brand {
@@ -268,17 +228,6 @@
             font-size: 1.25rem;
         }
 
-        .header-brand h2 {
-            font-size: 1.25rem;
-            color: var(--text);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
         .status-btn {
             padding: 0.5rem 1rem;
             border-radius: 999px;
@@ -289,7 +238,6 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 0.875rem;
-            transition: all 0.3s;
         }
 
         .status-btn.offline {
@@ -300,12 +248,6 @@
         .status-btn.online {
             background: rgba(34, 197, 94, 0.2);
             color: var(--success);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
         }
 
         .driver-info {
@@ -313,17 +255,11 @@
             font-size: 0.875rem;
         }
 
-        .driver-name {
-            font-weight: 600;
-        }
-
         .driver-id {
             color: var(--primary);
             font-weight: 700;
-            font-size: 0.75rem;
         }
 
-        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -335,7 +271,6 @@
             justify-content: space-around;
             padding: 0.75rem 0.5rem;
             z-index: 100;
-            backdrop-filter: blur(10px);
         }
 
         .nav-item {
@@ -350,7 +285,6 @@
             gap: 0.25rem;
             font-size: 0.7rem;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
         .nav-item i {
@@ -361,7 +295,6 @@
             color: var(--primary);
         }
 
-        /* Main Content */
         .main-content {
             padding: 1.5rem;
             max-width: 1200px;
@@ -370,16 +303,10 @@
 
         .view {
             display: none;
-            animation: fadeIn 0.3s;
         }
 
         .view.active {
             display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .stats-grid {
@@ -390,32 +317,22 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, var(--dark-2) 0%, var(--dark-3) 100%);
+            background: var(--dark-2);
             padding: 1.5rem;
             border-radius: 16px;
             border: 1px solid rgba(148, 163, 184, 0.1);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .stat-card h3 {
             font-size: 2rem;
             margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .stat-card p {
-            font-size: 0.875rem;
-            color: var(--text-muted);
+            color: var(--primary);
         }
 
         .info-card {
             background: var(--dark-2);
             border-radius: 16px;
             padding: 2rem;
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            margin-bottom: 1.5rem;
             text-align: center;
         }
 
@@ -425,22 +342,11 @@
             margin-bottom: 1.5rem;
         }
 
-        .info-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .info-card p {
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
         .profile-container {
             background: var(--dark-2);
             border-radius: 16px;
             padding: 2rem;
             text-align: center;
-            border: 1px solid rgba(148, 163, 184, 0.1);
         }
 
         .profile-avatar {
@@ -454,17 +360,6 @@
             font-size: 3rem;
             color: white;
             margin: 0 auto 1.5rem;
-            box-shadow: 0 8px 30px rgba(249, 115, 22, 0.4);
-        }
-
-        .profile-info h3 {
-            font-size: 1.75rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .profile-info p {
-            color: var(--text-muted);
-            margin-bottom: 0.25rem;
         }
 
         .profile-id-badge {
@@ -476,7 +371,6 @@
             color: var(--primary);
             font-weight: 800;
             margin: 1rem 0;
-            font-size: 1.1rem;
         }
 
         .vehicle-info {
@@ -485,12 +379,6 @@
             padding: 1.5rem;
             margin: 1.5rem 0;
             text-align: left;
-        }
-
-        .vehicle-info h4 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-            text-align: center;
         }
 
         .info-row {
@@ -505,15 +393,6 @@
             border-bottom: none;
         }
 
-        .info-row i {
-            width: 25px;
-            color: var(--primary);
-        }
-
-        .menu-section {
-            margin-top: 2rem;
-        }
-
         .menu-item {
             width: 100%;
             padding: 1rem 1.5rem;
@@ -524,38 +403,19 @@
             align-items: center;
             gap: 1rem;
             cursor: pointer;
-            text-align: left;
             border-radius: 12px;
             margin-bottom: 0.5rem;
-            transition: all 0.3s;
-        }
-
-        .menu-item:hover {
-            background: var(--dark);
-            transform: translateX(5px);
-        }
-
-        .menu-item i {
-            width: 25px;
-            color: var(--primary);
-            text-align: center;
         }
 
         .menu-item.danger {
             color: var(--danger);
         }
 
-        .menu-item.danger i {
-            color: var(--danger);
-        }
-
-        /* Toast */
         .toast-container {
             position: fixed;
             top: 1rem;
             right: 1rem;
             z-index: 9999;
-            max-width: 350px;
         }
 
         .toast {
@@ -572,43 +432,29 @@
         }
 
         @keyframes slideIn {
-            from { transform: translateX(400px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
         }
 
         .toast.success { border-left-color: var(--success); }
         .toast.error { border-left-color: var(--danger); }
-        .toast.warning { border-left-color: var(--warning); }
 
         .hidden { display: none !important; }
-
-        /* Responsive */
-        @media (max-width: 640px) {
-            .auth-container {
-                padding: 2rem 1.5rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="logo-loading">DIGIY</div>
         <div class="spinner"></div>
-        <div class="loading-text" id="loading-text">Initialisation Firebase...</div>
+        <div style="color: var(--text-muted); text-align: center;">✅ Pas besoin de CDN Firebase !</div>
     </div>
 
-    <!-- Auth Screen -->
     <div id="auth-screen" class="auth-screen hidden">
         <div class="auth-container">
             <div class="auth-header">
                 <div class="auth-logo">🚕</div>
                 <h1>DIGIY CHAUFFEUR</h1>
-                <p>Votre espace professionnel VTC</p>
+                <p>Espace Professionnel VTC</p>
             </div>
 
             <div class="auth-tabs">
@@ -616,13 +462,12 @@
                 <button class="auth-tab" onclick="switchTab('register')">Inscription</button>
             </div>
 
-            <!-- Login Form -->
             <div id="login-form">
                 <div class="input-group">
                     <label>ID Chauffeur ou Email</label>
                     <div class="input-wrapper">
                         <i class="fas fa-id-card"></i>
-                        <input type="text" id="login-identifier" placeholder="CHA-XXXX-YYYY ou email@exemple.com">
+                        <input type="text" id="login-identifier" placeholder="CHA-XXXX-YYYY">
                     </div>
                 </div>
 
@@ -638,21 +483,14 @@
                     <i class="fas fa-sign-in-alt"></i>
                     <span>Se connecter</span>
                 </button>
-
-                <div class="divider">ou</div>
-
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.875rem;">
-                    Pas encore de compte ? Cliquez sur "Inscription"
-                </p>
             </div>
 
-            <!-- Register Form -->
             <div id="register-form" class="hidden">
                 <div class="input-group">
                     <label>Prénom *</label>
                     <div class="input-wrapper">
                         <i class="fas fa-user"></i>
-                        <input type="text" id="reg-firstname" placeholder="Ex: Abdoulaye">
+                        <input type="text" id="reg-firstname" placeholder="Abdoulaye">
                     </div>
                 </div>
 
@@ -660,7 +498,7 @@
                     <label>Nom *</label>
                     <div class="input-wrapper">
                         <i class="fas fa-user"></i>
-                        <input type="text" id="reg-lastname" placeholder="Ex: Diop">
+                        <input type="text" id="reg-lastname" placeholder="Diop">
                     </div>
                 </div>
 
@@ -668,15 +506,15 @@
                     <label>Téléphone *</label>
                     <div class="input-wrapper">
                         <i class="fas fa-phone"></i>
-                        <input type="tel" id="reg-phone" placeholder="+221 77 XXX XX XX">
+                        <input type="tel" id="reg-phone" placeholder="+221771234567">
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label>CNI (Carte d'identité) *</label>
+                    <label>CNI *</label>
                     <div class="input-wrapper">
                         <i class="fas fa-id-card"></i>
-                        <input type="text" id="reg-cni" placeholder="Numéro CNI">
+                        <input type="text" id="reg-cni" placeholder="123456789012">
                     </div>
                 </div>
 
@@ -689,7 +527,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Mot de passe (min 6 caractères) *</label>
+                    <label>Mot de passe (min 6) *</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
                         <input type="password" id="reg-password" placeholder="••••••••">
@@ -697,10 +535,10 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Modèle du véhicule *</label>
+                    <label>Modèle véhicule *</label>
                     <div class="input-wrapper">
                         <i class="fas fa-car"></i>
-                        <input type="text" id="reg-car-model" placeholder="Ex: Toyota Corolla 2020">
+                        <input type="text" id="reg-car-model" placeholder="Toyota Corolla 2020">
                     </div>
                 </div>
 
@@ -708,15 +546,15 @@
                     <label>Couleur *</label>
                     <div class="input-wrapper">
                         <i class="fas fa-palette"></i>
-                        <input type="text" id="reg-car-color" placeholder="Ex: Blanche">
+                        <input type="text" id="reg-car-color" placeholder="Blanche">
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label>Plaque d'immatriculation *</label>
+                    <label>Plaque *</label>
                     <div class="input-wrapper">
                         <i class="fas fa-id-badge"></i>
-                        <input type="text" id="reg-car-plate" placeholder="Ex: DK-1234-AB">
+                        <input type="text" id="reg-car-plate" placeholder="DK-1234-AB">
                     </div>
                 </div>
 
@@ -724,30 +562,23 @@
                     <i class="fas fa-user-plus"></i>
                     <span>Créer mon compte</span>
                 </button>
-
-                <div class="divider">ou</div>
-
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.875rem;">
-                    Déjà inscrit ? Cliquez sur "Connexion"
-                </p>
             </div>
         </div>
     </div>
 
-    <!-- Main App -->
     <div id="app" class="app-container hidden">
         <header class="app-header">
             <div class="header-brand">
                 <div class="header-logo">🚕</div>
                 <h2>DIGIY</h2>
             </div>
-            <div class="header-right">
+            <div style="display: flex; align-items: center; gap: 1rem;">
                 <button id="status-toggle" class="status-btn offline" onclick="toggleStatus()">
                     <i class="fas fa-circle"></i>
                     <span id="status-text">Hors ligne</span>
                 </button>
                 <div class="driver-info">
-                    <div class="driver-name" id="header-driver-name">Chauffeur</div>
+                    <div id="header-driver-name">Chauffeur</div>
                     <div class="driver-id" id="header-driver-id">CHA-XXXX-YYYY</div>
                 </div>
             </div>
@@ -773,15 +604,14 @@
         </nav>
 
         <main class="main-content">
-            <!-- Home View -->
             <div id="home-view" class="view active">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3 id="today-earnings">0 F</h3>
+                        <h3>0 F</h3>
                         <p>Gains aujourd'hui</p>
                     </div>
                     <div class="stat-card">
-                        <h3 id="today-trips">0</h3>
+                        <h3>0</h3>
                         <p>Courses aujourd'hui</p>
                     </div>
                 </div>
@@ -789,95 +619,59 @@
                 <div class="info-card">
                     <i class="fas fa-car"></i>
                     <h3>En attente de courses</h3>
-                    <p>Activez votre statut "Disponible" pour recevoir des demandes de courses. Assurez-vous d'avoir une bonne connexion Internet et que votre GPS est activé.</p>
+                    <p>Activez "Disponible" pour recevoir des demandes</p>
                 </div>
             </div>
 
-            <!-- Courses View -->
             <div id="courses-view" class="view">
                 <div class="info-card">
                     <i class="fas fa-history"></i>
-                    <h3>Aucune course pour le moment</h3>
-                    <p>Votre historique de courses apparaîtra ici dès que vous aurez effectué votre première course.</p>
+                    <h3>Aucune course</h3>
+                    <p>Votre historique apparaîtra ici</p>
                 </div>
             </div>
 
-            <!-- Gains View -->
             <div id="gains-view" class="view">
                 <div class="info-card" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white;">
-                    <h3 style="color: white;">Total du mois</h3>
+                    <h3>Total du mois</h3>
                     <h2 style="font-size: 2.5rem; margin: 1rem 0;">0 FCFA</h2>
-                    <p style="color: rgba(255,255,255,0.9); background: rgba(0,0,0,0.2); display: inline-block; padding: 0.5rem 1rem; border-radius: 999px; font-weight: 600;">
-                        ✨ 100% pour vous • 0% commission DIGIY
+                    <p style="background: rgba(0,0,0,0.2); display: inline-block; padding: 0.5rem 1rem; border-radius: 999px;">
+                        ✨ 100% pour vous • 0% commission
                     </p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>0 F</h3>
-                        <p>Aujourd'hui</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>0 F</h3>
-                        <p>Cette semaine</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>0</h3>
-                        <p>Courses ce mois</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>0 F</h3>
-                        <p>Moyenne/course</p>
-                    </div>
                 </div>
             </div>
 
-            <!-- Profile View -->
             <div id="profile-view" class="view">
                 <div class="profile-container">
                     <div class="profile-avatar">
                         <i class="fas fa-user"></i>
                     </div>
-                    <div class="profile-info">
-                        <h3 id="profile-name">Chauffeur DIGIY</h3>
+                    <div>
+                        <h3 id="profile-name">Chauffeur</h3>
                         <p id="profile-phone">+221 XX XXX XX XX</p>
                         <div class="profile-id-badge" id="profile-id">CHA-XXXX-YYYY</div>
                     </div>
 
                     <div class="vehicle-info">
-                        <h4>🚗 Mon Véhicule</h4>
+                        <h4 style="color: var(--primary); margin-bottom: 1rem;">🚗 Mon Véhicule</h4>
                         <div class="info-row">
-                            <i class="fas fa-car"></i>
+                            <i class="fas fa-car" style="color: var(--primary);"></i>
                             <span id="vehicle-model">-</span>
                         </div>
                         <div class="info-row">
-                            <i class="fas fa-palette"></i>
+                            <i class="fas fa-palette" style="color: var(--primary);"></i>
                             <span id="vehicle-color">-</span>
                         </div>
                         <div class="info-row">
-                            <i class="fas fa-id-badge"></i>
+                            <i class="fas fa-id-badge" style="color: var(--primary);"></i>
                             <span id="vehicle-plate">-</span>
                         </div>
                     </div>
 
-                    <div class="menu-section">
-                        <button class="menu-item" onclick="showToast('Fonctionnalité à venir', 'info')">
-                            <i class="fas fa-cog"></i>
-                            <span>Paramètres</span>
-                        </button>
-                        <button class="menu-item" onclick="showToast('Fonctionnalité à venir', 'info')">
-                            <i class="fas fa-file-alt"></i>
-                            <span>Documents</span>
-                        </button>
-                        <button class="menu-item" onclick="showToast('Contact: +221 XX XXX XX XX', 'info')">
-                            <i class="fas fa-headset"></i>
-                            <span>Support</span>
-                        </button>
-                        <button class="menu-item danger" onclick="logout()">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Déconnexion</span>
-                        </button>
-                    </div>
+                    <button class="menu-item danger" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Déconnexion</span>
+                    </button>
                 </div>
             </div>
         </main>
@@ -885,116 +679,74 @@
 
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Firebase unpkg CDN -->
-    <script src="https://unpkg.com/firebase@8.10.1/firebase-app.js"></script>
-    <script src="https://unpkg.com/firebase@8.10.1/firebase-auth.js"></script>
-    <script src="https://unpkg.com/firebase@8.10.1/firebase-database.js"></script>
-
     <script>
-        let firebaseRetryCount = 0;
-        let auth, db;
+        // ===================================
+        // CONFIG FIREBASE (API REST)
+        // ===================================
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyDCx8dKYBxVsJMeyXQxvV3B8ixupOIa-nI",
+            databaseURL: "https://digiylyfe-ecosystem-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "digiylyfe-ecosystem"
+        };
+
+        let currentUser = null;
         let currentDriver = null;
         let currentDriverId = null;
 
         // ===================================
-        // WAIT FOR FIREBASE
+        // INIT
         // ===================================
-        function waitForFirebase() {
-            firebaseRetryCount++;
-            updateLoadingText(`Chargement Firebase... (${firebaseRetryCount}/40)`);
-
-            if (typeof firebase !== 'undefined') {
-                initFirebase();
-            } else if (firebaseRetryCount < 40) {
-                setTimeout(waitForFirebase, 500);
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.add('hidden');
+            
+            // Check if user logged in
+            const savedUser = localStorage.getItem('digiy_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                loadDriverProfile();
             } else {
-                updateLoadingText('❌ Firebase inaccessible');
-                showToast('Erreur: Firebase ne peut pas se charger. Vérifiez votre connexion Internet.', 'error');
-                setTimeout(() => location.reload(), 3000);
+                document.getElementById('auth-screen').classList.remove('hidden');
             }
-        }
-
-        function updateLoadingText(text) {
-            document.getElementById('loading-text').textContent = text;
-        }
+        }, 1000);
 
         // ===================================
-        // INIT FIREBASE
+        // FIREBASE REST API HELPERS
         // ===================================
-        async function initFirebase() {
-            updateLoadingText('Initialisation...');
-
-            const firebaseConfig = {
-                apiKey: "AIzaSyDCx8dKYBxVsJMeyXQxvV3B8ixupOIa-nI",
-                authDomain: "digiylyfe-ecosystem.firebaseapp.com",
-                databaseURL: "https://digiylyfe-ecosystem-default-rtdb.europe-west1.firebasedatabase.app",
-                projectId: "digiylyfe-ecosystem",
-                storageBucket: "digiylyfe-ecosystem.firebasestorage.app",
-                messagingSenderId: "1035612847940",
-                appId: "1:1035612847940:web:cdeafd5b8b2a22fb1abde7"
-            };
-
-            firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            db = firebase.database();
-
-            console.log('✅ Firebase initialisé');
-
-            // Vérifier et créer nœuds si nécessaire
-            await ensureNodes();
-
-            // Check auth state
-            auth.onAuthStateChanged(user => {
-                setTimeout(() => {
-                    document.getElementById('loading-screen').classList.add('hidden');
-                    
-                    if (user) {
-                        loadDriverProfile();
-                    } else {
-                        document.getElementById('auth-screen').classList.remove('hidden');
-                    }
-                }, 500);
+        async function firebaseAuth(endpoint, data) {
+            const url = `https://identitytoolkit.googleapis.com/v1/accounts:${endpoint}?key=${FIREBASE_CONFIG.apiKey}`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
             });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'Erreur Auth');
+            }
+            
+            return await response.json();
         }
 
-        // ===================================
-        // ENSURE NODES EXIST
-        // ===================================
-        async function ensureNodes() {
-            updateLoadingText('Vérification de la base de données...');
+        async function firebaseDB(path, method = 'GET', data = null) {
+            const token = currentUser?.idToken;
+            let url = `${FIREBASE_CONFIG.databaseURL}/${path}.json`;
+            if (token) url += `?auth=${token}`;
             
-            try {
-                const nodesToCheck = ['drivers', 'driverIdMapping', 'requests'];
-                
-                for (const node of nodesToCheck) {
-                    const snapshot = await db.ref(node).once('value');
-                    if (!snapshot.exists()) {
-                        console.log(`Création du nœud: ${node}`);
-                        await db.ref(node).set({ _init: Date.now() });
-                        await db.ref(`${node}/_init`).remove();
-                    }
-                }
-                
-                console.log('✅ Tous les nœuds sont prêts');
-            } catch (error) {
-                console.error('Erreur nodes:', error);
-            }
-        }
-
-        // ===================================
-        // SWITCH TAB
-        // ===================================
-        function switchTab(tab) {
-            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+            const options = {
+                method,
+                headers: { 'Content-Type': 'application/json' }
+            };
             
-            if (tab === 'login') {
-                document.getElementById('login-form').classList.remove('hidden');
-                document.getElementById('register-form').classList.add('hidden');
-            } else {
-                document.getElementById('login-form').classList.add('hidden');
-                document.getElementById('register-form').classList.remove('hidden');
+            if (data) options.body = JSON.stringify(data);
+            
+            const response = await fetch(url, options);
+            
+            if (!response.ok) {
+                throw new Error('Erreur Database');
             }
+            
+            return await response.json();
         }
 
         // ===================================
@@ -1010,23 +762,26 @@
         // REGISTER
         // ===================================
         async function register() {
-            const firstName = document.getElementById('reg-firstname').value.trim();
-            const lastName = document.getElementById('reg-lastname').value.trim();
-            const phone = document.getElementById('reg-phone').value.trim();
-            const cni = document.getElementById('reg-cni').value.trim();
-            const email = document.getElementById('reg-email').value.trim();
-            const password = document.getElementById('reg-password').value;
-            const carModel = document.getElementById('reg-car-model').value.trim();
-            const carColor = document.getElementById('reg-car-color').value.trim();
-            const carPlate = document.getElementById('reg-car-plate').value.trim();
+            const data = {
+                firstName: document.getElementById('reg-firstname').value.trim(),
+                lastName: document.getElementById('reg-lastname').value.trim(),
+                phone: document.getElementById('reg-phone').value.trim(),
+                cni: document.getElementById('reg-cni').value.trim(),
+                email: document.getElementById('reg-email').value.trim(),
+                password: document.getElementById('reg-password').value,
+                carModel: document.getElementById('reg-car-model').value.trim(),
+                carColor: document.getElementById('reg-car-color').value.trim(),
+                carPlate: document.getElementById('reg-car-plate').value.trim()
+            };
 
-            if (!firstName || !lastName || !phone || !cni || !email || !password || !carModel || !carColor || !carPlate) {
+            if (!data.firstName || !data.lastName || !data.phone || !data.cni || 
+                !data.email || !data.password || !data.carModel || !data.carColor || !data.carPlate) {
                 showToast('Tous les champs sont obligatoires', 'error');
                 return;
             }
 
-            if (password.length < 6) {
-                showToast('Le mot de passe doit contenir au moins 6 caractères', 'error');
+            if (data.password.length < 6) {
+                showToast('Mot de passe trop court (min 6)', 'error');
                 return;
             }
 
@@ -1034,66 +789,69 @@
                 showToast('Création du compte...', 'info');
 
                 // 1. Create auth account
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const uid = userCredential.user.uid;
+                const authResult = await firebaseAuth('signUp', {
+                    email: data.email,
+                    password: data.password,
+                    returnSecureToken: true
+                });
+
+                currentUser = {
+                    uid: authResult.localId,
+                    email: authResult.email,
+                    idToken: authResult.idToken,
+                    refreshToken: authResult.refreshToken
+                };
+
+                localStorage.setItem('digiy_user', JSON.stringify(currentUser));
 
                 // 2. Generate driver ID
-                const driverId = generateDriverId(phone, cni);
+                const driverId = generateDriverId(data.phone, data.cni);
 
                 // 3. Create driver profile
-                const newDriverRef = db.ref('drivers').push();
-                const firebaseDriverId = newDriverRef.key;
+                const driversData = await firebaseDB('drivers', 'GET');
+                const newKey = 'driver_' + Date.now();
 
                 const driverProfile = {
                     driverId: driverId,
-                    uid: uid,
+                    uid: currentUser.uid,
                     personalInfo: {
-                        firstName: firstName,
-                        lastName: lastName,
-                        phone: phone,
-                        cni: cni,
-                        email: email
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        phone: data.phone,
+                        cni: data.cni,
+                        email: data.email
                     },
                     vehicle: {
-                        model: carModel,
-                        color: carColor,
-                        plate: carPlate,
+                        model: data.carModel,
+                        color: data.carColor,
+                        plate: data.carPlate,
                         seats: 4
                     },
                     status: 'offline',
-                    position: { lat: null, lng: null, timestamp: null },
+                    position: { lat: null, lng: null },
                     stats: {
                         rating: 0,
                         totalRides: 0,
-                        acceptanceRate: 100,
-                        cancellationRate: 0
+                        acceptanceRate: 100
                     },
-                    createdAt: Date.now(),
-                    updatedAt: Date.now()
+                    createdAt: Date.now()
                 };
 
-                await newDriverRef.set(driverProfile);
+                await firebaseDB(`drivers/${newKey}`, 'PUT', driverProfile);
 
                 // 4. Create mapping
-                await db.ref(`driverIdMapping/${driverId}`).set({
-                    firebaseDriverId: firebaseDriverId,
+                await firebaseDB(`driverIdMapping/${driverId}`, 'PUT', {
+                    firebaseDriverId: newKey,
                     createdAt: Date.now()
                 });
 
-                showToast(`✅ Compte créé ! Votre ID: ${driverId}`, 'success');
+                showToast(`✅ Compte créé ! ID: ${driverId}`, 'success');
                 
-                // Auto login
-                setTimeout(() => {
-                    loadDriverProfile();
-                }, 1000);
+                setTimeout(() => loadDriverProfile(), 1000);
 
             } catch (error) {
                 console.error('Erreur:', error);
-                if (error.code === 'auth/email-already-in-use') {
-                    showToast('Cet email est déjà utilisé', 'error');
-                } else {
-                    showToast('Erreur: ' + error.message, 'error');
-                }
+                showToast('Erreur: ' + error.message, 'error');
             }
         }
 
@@ -1105,7 +863,7 @@
             const password = document.getElementById('login-password').value;
 
             if (!identifier || !password) {
-                showToast('Tous les champs sont requis', 'error');
+                showToast('Tous les champs requis', 'error');
                 return;
             }
 
@@ -1115,18 +873,31 @@
 
                 // If it's a driver ID
                 if (/^CHA-\d{4}-\d{4}$/.test(identifier)) {
-                    const mappingSnap = await db.ref(`driverIdMapping/${identifier}`).once('value');
-                    if (!mappingSnap.exists()) {
+                    const mapping = await firebaseDB(`driverIdMapping/${identifier}`, 'GET');
+                    if (!mapping) {
                         showToast('ID chauffeur introuvable', 'error');
                         return;
                     }
-                    const firebaseDriverId = mappingSnap.val().firebaseDriverId;
-                    const driverSnap = await db.ref(`drivers/${firebaseDriverId}`).once('value');
-                    email = driverSnap.val().personalInfo.email;
-                    currentDriverId = identifier;
+                    const firebaseDriverId = mapping.firebaseDriverId;
+                    const driver = await firebaseDB(`drivers/${firebaseDriverId}`, 'GET');
+                    email = driver.personalInfo.email;
                 }
 
-                await auth.signInWithEmailAndPassword(email, password);
+                const authResult = await firebaseAuth('signInWithPassword', {
+                    email: email,
+                    password: password,
+                    returnSecureToken: true
+                });
+
+                currentUser = {
+                    uid: authResult.localId,
+                    email: authResult.email,
+                    idToken: authResult.idToken,
+                    refreshToken: authResult.refreshToken
+                };
+
+                localStorage.setItem('digiy_user', JSON.stringify(currentUser));
+
                 await loadDriverProfile();
                 
                 document.getElementById('auth-screen').classList.add('hidden');
@@ -1135,11 +906,7 @@
 
             } catch (error) {
                 console.error('Erreur:', error);
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    showToast('Identifiants incorrects', 'error');
-                } else {
-                    showToast('Erreur: ' + error.message, 'error');
-                }
+                showToast('Identifiants incorrects', 'error');
             }
         }
 
@@ -1147,22 +914,19 @@
         // LOAD DRIVER PROFILE
         // ===================================
         async function loadDriverProfile() {
-            const user = auth.currentUser;
-            if (!user) return;
-
             try {
-                const driversSnap = await db.ref('drivers')
-                    .orderByChild('uid')
-                    .equalTo(user.uid)
-                    .once('value');
-
-                driversSnap.forEach(child => {
-                    currentDriver = {
-                        firebaseDriverId: child.key,
-                        ...child.val()
-                    };
-                    currentDriverId = child.val().driverId;
-                });
+                const drivers = await firebaseDB('drivers', 'GET');
+                
+                for (const [key, driver] of Object.entries(drivers || {})) {
+                    if (driver.uid === currentUser.uid) {
+                        currentDriver = {
+                            firebaseDriverId: key,
+                            ...driver
+                        };
+                        currentDriverId = driver.driverId;
+                        break;
+                    }
+                }
 
                 if (!currentDriver) {
                     showToast('Profil introuvable', 'error');
@@ -1170,6 +934,9 @@
                 }
 
                 displayDriverInfo();
+
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
 
             } catch (error) {
                 console.error('Erreur:', error);
@@ -1206,7 +973,7 @@
             const newStatus = currentStatus === 'available' ? 'offline' : 'available';
 
             try {
-                await db.ref(`drivers/${currentDriver.firebaseDriverId}/status`).set(newStatus);
+                await firebaseDB(`drivers/${currentDriver.firebaseDriverId}/status`, 'PUT', `"${newStatus}"`);
                 currentDriver.status = newStatus;
 
                 const btn = document.getElementById('status-toggle');
@@ -1216,12 +983,12 @@
                     btn.classList.remove('offline');
                     btn.classList.add('online');
                     text.textContent = 'Disponible';
-                    showToast('✅ Vous êtes maintenant disponible', 'success');
+                    showToast('✅ Vous êtes disponible', 'success');
                 } else {
                     btn.classList.remove('online');
                     btn.classList.add('offline');
                     text.textContent = 'Hors ligne';
-                    showToast('⏹️ Vous êtes hors ligne', 'warning');
+                    showToast('⏹️ Hors ligne', 'error');
                 }
             } catch (error) {
                 console.error('Erreur:', error);
@@ -1240,28 +1007,36 @@
         }
 
         // ===================================
+        // SWITCH TAB
+        // ===================================
+        function switchTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'login') {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+            } else {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('register-form').classList.remove('hidden');
+            }
+        }
+
+        // ===================================
         // LOGOUT
         // ===================================
-        async function logout() {
-            if (!confirm('Voulez-vous vraiment vous déconnecter ?')) return;
+        function logout() {
+            if (!confirm('Déconnexion ?')) return;
 
-            try {
-                if (currentDriver) {
-                    await db.ref(`drivers/${currentDriver.firebaseDriverId}/status`).set('offline');
-                }
+            localStorage.removeItem('digiy_user');
+            currentUser = null;
+            currentDriver = null;
+            currentDriverId = null;
 
-                await auth.signOut();
-                
-                document.getElementById('app').classList.add('hidden');
-                document.getElementById('auth-screen').classList.remove('hidden');
-                
-                currentDriver = null;
-                currentDriverId = null;
-
-                showToast('Déconnexion réussie', 'success');
-            } catch (error) {
-                console.error('Erreur:', error);
-            }
+            document.getElementById('app').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
+            
+            showToast('Déconnexion réussie', 'success');
         }
 
         // ===================================
@@ -1275,7 +1050,6 @@
             const icons = {
                 success: 'check-circle',
                 error: 'exclamation-circle',
-                warning: 'exclamation-triangle',
                 info: 'info-circle'
             };
             
@@ -1288,15 +1062,9 @@
             
             setTimeout(() => {
                 toast.style.opacity = '0';
-                toast.style.transform = 'translateX(400px)';
                 setTimeout(() => toast.remove(), 300);
             }, 4000);
         }
-
-        // ===================================
-        // START
-        // ===================================
-        setTimeout(waitForFirebase, 500);
     </script>
 </body>
 </html>
