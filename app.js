@@ -618,6 +618,3 @@ const app = {
   }
 };
 
-// On expose dans le scope global
-window.app = app;
-app.init();
