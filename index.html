@@ -456,27 +456,48 @@
     let online = false;
 
     // =========================================================
-    // Helpers profil
+    // Helpers profil - ADAPTÉS POUR TES COLONNES
     // =========================================================
     function pickDriverId(p) {
-      return (p?.chauffeur_id || p?.driver_id || p?.code || p?.id_chauffeur || "").toString().trim() || "CHA-XXXX-YYYY";
+      // Générer un ID à partir de l'ID Supabase si pas d'autre ID
+      if (p?.chauffeur_id) return p.chauffeur_id.toString().trim();
+      if (p?.driver_id) return p.driver_id.toString().trim();
+      if (p?.code) return p.code.toString().trim();
+      
+      // Sinon créer un ID depuis l'UUID (8 premiers caractères)
+      if (p?.id) {
+        const shortId = p.id.toString().substring(0, 8).toUpperCase();
+        return `CHA-${shortId}`;
+      }
+      
+      return "CHA-XXXX-YYYY";
     }
+    
     function pickName(p) {
+      // Priorité : display_name > business_name
+      if (p?.display_name) return p.display_name.toString().trim();
+      if (p?.business_name) return p.business_name.toString().trim();
+      
+      // Fallback ancien système
       const full = (p?.full_name || p?.name || "").toString().trim();
       if (full) return full;
+      
       const fn = (p?.first_name || "").toString().trim();
       const ln = (p?.last_name || "").toString().trim();
       const merged = `${fn} ${ln}`.trim();
+      
       return merged || "Chauffeur";
     }
+    
     function pickPhone(p) {
       return (p?.phone || p?.telephone || p?.tel || "").toString().trim() || "+221 …";
     }
+    
     function pickVehicle(p) {
       return {
-        model: (p?.vehicle_model || p?.car_model || p?.modele_vehicule || "-").toString(),
-        color: (p?.vehicle_color || p?.car_color || p?.couleur_vehicule || "-").toString(),
-        plate: (p?.vehicle_plate || p?.car_plate || p?.plaque || "-").toString()
+        model: (p?.vehicle_model || p?.car_model || p?.modele_vehicule || "Non renseigné").toString(),
+        color: (p?.vehicle_color || p?.car_color || p?.couleur_vehicule || "Non renseigné").toString(),
+        plate: (p?.vehicle_plate || p?.car_plate || p?.plaque || "Non renseigné").toString()
       };
     }
 
