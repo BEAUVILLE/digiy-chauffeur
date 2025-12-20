@@ -5,911 +5,215 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DIGIY CHAUFFEUR PRO</title>
 
-  <!-- Supabase -->
+  <!-- Supabase (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Leaflet.js (Carte gratuite) -->
+  <!-- Leaflet.js -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    :root {
-      --primary: #f97316;
-      --primary-dark: #ea580c;
-      --success: #22c55e;
-      --danger: #ef4444;
-      --warning: #facc15;
-      --dark: #0f172a;
-      --dark-2: #1e293b;
-      --dark-3: #334155;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, var(--dark) 0%, var(--dark-2) 100%);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    .loading-screen {
-      position: fixed;
-      inset: 0;
-      background: var(--dark);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-
-    .logo-loading {
-      font-size: 3rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 2rem;
-      letter-spacing: 1px;
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(249, 115, 22, 0.2);
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 1rem;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .app-container {
-      min-height: 100vh;
-      padding-bottom: 80px;
-    }
-
-    .app-header {
-      background: var(--dark-2);
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .header-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .header-logo {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-    }
-
-    .status-btn {
-      padding: 0.5rem 1rem;
-      border-radius: 999px;
-      border: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.875rem;
-    }
-
-    .status-btn.offline {
-      background: rgba(148, 163, 184, 0.2);
-      color: var(--text-muted);
-    }
-
-    .status-btn.online {
-      background: rgba(34, 197, 94, 0.2);
-      color: var(--success);
-    }
-
-    .driver-info {
-      text-align: right;
-      font-size: 0.875rem;
-    }
-
-    .driver-id {
-      color: var(--primary);
-      font-weight: 800;
-      letter-spacing: 0.4px;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--dark-2);
-      border-top: 1px solid rgba(148, 163, 184, 0.1);
-      display: flex;
-      justify-content: space-around;
-      padding: 0.75rem 0.5rem;
-      z-index: 100;
-    }
-
-    .nav-item {
-      flex: 1;
-      padding: 0.5rem;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-      font-size: 0.7rem;
-      cursor: pointer;
-    }
-
-    .nav-item i { font-size: 1.5rem; }
-
-    .nav-item.active { color: var(--primary); }
-
-    .main-content {
-      padding: 1.5rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .view { display: none; }
-    .view.active { display: block; }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .stat-card {
-      background: var(--dark-2);
-      padding: 1.5rem;
-      border-radius: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.1);
-    }
-
-    .stat-card h3 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      color: var(--primary);
-    }
-
-    .info-card {
-      background: var(--dark-2);
-      border-radius: 16px;
-      padding: 2rem;
-      text-align: center;
-      border: 1px solid rgba(148, 163, 184, 0.1);
-    }
-
-    .info-card i {
-      font-size: 4rem;
-      color: var(--text-muted);
-      margin-bottom: 1.5rem;
-    }
-
-    .profile-container {
-      background: var(--dark-2);
-      border-radius: 16px;
-      padding: 2rem;
-      text-align: center;
-      border: 1px solid rgba(148, 163, 184, 0.1);
-    }
-
-    .profile-avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      color: white;
-      margin: 0 auto 1.5rem;
-    }
-
-    .profile-id-badge {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      background: rgba(249, 115, 22, 0.1);
-      border: 2px solid var(--primary);
-      border-radius: 999px;
-      color: var(--primary);
-      font-weight: 900;
-      margin: 1rem 0;
-    }
-
-    .vehicle-info {
-      background: var(--dark-3);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin: 1.5rem 0;
-      text-align: left;
-      border: 1px solid rgba(148, 163, 184, 0.1);
-    }
-
-    .info-row {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-    }
-    .info-row:last-child { border-bottom: none; }
-
-    .menu-item {
-      width: 100%;
-      padding: 1rem 1.5rem;
-      background: var(--dark-3);
-      border: 1px solid rgba(148, 163, 184, 0.1);
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      cursor: pointer;
-      border-radius: 12px;
-      margin-bottom: 0.5rem;
-    }
-
-    .menu-item.danger { color: var(--danger); }
-
-    .toast-container {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 9999;
-    }
-
-    .toast {
-      background: var(--dark-2);
-      padding: 1rem 1.5rem;
-      border-radius: 12px;
-      margin-bottom: 0.5rem;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      animation: slideIn 0.25s;
-      border-left: 4px solid var(--primary);
-      border: 1px solid rgba(148, 163, 184, 0.12);
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(320px); opacity: 0.3; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    .toast.success { border-left-color: var(--success); }
-    .toast.error { border-left-color: var(--danger); }
-    .toast.info { border-left-color: var(--warning); }
-
-    .hidden { display: none !important; }
-
-    /* ========================================
-       CARTE GPS (LEAFLET)
-       ======================================== */
-    .gps-card {
-      background: var(--dark-2);
-      border-radius: 16px;
-      padding: 1.5rem;
-      border: 1px solid rgba(148, 163, 184, 0.1);
-      margin-bottom: 1.5rem;
-    }
-
-    .gps-card h3 {
-      color: var(--primary);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    #map {
-      width: 100%;
-      height: 400px;
-      border-radius: 12px;
-      border: 2px solid rgba(148, 163, 184, 0.2);
-      margin-bottom: 1rem;
-    }
-
-    .gps-info-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
-
-    .gps-info-item {
-      background: var(--dark-3);
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 1px solid rgba(148, 163, 184, 0.1);
-    }
-
-    .gps-info-item .label {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.25rem;
-    }
-
-    .gps-info-item .value {
-      font-size: 13px;
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    .btn-recenter {
-      width: 100%;
-      padding: 0.75rem;
-      background: rgba(249, 115, 22, 0.1);
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      transition: all 0.3s;
-    }
-
-    .btn-recenter:hover {
-      background: var(--primary);
-      color: var(--dark);
-    }
+    /* ✅ Colle ton CSS ici */
+    body{margin:0;background:#0A0E1A;color:#F1F5F9;font-family:system-ui}
+    #map{height:280px;border-radius:16px;overflow:hidden;border:1px solid rgba(250,204,21,.18)}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:10px}
+    .badge{font-weight:900;color:#facc15}
+    .btn{border:0;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer}
+    .btn-outline{background:transparent;color:#e2e8f0;border:1px solid rgba(148,163,184,.25)}
+    .btn-gold{background:#facc15;color:#111827}
+    .card{background:rgba(255,255,255,.03);border:1px solid rgba(250,204,21,.14);border-radius:18px;padding:14px;margin-top:14px}
+    .muted{opacity:.8}
   </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="badge">∞ DIGIY</div>
+        <div class="muted">Chauffeur PRO</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button id="btnHub" class="btn btn-outline"><i class="fa-solid fa-house"></i> HUB</button>
+        <button id="btnLogout" class="btn btn-outline"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+      </div>
+    </div>
 
-  <div id="loading-screen" class="loading-screen">
-    <div class="logo-loading">DIGIY</div>
-    <div class="spinner"></div>
-    <div style="color: var(--text-muted); text-align: center;">
-      Vérification DIGIY…<br>
-      <span style="font-size:12px;">Session • Profil • Accès</span>
+    <div class="card">
+      <div style="font-weight:900;font-size:18px;margin-bottom:6px">Tableau de bord</div>
+      <div class="muted" id="who">Chargement…</div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:900;margin-bottom:10px">Carte (test)</div>
+      <div id="map"></div>
     </div>
   </div>
 
-  <!-- ✅ APP SEULEMENT (AUCUN LOGIN ICI) -->
-  <div id="app" class="app-container hidden">
-    <header class="app-header">
-      <div class="header-brand">
-        <div class="header-logo">🚕</div>
-        <h2>DIGIY</h2>
-      </div>
-
-      <div style="display:flex; align-items:center; gap:1rem;">
-        <button id="status-toggle" class="status-btn offline" onclick="toggleStatus()">
-          <i class="fas fa-circle"></i>
-          <span id="status-text">Hors ligne</span>
-        </button>
-
-        <div class="driver-info">
-          <div id="header-driver-name">Chauffeur</div>
-          <div class="driver-id" id="header-driver-id">CHA-XXXX-YYYY</div>
-        </div>
-      </div>
-    </header>
-
-    <nav class="bottom-nav">
-      <button class="nav-item active" onclick="showView('home', event)">
-        <i class="fas fa-home"></i>
-        <span>Accueil</span>
-      </button>
-      <button class="nav-item" onclick="showView('courses', event)">
-        <i class="fas fa-list"></i>
-        <span>Courses</span>
-      </button>
-      <button class="nav-item" onclick="showView('gains', event)">
-        <i class="fas fa-chart-line"></i>
-        <span>Gains</span>
-      </button>
-      <button class="nav-item" onclick="showView('profile', event)">
-        <i class="fas fa-user"></i>
-        <span>Profil</span>
-      </button>
-    </nav>
-
-    <main class="main-content">
-      <div id="home-view" class="view active">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <h3 id="stat-today-earnings">0 F</h3>
-            <p>Gains aujourd'hui</p>
-          </div>
-          <div class="stat-card">
-            <h3 id="stat-today-rides">0</h3>
-            <p>Courses aujourd'hui</p>
-          </div>
-        </div>
-
-        <!-- Carte GPS -->
-        <div class="gps-card">
-          <h3><i class="fas fa-map-marked-alt"></i> Ma Position GPS</h3>
-          <div id="map"></div>
-          <button class="btn-recenter" onclick="recenterMap()">
-            <i class="fas fa-crosshairs"></i>
-            Recentrer sur ma position
-          </button>
-          <div class="gps-info-grid">
-            <div class="gps-info-item">
-              <div class="label">Latitude</div>
-              <div class="value" id="gps-lat">-</div>
-            </div>
-            <div class="gps-info-item">
-              <div class="label">Longitude</div>
-              <div class="value" id="gps-lng">-</div>
-            </div>
-            <div class="gps-info-item">
-              <div class="label">Précision</div>
-              <div class="value" id="gps-accuracy">-</div>
-            </div>
-            <div class="gps-info-item">
-              <div class="label">Dernière MAJ</div>
-              <div class="value" id="gps-updated">-</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="info-card">
-          <i class="fas fa-car"></i>
-          <h3>En attente de courses</h3>
-          <p>Activez "Disponible" pour recevoir des demandes</p>
-        </div>
-      </div>
-
-      <div id="courses-view" class="view">
-        <div class="info-card">
-          <i class="fas fa-history"></i>
-          <h3>Aucune course</h3>
-          <p>Votre historique apparaîtra ici</p>
-        </div>
-      </div>
-
-      <div id="gains-view" class="view">
-        <div class="info-card" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white;">
-          <h3>Total du mois</h3>
-          <h2 style="font-size: 2.5rem; margin: 1rem 0;" id="stat-month-total">0 FCFA</h2>
-          <p style="background: rgba(0,0,0,0.2); display: inline-block; padding: 0.5rem 1rem; border-radius: 999px;">
-            ✨ 100% pour vous • 0% commission
-          </p>
-        </div>
-      </div>
-
-      <div id="profile-view" class="view">
-        <div class="profile-container">
-          <div class="profile-avatar"><i class="fas fa-user"></i></div>
-
-          <div>
-            <h3 id="profile-name">Chauffeur</h3>
-            <p id="profile-phone">+221 …</p>
-            <div class="profile-id-badge" id="profile-id">CHA-XXXX-YYYY</div>
-          </div>
-
-          <div class="vehicle-info">
-            <h4 style="color: var(--primary); margin-bottom: 1rem;">🚗 Mon Véhicule</h4>
-            <div class="info-row">
-              <i class="fas fa-car" style="color: var(--primary);"></i>
-              <span id="vehicle-model">-</span>
-            </div>
-            <div class="info-row">
-              <i class="fas fa-palette" style="color: var(--primary);"></i>
-              <span id="vehicle-color">-</span>
-            </div>
-            <div class="info-row">
-              <i class="fas fa-id-badge" style="color: var(--primary);"></i>
-              <span id="vehicle-plate">-</span>
-            </div>
-          </div>
-
-          <button class="menu-item danger" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Déconnexion</span>
-          </button>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <div id="toast-container" class="toast-container"></div>
-
   <script>
-    // =========================================================
-    // ✅ CONFIG - FIX #1 & #2
-    // =========================================================
-    const HUB_DOUANE_URL = "https://beauville.github.io/login-otp-fix/douane.html"; // ✅ FIX #2
-    
-    const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+    /***********************
+     * 1) CONFIG
+     ***********************/
+    const SUPABASE_URL = "https://TONPROJET.supabase.co";
+    const SUPABASE_ANON_KEY = "TON_ANON_KEY";
 
-    // ✅ FIX #1 : Enlever storageKey pour utiliser la clé par défaut de Supabase
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true
-      }
-    });
+    // Routes (adapte à tes URLs GitHub Pages)
+    // Exemple: driver-auth (porte) et digiy-chauffeur (maison)
+    const URL_LOGIN = "https://beauville.github.io/driver-auth/";        // 🔁 mets ton vrai lien
+    const URL_PAY   = "https://beauville.github.io/digiy-hub/paiements.html"; // 🔁 mets ton vrai lien
+    const URL_HUB   = "https://beauville.github.io/digiy-hub/";          // 🔁 mets ton vrai lien
 
-    let pro = null;
-    let online = false;
+    const REQUIRED_ROLE = "pro";     // optionnel (si tu as role)
+    const REQUIRED_MODULE = "driver"; // le module à exiger
 
-    // =========================================================
-    // Helpers profil - ADAPTÉS POUR TES COLONNES
-    // =========================================================
-    function pickDriverId(p) {
-      // Générer un ID à partir de l'ID Supabase si pas d'autre ID
-      if (p?.chauffeur_id) return p.chauffeur_id.toString().trim();
-      if (p?.driver_id) return p.driver_id.toString().trim();
-      if (p?.code) return p.code.toString().trim();
-      
-      // Sinon créer un ID depuis l'UUID (8 premiers caractères)
-      if (p?.id) {
-        const shortId = p.id.toString().substring(0, 8).toUpperCase();
-        return `CHA-${shortId}`;
-      }
-      
-      return "CHA-XXXX-YYYY";
-    }
-    
-    function pickName(p) {
-      // Priorité : display_name > business_name
-      if (p?.display_name) return p.display_name.toString().trim();
-      if (p?.business_name) return p.business_name.toString().trim();
-      
-      // Fallback ancien système
-      const full = (p?.full_name || p?.name || "").toString().trim();
-      if (full) return full;
-      
-      const fn = (p?.first_name || "").toString().trim();
-      const ln = (p?.last_name || "").toString().trim();
-      const merged = `${fn} ${ln}`.trim();
-      
-      return merged || "Chauffeur";
-    }
-    
-    function pickPhone(p) {
-      return (p?.phone || p?.telephone || p?.tel || "").toString().trim() || "+221 …";
-    }
-    
-    function pickVehicle(p) {
-      return {
-        model: (p?.vehicle_model || p?.car_model || p?.modele_vehicule || "Non renseigné").toString(),
-        color: (p?.vehicle_color || p?.car_color || p?.couleur_vehicule || "Non renseigné").toString(),
-        plate: (p?.vehicle_plate || p?.car_plate || p?.plaque || "Non renseigné").toString()
-      };
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /***********************
+     * 2) OUTILS (UI blocage)
+     ***********************/
+    function redirect(to){
+      // conserve next
+      const u = new URL(to, location.href);
+      if (!u.searchParams.get("next")) u.searchParams.set("next", location.pathname + location.search);
+      location.href = u.toString();
     }
 
-    function hideLoading() {
-      document.getElementById("loading-screen").classList.add("hidden");
-    }
-
-    function showApp() {
-      document.getElementById("app").classList.remove("hidden");
-    }
-
-    function goDouane() {
-      window.location.replace(HUB_DOUANE_URL);
-    }
-
-    // =========================================================
-    // GPS & CARTE LEAFLET
-    // =========================================================
-    let map = null;
-    let marker = null;
-    let gpsWatchId = null;
-    let currentPosition = null;
-
-    function initMap() {
-      // Position par défaut : Dakar, Sénégal
-      const defaultPos = [14.7167, -17.4677];
-
-      // Créer la carte Leaflet
-      map = L.map('map').setView(defaultPos, 13);
-
-      // Ajouter les tuiles OpenStreetMap (GRATUIT !)
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
-      }).addTo(map);
-
-      // Icône personnalisée pour le marqueur
-      const customIcon = L.divIcon({
-        className: 'custom-marker',
-        html: '<div style="background: linear-gradient(135deg, #f97316, #ea580c); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-size: 20px;">🚕</div>',
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
-      });
-
-      // Ajouter le marqueur
-      marker = L.marker(defaultPos, { icon: customIcon }).addTo(map);
-      marker.bindPopup("<b>Ma position</b><br>En attente du GPS...").openPopup();
-
-      // Démarrer le suivi GPS
-      startGPSTracking();
-    }
-
-    function startGPSTracking() {
-      if (!navigator.geolocation) {
-        showToast("❌ GPS non disponible sur cet appareil", "error");
-        return;
-      }
-
-      const options = {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      };
-
-      // Suivi en temps réel
-      gpsWatchId = navigator.geolocation.watchPosition(
-        updatePosition,
-        handleGPSError,
-        options
-      );
-
-      showToast("📍 GPS activé", "success");
-    }
-
-    function updatePosition(position) {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-      const accuracy = position.coords.accuracy;
-
-      currentPosition = { lat, lng, accuracy };
-
-      // Mettre à jour la carte
-      if (map && marker) {
-        const newPos = [lat, lng];
-        marker.setLatLng(newPos);
-        marker.bindPopup(`<b>Ma position actuelle</b><br>Précision: ${accuracy.toFixed(0)}m`);
-      }
-
-      // Mettre à jour les infos texte
-      document.getElementById('gps-lat').textContent = lat.toFixed(6);
-      document.getElementById('gps-lng').textContent = lng.toFixed(6);
-      document.getElementById('gps-accuracy').textContent = accuracy.toFixed(0) + 'm';
-      
-      const now = new Date();
-      document.getElementById('gps-updated').textContent = now.toLocaleTimeString('fr-FR');
-
-      // Sauvegarder dans Supabase (optionnel)
-      if (pro && pro.id) {
-        supabase
-          .from('pros')
-          .update({
-            gps_lat: lat,
-            gps_lng: lng,
-            gps_updated_at: new Date().toISOString()
-          })
-          .eq('id', pro.id)
-          .then(() => {
-            console.log('📍 Position GPS sauvegardée');
-          })
-          .catch(err => {
-            console.error('Erreur sauvegarde GPS:', err);
-          });
-      }
-    }
-
-    function handleGPSError(error) {
-      let message = "Erreur GPS";
-      
-      switch(error.code) {
-        case error.PERMISSION_DENIED:
-          message = "⚠️ Autorisation GPS refusée. Activez-la dans les paramètres.";
-          break;
-        case error.POSITION_UNAVAILABLE:
-          message = "❌ Position GPS indisponible";
-          break;
-        case error.TIMEOUT:
-          message = "⏱️ Délai GPS dépassé";
-          break;
-      }
-      
-      console.error('GPS Error:', message, error);
-      showToast(message, "error");
-    }
-
-    function recenterMap() {
-      if (currentPosition && map) {
-        map.setView([currentPosition.lat, currentPosition.lng], 15);
-        showToast("🎯 Carte recentrée", "info");
-      } else {
-        showToast("⚠️ Position GPS pas encore disponible", "error");
-      }
-    }
-
-    function stopGPSTracking() {
-      if (gpsWatchId) {
-        navigator.geolocation.clearWatch(gpsWatchId);
-        gpsWatchId = null;
-        console.log('GPS tracking stopped');
-      }
-    }
-
-    // =========================================================
-    // Boot : si pas de session => retour DOUANE - FIX #3
-    // =========================================================
-    (async function boot() {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-
-        if (!session?.user?.id) {
-          // Pas connecté => retour douane
-          goDouane();
-          return;
-        }
-
-        // 1) Essayer ce que ta douane a déjà posé
-        try {
-          const cached = sessionStorage.getItem("digiy_pro");
-          if (cached) pro = JSON.parse(cached);
-        } catch {}
-
-        // 2) Sinon fetch table pros
-        if (!pro) {
-          const { data, error } = await supabase
-            .from("pros")
-            .select("*")
-            .eq("auth_user_id", session.user.id)
-            .maybeSingle();
-
-          if (error || !data) {
-            showToast("Profil pro introuvable. Retour douane…", "error");
-            setTimeout(goDouane, 900);
-            return;
-          }
-          pro = data;
-        }
-
-        // ✅ FIX #3 : VÉRIFIER MODULE CHAUFFEUR
-        if (!pro.modules || !Array.isArray(pro.modules) || !pro.modules.includes('chauffeur')) {
-          showToast("⚠️ Module chauffeur non activé. Retour…", "error");
-          setTimeout(goDouane, 1200);
-          return;
-        }
-
-        // Option : si compte pas actif, tu peux bloquer ici
-        if (pro?.is_active === false) {
-          showToast("Compte en validation. Retour…", "info");
-          setTimeout(goDouane, 1200);
-          return;
-        }
-
-        hydrateUI(pro);
-        hideLoading();
-        showApp();
-        
-        // Initialiser la carte GPS
-        setTimeout(() => {
-          initMap();
-        }, 500);
-        
-        showToast("✅ Bienvenue Chauffeur", "success");
-      } catch (e) {
-        console.error('Erreur boot:', e);
-        showToast("Erreur session. Retour douane…", "error");
-        setTimeout(goDouane, 900);
-      }
-    })();
-
-    function hydrateUI(p) {
-      const name = pickName(p);
-      const phone = pickPhone(p);
-      const driverId = pickDriverId(p);
-      const vehicle = pickVehicle(p);
-
-      document.getElementById("header-driver-name").textContent = name;
-      document.getElementById("header-driver-id").textContent = driverId;
-
-      document.getElementById("profile-name").textContent = name;
-      document.getElementById("profile-phone").textContent = phone;
-      document.getElementById("profile-id").textContent = driverId;
-
-      document.getElementById("vehicle-model").textContent = vehicle.model || "-";
-      document.getElementById("vehicle-color").textContent = vehicle.color || "-";
-      document.getElementById("vehicle-plate").textContent = vehicle.plate || "-";
-    }
-
-    // =========================================================
-    // UI Actions
-    // =========================================================
-    function toggleStatus() {
-      online = !online;
-      const btn = document.getElementById("status-toggle");
-      const text = document.getElementById("status-text");
-
-      if (online) {
-        btn.classList.remove("offline");
-        btn.classList.add("online");
-        text.textContent = "Disponible";
-        showToast("✅ Vous êtes disponible", "success");
-      } else {
-        btn.classList.remove("online");
-        btn.classList.add("offline");
-        text.textContent = "Hors ligne";
-        showToast("⏹️ Hors ligne", "info");
-      }
-    }
-
-    function showView(viewName, ev) {
-      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-      document.getElementById(`${viewName}-view`).classList.add("active");
-
-      document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
-      const target = ev?.target?.closest(".nav-item");
-      if (target) target.classList.add("active");
-    }
-
-    async function logout() {
-      if (!confirm("Déconnexion ?")) return;
-
-      // Arrêter le GPS
-      stopGPSTracking();
-
-      try { await supabase.auth.signOut(); } catch {}
-      try { sessionStorage.removeItem("digiy_pro"); } catch {}
-
-      showToast("Déconnecté. Retour…", "info");
-      setTimeout(goDouane, 600);
-    }
-
-    // =========================================================
-    // Toast
-    // =========================================================
-    function showToast(message, type = "info") {
-      const container = document.getElementById("toast-container");
-      const toast = document.createElement("div");
-      toast.className = `toast ${type}`;
-
-      const icons = {
-        success: "check-circle",
-        error: "exclamation-circle",
-        info: "info-circle"
-      };
-
-      toast.innerHTML = `
-        <i class="fas fa-${icons[type] || "info-circle"}"></i>
-        <span>${message}</span>
+    function showBlock(title, msg, ctaText, ctaHref){
+      const wrap = document.createElement("div");
+      wrap.style.cssText = `
+        position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+        background:rgba(0,0,0,.78);z-index:99999;padding:20px;
       `;
-
-      container.appendChild(toast);
-
-      setTimeout(() => {
-        toast.style.opacity = "0";
-        setTimeout(() => toast.remove(), 250);
-      }, 3200);
+      wrap.innerHTML = `
+        <div style="max-width:560px;width:100%;background:#0A0E1A;border:1px solid rgba(250,204,21,.25);
+          border-radius:18px;padding:18px;color:#f1f5f9;font-family:system-ui">
+          <div style="font-weight:900;font-size:18px;margin-bottom:6px">${title}</div>
+          <div style="opacity:.92;line-height:1.45;margin-bottom:12px">${msg}</div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+            <a href="${ctaHref}" style="text-decoration:none;background:#facc15;color:#111827;
+              padding:10px 14px;border-radius:12px;font-weight:900">${ctaText}</a>
+            <button id="digiyClose" style="background:transparent;border:1px solid rgba(148,163,184,.25);
+              color:#e2e8f0;padding:10px 14px;border-radius:12px;font-weight:800;cursor:pointer">Fermer</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(wrap);
+      wrap.querySelector("#digiyClose").onclick = () => wrap.remove();
     }
+
+    function normalizeModules(mods){
+      if (!mods) return [];
+      if (Array.isArray(mods)) return mods.map(x => String(x).toLowerCase());
+      return String(mods).split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
+    }
+
+    /***********************
+     * 3) LOAD ACCESS (à brancher à TON schéma)
+     *
+     * ✅ Option A (reco) : VUE v_access_dashboard
+     * Colonnes attendues :
+     * - auth_user_id
+     * - role
+     * - status
+     * - modules_actifs (array ou texte)
+     ***********************/
+    async function loadAccess(authUserId){
+      const { data, error } = await supabase
+        .from("v_access_dashboard")
+        .select("*")
+        .eq("auth_user_id", authUserId)
+        .maybeSingle();
+
+      if (error) return { access:null, error };
+      return { access:data || null, error:null };
+    }
+
+    /***********************
+     * 4) GUARD (Accès réel)
+     ***********************/
+    async function guard(){
+      const { data } = await supabase.auth.getSession();
+      const session = data?.session || null;
+
+      // 1) pas connecté => porte (driver-auth)
+      if (!session?.user?.id){
+        redirect(URL_LOGIN);
+        return { ok:false, reason:"no_session" };
+      }
+
+      // 2) charge l’accès réel
+      const authUserId = session.user.id;
+      const { access, error } = await loadAccess(authUserId);
+
+      if (error){
+        showBlock("Erreur d’accès", "Je n’arrive pas à charger ton accès réel. Réessaie ou contacte l’admin.", "Retour HUB", URL_HUB);
+        return { ok:false, reason:"access_load_error", error };
+      }
+
+      if (!access){
+        showBlock("Accès non activé", "Ton compte est connecté, mais aucun accès n’est activé (abonnement / module).", "Activer maintenant", URL_PAY);
+        return { ok:false, reason:"no_access" };
+      }
+
+      // 3) statut
+      const status = String(access.status || "active").toLowerCase();
+      if (!["active","enabled","ok"].includes(status)){
+        showBlock("Compte en attente", "Ton compte est en cours de validation. Dès que c’est OK, ça s’ouvre.", "Retour HUB", URL_HUB);
+        return { ok:false, reason:"status_not_active" };
+      }
+
+      // 4) role (si tu l’utilises)
+      if (REQUIRED_ROLE){
+        const role = String(access.role || "").toLowerCase();
+        if (role && role !== REQUIRED_ROLE.toLowerCase()){
+          showBlock("Accès refusé", "Tu n’as pas le bon rôle pour cette zone.", "Retour HUB", URL_HUB);
+          return { ok:false, reason:"bad_role" };
+        }
+      }
+
+      // 5) module
+      if (REQUIRED_MODULE){
+        const mods = normalizeModules(access.modules_actifs || access.modules || access.modules_active);
+        if (!mods.includes(REQUIRED_MODULE.toLowerCase())){
+          showBlock("Module non actif", `Le module <b>${REQUIRED_MODULE}</b> n’est pas actif sur ton compte.`, "Activer le module", URL_PAY);
+          return { ok:false, reason:"module_inactive" };
+        }
+      }
+
+      return { ok:true, session, access };
+    }
+
+    /***********************
+     * 5) APP START
+     ***********************/
+    (async function start(){
+      // boutons
+      document.getElementById("btnHub").onclick = () => location.href = URL_HUB;
+      document.getElementById("btnLogout").onclick = async () => {
+        await supabase.auth.signOut();
+        redirect(URL_LOGIN);
+      };
+
+      // ✅ GUARD FIRST
+      const g = await guard();
+      if (!g.ok) return;
+
+      // Page autorisée
+      document.getElementById("who").innerHTML =
+        `Connecté: <b>${(g.access.full_name || g.access.business_name || "Chauffeur")}</b> • module: <b>${REQUIRED_MODULE}</b>`;
+
+      // Map test (si ok)
+      const map = L.map('map').setView([14.6928, -17.4467], 12); // Dakar par défaut
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap'
+      }).addTo(map);
+    })();
   </script>
 </body>
 </html>
