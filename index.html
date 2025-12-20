@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -19,19 +18,19 @@
   <style>
     :root{
       /* ☀️ Soleil Sénégal */
-      --bg1:#fff7ed;     /* orange-50 */
-      --bg2:#fffbeb;     /* amber-50 */
+      --bg1:#fff7ed;
+      --bg2:#fffbeb;
       --card:#ffffff;
-      --ink:#0f172a;     /* slate-900 */
-      --muted:#475569;   /* slate-600 */
-      --line:#e2e8f0;    /* slate-200 */
+      --ink:#0f172a;
+      --muted:#475569;
+      --line:#e2e8f0;
       --shadow: 0 18px 50px rgba(15,23,42,.08);
 
-      --brand:#f59e0b;   /* amber-500 */
-      --brand2:#fb923c;  /* orange-400 */
-      --ok:#16a34a;      /* green-600 */
-      --warn:#f97316;    /* orange-500 */
-      --bad:#ef4444;     /* red-500 */
+      --brand:#f59e0b;
+      --brand2:#fb923c;
+      --ok:#16a34a;
+      --warn:#f97316;
+      --bad:#ef4444;
 
       --r:18px;
     }
@@ -49,28 +48,14 @@
     }
 
     a{color:inherit}
-    .wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:22px 16px 40px;
-    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:22px 16px 40px; }
 
-    /* Top bar */
     .top{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      margin-bottom:16px;
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; margin-bottom:16px;
     }
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      user-select:none;
-    }
+    .brand{ display:flex; align-items:center; gap:10px; user-select:none; }
     .logo{
       width:44px;height:44px;border-radius:14px;
       display:grid;place-items:center;
@@ -82,29 +67,19 @@
     }
     .brand h1{
       font-family: Outfit, Manrope, sans-serif;
-      font-size:18px;
-      margin:0;
-      line-height:1.1;
+      font-size:18px; margin:0; line-height:1.1;
     }
-    .brand p{
-      margin:2px 0 0;
-      color:var(--muted);
-      font-size:13px;
-    }
+    .brand p{ margin:2px 0 0; color:var(--muted); font-size:13px; }
 
-    .actions{
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-    }
+    .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
+      padding:8px 12px; border-radius:999px;
       background: rgba(255,255,255,.7);
       border:1px solid var(--line);
       box-shadow: 0 10px 22px rgba(15,23,42,.06);
-      font-size:13px;
-      color:var(--muted);
+      font-size:13px; color:var(--muted);
     }
     .dot{width:10px;height:10px;border-radius:999px;background:var(--bad)}
     .dot.ok{background:var(--ok)}
@@ -122,25 +97,15 @@
     }
     .btn:hover{transform: translateY(-1px)}
     .btn:active{transform: translateY(0px); opacity:.92}
-    .btn.primary{
-      border:none;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-    }
-    .btn.danger{
-      border:none;
-      background: linear-gradient(135deg, #ef4444, #fb7185);
-      color:#fff;
-    }
+    .btn.primary{ border:none; background: linear-gradient(135deg, var(--brand), var(--brand2)); }
+    .btn.danger{ border:none; background: linear-gradient(135deg, #ef4444, #fb7185); color:#fff; }
 
-    /* Layout */
     .grid{
       display:grid;
       grid-template-columns: 1.05fr .95fr;
       gap:14px;
     }
-    @media (max-width: 980px){
-      .grid{grid-template-columns: 1fr;}
-    }
+    @media (max-width: 980px){ .grid{grid-template-columns: 1fr;} }
 
     .card{
       background: rgba(255,255,255,.86);
@@ -159,34 +124,16 @@
       gap:10px;
       background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
     }
-    .card .hd h2{
-      margin:0;
-      font-family: Outfit, Manrope, sans-serif;
-      font-size:16px;
-    }
-    .card .hd small{
-      display:block;
-      margin-top:4px;
-      color:var(--muted);
-    }
-
+    .card .hd h2{ margin:0; font-family: Outfit, Manrope, sans-serif; font-size:16px; }
+    .card .hd small{ display:block; margin-top:4px; color:var(--muted); }
     .card .bd{ padding:14px; }
 
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    @media (max-width: 560px){
-      .row{grid-template-columns: 1fr;}
-    }
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width: 560px){ .row{grid-template-columns: 1fr;} }
 
     label{
-      display:block;
-      font-size:12px;
-      font-weight:800;
-      color:var(--muted);
-      margin:0 0 6px;
+      display:block; font-size:12px; font-weight:800;
+      color:var(--muted); margin:0 0 6px;
     }
     input, select{
       width:100%;
@@ -215,41 +162,19 @@
     .msg.ok{border-color: rgba(22,163,74,.30); background: rgba(22,163,74,.08); color:#14532d}
     .msg.bad{border-color: rgba(239,68,68,.30); background: rgba(239,68,68,.08); color:#7f1d1d}
 
-    /* Login box */
     .center{
       min-height: calc(100vh - 80px);
-      display:grid;
-      place-items:center;
+      display:grid; place-items:center;
       padding:20px 0 40px;
     }
-    .login{
-      width:min(520px, 100%);
-    }
-    .login .hero{
-      padding:16px 16px 0;
-    }
-    .hero h2{
-      margin:0;
-      font-family:Outfit, Manrope, sans-serif;
-      font-size:20px;
-    }
-    .hero p{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.35;
-    }
+    .login{ width:min(520px, 100%); }
+    .login .hero{ padding:16px 16px 0; }
+    .hero h2{ margin:0; font-family:Outfit, Manrope, sans-serif; font-size:20px; }
+    .hero p{ margin:6px 0 0; color:var(--muted); font-size:14px; line-height:1.35; }
 
-    .otpgrid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:10px;
-    }
-    @media (max-width: 520px){
-      .otpgrid{grid-template-columns: 1fr;}
-    }
+    .otpgrid{ display:grid; grid-template-columns: 1.2fr .8fr; gap:10px; }
+    @media (max-width: 520px){ .otpgrid{grid-template-columns: 1fr;} }
 
-    /* Table */
     table{
       width:100%;
       border-collapse:separate;
@@ -302,17 +227,51 @@
     /* 🔐 SUPABASE — DÉJÀ POSÉ */
     const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
     const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // ✅ Anti-boucle refresh pendant debug (tu peux remettre autoRefreshToken:true plus tard)
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: true,
+        detectSessionInUrl: false,
+        storageKey: "digiy-driver-auth"
+      }
+    });
 
     // --- Helpers
     const $ = (sel) => document.querySelector(sel);
-    const fmtMoney = (n) => {
-      const x = Number(n||0);
-      return x.toLocaleString("fr-FR") + " F CFA";
-    };
-    const safePhone = (s) => (s||"").trim();
+    const fmtMoney = (n) => Number(n || 0).toLocaleString("fr-FR") + " F CFA";
+    const safe = (s) => (s || "").trim();
+
+    // ✅ IMPORTANT: Supabase Test Phone Numbers demande souvent SANS "+"
+    // On garde l'UX +221... mais on envoie au provider un format clean.
+    function normalizePhoneForOtp(input){
+      return String(input || "")
+        .trim()
+        .replace(/\s+/g, "")
+        .replace(/^\+/, ""); // retire le +
+    }
+
+    function isValidInternational(phoneUi){
+      const p = String(phoneUi || "").trim().replace(/\s+/g, "");
+      return p.startsWith("+") && p.length >= 8;
+    }
+
+    function toast(sel, text, type=""){
+      const el = document.querySelector(sel);
+      if(!el) return;
+      el.innerHTML = `<div class="msg ${type}">${text}</div>`;
+    }
+
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
 
     // --- Fake "courses" (démo terrain)
     const DEMO_TRIPS = [
@@ -323,7 +282,7 @@
     ];
 
     // --- State
-    let session = null;
+    let sessionUser = null;
 
     // --- UI renderers
     function renderLogin(messageHtml=""){
@@ -392,6 +351,7 @@
                 <div class="sep"></div>
                 <div class="tiny">
                   Si ton provider SMS n’est pas configuré, utilise les <b>Test Phone Numbers</b> dans Supabase Auth.
+                  (Champ de test souvent sans “+” → ici on normalise automatiquement.)
                 </div>
               </div>
             </div>
@@ -402,10 +362,10 @@
       $("#btnHelp").onclick = () => {
         $("#loginMsg").innerHTML = `
           <div class="msg">
-            🧠 Astuce rapide : dans Supabase → <b>Auth → Phone</b><br/>
-            - Active Phone provider<br/>
-            - Configure Twilio / ou Test numbers<br/>
-            - Vérifie que le numéro est bien au format <b>+221...</b>
+            🧠 Astuce rapide : dans Supabase → <b>Auth → Providers → Phone</b><br/>
+            - Test Phone Numbers: <b>221771342889=123456</b> (sans +)<br/>
+            - Puis sur cette page tu tapes: <b>+221771342889</b><br/>
+            - OTP: <b>123456</b>
           </div>
         `;
       };
@@ -414,10 +374,17 @@
       $("#btnVerify").onclick = verifyOtp;
     }
 
+    function renderTripStatus(s){
+      if(s==="done") return `<span class="badge b-ok">✅ Terminé</span>`;
+      if(s==="pending") return `<span class="badge b-warn">⏳ En attente</span>`;
+      if(s==="cancel") return `<span class="badge b-idle">🚫 Annulé</span>`;
+      return `<span class="badge b-idle">—</span>`;
+    }
+
     function renderDashboard(profile){
       const connectedDot = `<span class="pill"><span class="dot ok"></span> Connecté</span>`;
-      const who = profile?.full_name || profile?.business_name || "Chauffeur DIGIY";
-      const phone = profile?.phone || session?.user?.phone || "—";
+      const who = profile?.full_name || "Chauffeur DIGIY";
+      const phone = profile?.phone || sessionUser?.phone || "—";
 
       $("#app").innerHTML = `
         <div class="wrap">
@@ -436,7 +403,6 @@
           </div>
 
           <div class="grid">
-            <!-- Profil + réglages -->
             <div class="card">
               <div class="hd">
                 <div>
@@ -521,12 +487,11 @@
 
                 <div class="sep"></div>
                 <div class="tiny">
-                  ⚙️ Note : cette V2 fonctionne même si ta table “drivers” n’existe pas encore : on stocke en <b>local</b> + on prépare l’upload DB.
+                  ⚙️ V2 : localStorage + tentative upsert DB si la table existe.
                 </div>
               </div>
             </div>
 
-            <!-- Courses / Activité -->
             <div class="card">
               <div class="hd">
                 <div>
@@ -569,96 +534,73 @@
 
                 <div class="sep"></div>
 
-                <div class="card" style="box-shadow:none;background:transparent;border:none">
-                  <div class="bd" style="padding:0">
-                    <div class="stack">
-                      <button class="btn" id="btnGoHub">Retour HUB</button>
-                      <button class="btn" id="btnGoPublic">Voir ma fiche publique</button>
-                    </div>
-                    <div class="tiny" style="margin-top:8px">
-                      Le bouton “fiche publique” est prêt (route à définir), pas de 404 forcé.
-                    </div>
-                  </div>
+                <div class="stack">
+                  <button class="btn" id="btnGoHub">Retour HUB</button>
+                  <button class="btn" id="btnGoPublic">Voir ma fiche publique</button>
                 </div>
-
+                <div class="tiny" style="margin-top:8px">
+                  Le bouton “fiche publique” est prêt (route à définir), pas de 404 forcé.
+                </div>
               </div>
             </div>
           </div>
         </div>
       `;
 
-      // init selects
       $("#status").value = profile?.status || "available";
       $("#vehicle_type").value = profile?.vehicle_type || "car";
 
-      // actions
       $("#btnLogout").onclick = logout;
       $("#btnSave").onclick = saveProfile;
       $("#btnRefresh").onclick = refreshProfile;
 
-      $("#btnGoHub").onclick = () => {
-        // ✅ Pas de 404 imposé : tu changes l’URL quand tu veux
-        // Exemple : location.href = "https://beauville.github.io/digiy-hub/";
-        toast("#saveMsg", "ℹ️ Configure l’URL HUB quand tu veux (dans le code).", "ok");
-      };
-
-      $("#btnGoPublic").onclick = () => {
-        toast("#saveMsg", "ℹ️ Fiche publique à brancher (route/slug).", "ok");
-      };
-    }
-
-    function renderTripStatus(s){
-      if(s==="done") return `<span class="badge b-ok">✅ Terminé</span>`;
-      if(s==="pending") return `<span class="badge b-warn">⏳ En attente</span>`;
-      if(s==="cancel") return `<span class="badge b-idle">🚫 Annulé</span>`;
-      return `<span class="badge b-idle">—</span>`;
-    }
-
-    function toast(sel, text, type=""){
-      const el = document.querySelector(sel);
-      if(!el) return;
-      el.innerHTML = `<div class="msg ${type}">${text}</div>`;
-    }
-
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+      $("#btnGoHub").onclick = () => toast("#saveMsg", "ℹ️ Configure l’URL HUB quand tu veux (dans le code).", "ok");
+      $("#btnGoPublic").onclick = () => toast("#saveMsg", "ℹ️ Fiche publique à brancher (route/slug).", "ok");
     }
 
     // --- Auth (OTP)
     async function sendOtp(){
-      const phone = safePhone($("#phone").value);
-      if(!phone.startsWith("+")){
+      const phoneUi = safe($("#phone").value);
+
+      if(!isValidInternational(phoneUi)){
         toast("#loginMsg", "❌ Mets le téléphone au format international (ex: +221...).", "bad");
         return;
       }
 
+      // ✅ Envoie normalisé pour matcher les Test Phone Numbers (souvent sans +)
+      const phone = normalizePhoneForOtp(phoneUi);
+
       toast("#loginMsg", "⏳ Envoi OTP…", "");
       try{
-        // Supabase phone OTP
         const { error } = await supabase.auth.signInWithOtp({ phone });
+
         if(error){
           toast("#loginMsg", "❌ Erreur OTP : " + escapeHtml(error.message), "bad");
           return;
         }
-        toast("#loginMsg", "✅ OTP envoyé. Entre le code reçu.", "ok");
+
+        toast("#loginMsg", "✅ OTP envoyé. Entre le code (test: 123456).", "ok");
       }catch(e){
         toast("#loginMsg", "❌ Exception : " + escapeHtml(e.message || e), "bad");
       }
     }
 
     async function verifyOtp(){
-      const phone = safePhone($("#phone").value);
-      const token = safePhone($("#otp").value);
+      const phoneUi = safe($("#phone").value);
+      const token = safe($("#otp").value);
 
-      if(!phone || !token){
+      if(!phoneUi || !token){
         toast("#loginMsg", "❌ Téléphone + code OTP requis.", "bad");
         return;
       }
+
+      if(!isValidInternational(phoneUi)){
+        toast("#loginMsg", "❌ Téléphone invalide (ex: +221...).", "bad");
+        return;
+      }
+
+      // ✅ Même normalisation pour vérifier
+      const phone = normalizePhoneForOtp(phoneUi);
 
       toast("#loginMsg", "⏳ Vérification…", "");
       try{
@@ -673,47 +615,39 @@
           return;
         }
 
-        session = data.session;
+        sessionUser = data?.user || null;
         toast("#loginMsg", "✅ Connecté ! Chargement…", "ok");
-        await boot();
+        await boot(true);
       }catch(e){
         toast("#loginMsg", "❌ Exception : " + escapeHtml(e.message || e), "bad");
       }
     }
 
     async function logout(){
-      try{
-        await supabase.auth.signOut();
-      }catch(e){}
-      session = null;
+      try{ await supabase.auth.signOut(); }catch(e){}
+      sessionUser = null;
       renderLogin("Déconnecté ✅");
     }
 
     // --- Profile storage strategy (V2)
-    // V2 = fonctionne même sans DB : localStorage + tentative upsert si table existe.
     const LS_KEY = "digiy_driver_profile_v2";
 
     function getLocalProfile(){
       try{
         const raw = localStorage.getItem(LS_KEY);
         return raw ? JSON.parse(raw) : null;
-      }catch(e){
-        return null;
-      }
+      }catch(e){ return null; }
     }
 
     function setLocalProfile(p){
-      try{
-        localStorage.setItem(LS_KEY, JSON.stringify(p));
-      }catch(e){}
+      try{ localStorage.setItem(LS_KEY, JSON.stringify(p)); }catch(e){}
     }
 
     async function loadProfile(){
-      // 1) Local immediate
       const local = getLocalProfile() || {};
       const base = {
         full_name: local.full_name || "",
-        phone: local.phone || (session?.user?.phone || ""),
+        phone: local.phone || (sessionUser?.phone || ""),
         city: local.city || "Dakar",
         zone: local.zone || "Saly / Petite Côte",
         status: local.status || "available",
@@ -722,10 +656,8 @@
         fare_per_km: Number(local.fare_per_km ?? 350)
       };
 
-      // 2) Try DB (optional): table public.driver_profiles
-      // Si elle n'existe pas => on ignore, la V2 reste utilisable.
       try{
-        const userId = session?.user?.id;
+        const userId = sessionUser?.id;
         if(!userId) return base;
 
         const { data, error } = await supabase
@@ -734,10 +666,7 @@
           .eq("auth_user_id", userId)
           .maybeSingle();
 
-        if(error){
-          // table inexistante / RLS / etc. -> ignore
-          return base;
-        }
+        if(error) return base;
 
         if(data){
           const merged = {
@@ -751,7 +680,6 @@
             fare_base: Number(data.fare_base ?? base.fare_base),
             fare_per_km: Number(data.fare_per_km ?? base.fare_per_km)
           };
-          // update local cache
           setLocalProfile(merged);
           return merged;
         }
@@ -764,22 +692,20 @@
 
     async function saveProfile(){
       const profile = {
-        full_name: safePhone($("#full_name").value),
-        phone: safePhone($("#phone_ro").value),
-        city: safePhone($("#city").value),
-        zone: safePhone($("#zone").value),
+        full_name: safe($("#full_name").value),
+        phone: safe($("#phone_ro").value),
+        city: safe($("#city").value),
+        zone: safe($("#zone").value),
         status: $("#status").value,
         vehicle_type: $("#vehicle_type").value,
         fare_base: Number($("#fare_base").value || 0),
         fare_per_km: Number($("#fare_per_km").value || 0)
       };
 
-      // local save always
       setLocalProfile(profile);
 
-      // Try DB upsert if table exists
       try{
-        const userId = session?.user?.id;
+        const userId = sessionUser?.id;
         if(!userId){
           toast("#saveMsg", "✅ Enregistré (local).", "ok");
           return;
@@ -813,27 +739,41 @@
       toast("#saveMsg", "✅ OK.", "ok");
     }
 
-    // --- Boot
-    async function boot(){
-      const { data } = await supabase.auth.getSession();
-      session = data?.session || null;
+    // --- Boot (SAFE: pas de getSession au chargement)
+    async function boot(afterVerify=false){
+      try{
+        // ✅ getUser ne déclenche pas la boucle refresh comme getSession
+        const { data, error } = await supabase.auth.getUser();
 
-      if(!session){
-        renderLogin("");
-        return;
+        if(error || !data?.user){
+          sessionUser = null;
+          renderLogin(afterVerify ? "Session non détectée. Réessaie." : "");
+          return;
+        }
+
+        sessionUser = data.user;
+
+        const profile = await loadProfile();
+        renderDashboard(profile);
+
+        // Listener auth changes
+        supabase.auth.onAuthStateChange((_event, newSession) => {
+          if(!newSession?.user){
+            sessionUser = null;
+            renderLogin("Session expirée. Reconnecte-toi.");
+          }else{
+            sessionUser = newSession.user;
+          }
+        });
+
+      }catch(e){
+        sessionUser = null;
+        renderLogin("Erreur chargement. Recharge la page (Cmd+Shift+R).");
       }
-
-      const profile = await loadProfile();
-      renderDashboard(profile);
-
-      // Listen auth changes
-      supabase.auth.onAuthStateChange((_event, newSession) => {
-        session = newSession;
-        if(!session) renderLogin("Session expirée. Reconnecte-toi.");
-      });
     }
 
     // Start
+    renderLogin("");
     boot();
   </script>
 </body>
