@@ -303,7 +303,7 @@
     const SUPABASE_ANON_KEY =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
 
-    // ✅ Anti-boucle refresh pendant debug (tu peux remettre autoRefreshToken:true plus tard)
+    // ✅ Boot SAFE (évite boucles refresh)
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
         autoRefreshToken: false,
@@ -315,22 +315,9 @@
 
     // --- Helpers
     const $ = (sel) => document.querySelector(sel);
-    const fmtMoney = (n) => {
-      const x = Number(n||0);
-      return x.toLocaleString("fr-FR") + " F CFA";
-    };
-    const safe = (s) => (s||"").trim();
-    function isValidPhone(phone){
-  const p = String(phone || "").trim().replace(/\s+/g, "");
+    const fmtMoney = (n) => Number(n || 0).toLocaleString("fr-FR") + " F CFA";
+    const safe = (s) => (s || "").trim();
 
-  // Accepte :
-  // +221771342889  (prod)
-  // 221771342889   (test Supabase)
-  return (
-    (p.startsWith("+") && p.length >= 8) ||
-    (!p.startsWith("+") && p.length >= 7)
-  );
-}
     function escapeHtml(str){
       return String(str ?? "")
         .replaceAll("&","&amp;")
@@ -340,9 +327,31 @@
         .replaceAll("'","&#039;");
     }
 
-    function isValidPhoneE164(phone){
-      const p = String(phone||"").trim().replace(/\s+/g,"");
-      return p.startsWith("+") && p.length >= 8;
+    function toast(sel, text, type=""){
+      const el = document.querySelector(sel);
+      if(!el) return;
+      el.innerHTML = `<div class="msg ${type}">${text}</div>`;
+    }
+
+    // ✅ Validation souple: accepte +221... (prod) OU 221... (test)
+    function isValidPhone(phone){
+      const p = String(phone || "").trim().replace(/\s+/g, "");
+      return (
+        (p.startsWith("+") && p.length >= 8) ||
+        (!p.startsWith("+") && p.length >= 7)
+      );
+    }
+
+    function phoneNoPlus(phone){
+      return String(phone || "")
+        .trim()
+        .replace(/\s+/g, "")
+        .replace(/^\+/, "");
+    }
+
+    function phoneE164(phone){
+      const p = phoneNoPlus(phone);
+      return p ? ("+" + p) : "";
     }
 
     // --- Fake "courses" (démo terrain)
@@ -422,7 +431,7 @@
 
                 <div class="sep"></div>
                 <div class="tiny">
-                  Si ton provider SMS n’est pas configuré, utilise les <b>Test Phone Numbers</b> dans Supabase Auth.
+                  Mode test : Supabase → Auth → Phone → Test Phone Numbers (ex: 221771342889=123456).
                 </div>
               </div>
             </div>
@@ -433,11 +442,11 @@
       $("#btnHelp").onclick = () => {
         $("#loginMsg").innerHTML = `
           <div class="msg">
-            🧠 Pour tester vite : Supabase → <b>Auth → Providers → Phone</b><br/>
-            - Test numbers : <b>221771342889=123456</b> (selon l’UI)<br/>
-            - Sur cette page tu tapes : <b>+221771342889</b><br/>
-            - OTP : <b>123456</b><br/>
-            Si tu as <b>500</b> sur /otp → c’est côté provider (Twilio/Supabase logs).
+            🧠 Test rapide :<br/>
+            - Dans Supabase: <b>221771342889=123456</b> (sans +)<br/>
+            - Ici: <b>+221771342889</b><br/>
+            - OTP: <b>123456</b><br/>
+            Le code gère test + prod automatiquement.
           </div>
         `;
       };
@@ -455,7 +464,7 @@
 
     function renderDashboard(profile){
       const connectedDot = `<span class="pill"><span class="dot ok"></span> Connecté</span>`;
-      const who = profile?.full_name || profile?.business_name || "Chauffeur DIGIY";
+      const who = profile?.full_name || "Chauffeur DIGIY";
       const phone = profile?.phone || sessionUser?.phone || "—";
 
       $("#app").innerHTML = `
@@ -475,7 +484,6 @@
           </div>
 
           <div class="grid">
-            <!-- Profil + réglages -->
             <div class="card">
               <div class="hd">
                 <div>
@@ -523,7 +531,6 @@
                       <option value="busy">⏳ En course</option>
                       <option value="offline">🌙 Hors ligne</option>
                     </select>
-                    <div class="tiny" style="margin-top:6px">Un client verra juste “Disponible / En course”.</div>
                   </div>
                   <div>
                     <label>Type véhicule</label>
@@ -557,15 +564,9 @@
                 </div>
 
                 <div id="saveMsg" style="margin-top:10px"></div>
-
-                <div class="sep"></div>
-                <div class="tiny">
-                  ⚙️ Note : V2 = localStorage + tentative upsert DB si <b>driver_profiles</b> existe (sinon ça reste utilisable).
-                </div>
               </div>
             </div>
 
-            <!-- Courses / Activité -->
             <div class="card">
               <div class="hd">
                 <div>
@@ -601,93 +602,79 @@
                 </table>
 
                 <div class="sep"></div>
-
-                <div class="msg">
-                  🔜 Prochaine étape : on remplace le mock par ta table Supabase (courses/trips) + realtime.
-                </div>
-
-                <div class="sep"></div>
-
-                <div class="stack">
-                  <button class="btn" id="btnGoHub">Retour HUB</button>
-                  <button class="btn" id="btnGoPublic">Voir ma fiche publique</button>
-                </div>
-                <div class="tiny" style="margin-top:8px">
-                  Le bouton “fiche publique” est prêt (route à définir), pas de 404 forcé.
-                </div>
+                <div class="msg">🔜 Prochaine étape : brancher les courses Supabase + realtime.</div>
               </div>
             </div>
           </div>
         </div>
       `;
 
-      // init selects
       $("#status").value = profile?.status || "available";
       $("#vehicle_type").value = profile?.vehicle_type || "car";
 
-      // actions
       $("#btnLogout").onclick = logout;
       $("#btnSave").onclick = saveProfile;
       $("#btnRefresh").onclick = refreshProfile;
-
-      $("#btnGoHub").onclick = () => {
-        toast("#saveMsg", "ℹ️ Configure l’URL HUB quand tu veux (dans le code).", "ok");
-      };
-
-      $("#btnGoPublic").onclick = () => {
-        toast("#saveMsg", "ℹ️ Fiche publique à brancher (route/slug).", "ok");
-      };
     }
 
-    // --- Auth (OTP) — IMPORTANT: E.164 => avec "+"
+    // --- AUTH (OTP) — TEST + PROD AUTO
     async function sendOtp(){
-      const phone = safe($("#phone").value).replace(/\s+/g,"");
+      const phoneUi = safe($("#phone").value);
 
-      if(!isValidPhoneE164(phone)){
-        toast("#loginMsg", "❌ Mets le téléphone au format international (ex: +221...).", "bad");
+      if(!isValidPhone(phoneUi)){
+        toast("#loginMsg", "❌ Numéro invalide (ex: +2217xxxxxxx).", "bad");
         return;
       }
 
+      const pNoPlus = phoneNoPlus(phoneUi);
+      const pPlus = phoneE164(phoneUi);
+
       toast("#loginMsg", "⏳ Envoi OTP…", "");
+
       try{
-        const { error } = await supabase.auth.signInWithOtp({ phone });
-        if(error){
-          toast("#loginMsg", "❌ Erreur OTP : " + escapeHtml(error.message), "bad");
+        let res = await supabase.auth.signInWithOtp({ phone: pNoPlus });
+        if(res?.error){
+          res = await supabase.auth.signInWithOtp({ phone: pPlus });
+        }
+        if(res?.error){
+          toast("#loginMsg", "❌ Erreur OTP : " + escapeHtml(res.error.message), "bad");
           return;
         }
-        toast("#loginMsg", "✅ OTP demandé. (Test: 123456 si activé dans Supabase)", "ok");
+        toast("#loginMsg", "✅ OTP envoyé. Entre le code (test: 123456).", "ok");
       }catch(e){
         toast("#loginMsg", "❌ Exception : " + escapeHtml(e.message || e), "bad");
       }
     }
 
     async function verifyOtp(){
-      const phone = safe($("#phone").value).replace(/\s+/g,"");
+      const phoneUi = safe($("#phone").value);
       const token = safe($("#otp").value);
 
-      if(!phone || !token){
+      if(!phoneUi || !token){
         toast("#loginMsg", "❌ Téléphone + code OTP requis.", "bad");
         return;
       }
-      if(!isValidPhoneE164(phone)){
-        toast("#loginMsg", "❌ Téléphone invalide (ex: +221...).", "bad");
+      if(!isValidPhone(phoneUi)){
+        toast("#loginMsg", "❌ Numéro invalide.", "bad");
         return;
       }
 
-      toast("#loginMsg", "⏳ Vérification…", "");
-      try{
-        const { data, error } = await supabase.auth.verifyOtp({
-          phone,
-          token,
-          type: "sms"
-        });
+      const pNoPlus = phoneNoPlus(phoneUi);
+      const pPlus = phoneE164(phoneUi);
 
-        if(error){
-          toast("#loginMsg", "❌ OTP invalide : " + escapeHtml(error.message), "bad");
+      toast("#loginMsg", "⏳ Vérification…", "");
+
+      try{
+        let res = await supabase.auth.verifyOtp({ phone: pNoPlus, token, type: "sms" });
+        if(res?.error){
+          res = await supabase.auth.verifyOtp({ phone: pPlus, token, type: "sms" });
+        }
+        if(res?.error){
+          toast("#loginMsg", "❌ OTP invalide : " + escapeHtml(res.error.message), "bad");
           return;
         }
 
-        sessionUser = data?.user || null;
+        sessionUser = res.data?.user || null;
         toast("#loginMsg", "✅ Connecté ! Chargement…", "ok");
         await boot(true);
       }catch(e){
@@ -708,19 +695,14 @@
       try{
         const raw = localStorage.getItem(LS_KEY);
         return raw ? JSON.parse(raw) : null;
-      }catch(e){
-        return null;
-      }
+      }catch(e){ return null; }
     }
 
     function setLocalProfile(p){
-      try{
-        localStorage.setItem(LS_KEY, JSON.stringify(p));
-      }catch(e){}
+      try{ localStorage.setItem(LS_KEY, JSON.stringify(p)); }catch(e){}
     }
 
     async function loadProfile(){
-      // 1) Local immediate
       const local = getLocalProfile() || {};
       const base = {
         full_name: local.full_name || "",
@@ -733,7 +715,6 @@
         fare_per_km: Number(local.fare_per_km ?? 350)
       };
 
-      // 2) Try DB (optional): table public.driver_profiles
       try{
         const userId = sessionUser?.id;
         if(!userId) return base;
@@ -780,10 +761,8 @@
         fare_per_km: Number($("#fare_per_km").value || 0)
       };
 
-      // local save always
       setLocalProfile(profile);
 
-      // Try DB upsert if table exists
       try{
         const userId = sessionUser?.id;
         if(!userId){
@@ -835,7 +814,6 @@
         const profile = await loadProfile();
         renderDashboard(profile);
 
-        // Listen auth changes
         supabase.auth.onAuthStateChange((_event, newSession) => {
           if(!newSession?.user){
             sessionUser = null;
