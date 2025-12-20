@@ -18,19 +18,19 @@
   <style>
     :root{
       /* ☀️ Soleil Sénégal */
-      --bg1:#fff7ed;
-      --bg2:#fffbeb;
+      --bg1:#fff7ed;     /* orange-50 */
+      --bg2:#fffbeb;     /* amber-50 */
       --card:#ffffff;
-      --ink:#0f172a;
-      --muted:#475569;
-      --line:#e2e8f0;
+      --ink:#0f172a;     /* slate-900 */
+      --muted:#475569;   /* slate-600 */
+      --line:#e2e8f0;    /* slate-200 */
       --shadow: 0 18px 50px rgba(15,23,42,.08);
 
-      --brand:#f59e0b;
-      --brand2:#fb923c;
-      --ok:#16a34a;
-      --warn:#f97316;
-      --bad:#ef4444;
+      --brand:#f59e0b;   /* amber-500 */
+      --brand2:#fb923c;  /* orange-400 */
+      --ok:#16a34a;      /* green-600 */
+      --warn:#f97316;    /* orange-500 */
+      --bad:#ef4444;     /* red-500 */
 
       --r:18px;
     }
@@ -48,14 +48,28 @@
     }
 
     a{color:inherit}
-    .wrap{ max-width:1100px; margin:0 auto; padding:22px 16px 40px; }
-
-    .top{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      flex-wrap:wrap; margin-bottom:16px;
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:22px 16px 40px;
     }
 
-    .brand{ display:flex; align-items:center; gap:10px; user-select:none; }
+    /* Top bar */
+    .top{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+    }
     .logo{
       width:44px;height:44px;border-radius:14px;
       display:grid;place-items:center;
@@ -67,19 +81,29 @@
     }
     .brand h1{
       font-family: Outfit, Manrope, sans-serif;
-      font-size:18px; margin:0; line-height:1.1;
+      font-size:18px;
+      margin:0;
+      line-height:1.1;
     }
-    .brand p{ margin:2px 0 0; color:var(--muted); font-size:13px; }
+    .brand p{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
 
-    .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .actions{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
-      padding:8px 12px; border-radius:999px;
+      padding:8px 12px;
+      border-radius:999px;
       background: rgba(255,255,255,.7);
       border:1px solid var(--line);
       box-shadow: 0 10px 22px rgba(15,23,42,.06);
-      font-size:13px; color:var(--muted);
+      font-size:13px;
+      color:var(--muted);
     }
     .dot{width:10px;height:10px;border-radius:999px;background:var(--bad)}
     .dot.ok{background:var(--ok)}
@@ -97,15 +121,25 @@
     }
     .btn:hover{transform: translateY(-1px)}
     .btn:active{transform: translateY(0px); opacity:.92}
-    .btn.primary{ border:none; background: linear-gradient(135deg, var(--brand), var(--brand2)); }
-    .btn.danger{ border:none; background: linear-gradient(135deg, #ef4444, #fb7185); color:#fff; }
+    .btn.primary{
+      border:none;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+    }
+    .btn.danger{
+      border:none;
+      background: linear-gradient(135deg, #ef4444, #fb7185);
+      color:#fff;
+    }
 
+    /* Layout */
     .grid{
       display:grid;
       grid-template-columns: 1.05fr .95fr;
       gap:14px;
     }
-    @media (max-width: 980px){ .grid{grid-template-columns: 1fr;} }
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr;}
+    }
 
     .card{
       background: rgba(255,255,255,.86);
@@ -124,16 +158,34 @@
       gap:10px;
       background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
     }
-    .card .hd h2{ margin:0; font-family: Outfit, Manrope, sans-serif; font-size:16px; }
-    .card .hd small{ display:block; margin-top:4px; color:var(--muted); }
+    .card .hd h2{
+      margin:0;
+      font-family: Outfit, Manrope, sans-serif;
+      font-size:16px;
+    }
+    .card .hd small{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+    }
+
     .card .bd{ padding:14px; }
 
-    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-    @media (max-width: 560px){ .row{grid-template-columns: 1fr;} }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 560px){
+      .row{grid-template-columns: 1fr;}
+    }
 
     label{
-      display:block; font-size:12px; font-weight:800;
-      color:var(--muted); margin:0 0 6px;
+      display:block;
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      margin:0 0 6px;
     }
     input, select{
       width:100%;
@@ -162,19 +214,41 @@
     .msg.ok{border-color: rgba(22,163,74,.30); background: rgba(22,163,74,.08); color:#14532d}
     .msg.bad{border-color: rgba(239,68,68,.30); background: rgba(239,68,68,.08); color:#7f1d1d}
 
+    /* Login box */
     .center{
       min-height: calc(100vh - 80px);
-      display:grid; place-items:center;
+      display:grid;
+      place-items:center;
       padding:20px 0 40px;
     }
-    .login{ width:min(520px, 100%); }
-    .login .hero{ padding:16px 16px 0; }
-    .hero h2{ margin:0; font-family:Outfit, Manrope, sans-serif; font-size:20px; }
-    .hero p{ margin:6px 0 0; color:var(--muted); font-size:14px; line-height:1.35; }
+    .login{
+      width:min(520px, 100%);
+    }
+    .login .hero{
+      padding:16px 16px 0;
+    }
+    .hero h2{
+      margin:0;
+      font-family:Outfit, Manrope, sans-serif;
+      font-size:20px;
+    }
+    .hero p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+    }
 
-    .otpgrid{ display:grid; grid-template-columns: 1.2fr .8fr; gap:10px; }
-    @media (max-width: 520px){ .otpgrid{grid-template-columns: 1fr;} }
+    .otpgrid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:10px;
+    }
+    @media (max-width: 520px){
+      .otpgrid{grid-template-columns: 1fr;}
+    }
 
+    /* Table */
     table{
       width:100%;
       border-collapse:separate;
@@ -241,22 +315,11 @@
 
     // --- Helpers
     const $ = (sel) => document.querySelector(sel);
-    const fmtMoney = (n) => Number(n || 0).toLocaleString("fr-FR") + " F CFA";
-    const safe = (s) => (s || "").trim();
-
-    // ✅ IMPORTANT: Supabase Test Phone Numbers demande souvent SANS "+"
-    // On garde l'UX +221... mais on envoie au provider un format clean.
-    function normalizePhoneForOtp(input){
-      return String(input || "")
-        .trim()
-        .replace(/\s+/g, "")
-        .replace(/^\+/, ""); // retire le +
-    }
-
-    function isValidInternational(phoneUi){
-      const p = String(phoneUi || "").trim().replace(/\s+/g, "");
-      return p.startsWith("+") && p.length >= 8;
-    }
+    const fmtMoney = (n) => {
+      const x = Number(n||0);
+      return x.toLocaleString("fr-FR") + " F CFA";
+    };
+    const safe = (s) => (s||"").trim();
 
     function toast(sel, text, type=""){
       const el = document.querySelector(sel);
@@ -271,6 +334,11 @@
         .replaceAll(">","&gt;")
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
+    }
+
+    function isValidPhoneE164(phone){
+      const p = String(phone||"").trim().replace(/\s+/g,"");
+      return p.startsWith("+") && p.length >= 8;
     }
 
     // --- Fake "courses" (démo terrain)
@@ -351,7 +419,6 @@
                 <div class="sep"></div>
                 <div class="tiny">
                   Si ton provider SMS n’est pas configuré, utilise les <b>Test Phone Numbers</b> dans Supabase Auth.
-                  (Champ de test souvent sans “+” → ici on normalise automatiquement.)
                 </div>
               </div>
             </div>
@@ -362,10 +429,11 @@
       $("#btnHelp").onclick = () => {
         $("#loginMsg").innerHTML = `
           <div class="msg">
-            🧠 Astuce rapide : dans Supabase → <b>Auth → Providers → Phone</b><br/>
-            - Test Phone Numbers: <b>221771342889=123456</b> (sans +)<br/>
-            - Puis sur cette page tu tapes: <b>+221771342889</b><br/>
-            - OTP: <b>123456</b>
+            🧠 Pour tester vite : Supabase → <b>Auth → Providers → Phone</b><br/>
+            - Test numbers : <b>221771342889=123456</b> (selon l’UI)<br/>
+            - Sur cette page tu tapes : <b>+221771342889</b><br/>
+            - OTP : <b>123456</b><br/>
+            Si tu as <b>500</b> sur /otp → c’est côté provider (Twilio/Supabase logs).
           </div>
         `;
       };
@@ -383,7 +451,7 @@
 
     function renderDashboard(profile){
       const connectedDot = `<span class="pill"><span class="dot ok"></span> Connecté</span>`;
-      const who = profile?.full_name || "Chauffeur DIGIY";
+      const who = profile?.full_name || profile?.business_name || "Chauffeur DIGIY";
       const phone = profile?.phone || sessionUser?.phone || "—";
 
       $("#app").innerHTML = `
@@ -403,6 +471,7 @@
           </div>
 
           <div class="grid">
+            <!-- Profil + réglages -->
             <div class="card">
               <div class="hd">
                 <div>
@@ -487,11 +556,12 @@
 
                 <div class="sep"></div>
                 <div class="tiny">
-                  ⚙️ V2 : localStorage + tentative upsert DB si la table existe.
+                  ⚙️ Note : V2 = localStorage + tentative upsert DB si <b>driver_profiles</b> existe (sinon ça reste utilisable).
                 </div>
               </div>
             </div>
 
+            <!-- Courses / Activité -->
             <div class="card">
               <div class="hd">
                 <div>
@@ -547,60 +617,58 @@
         </div>
       `;
 
+      // init selects
       $("#status").value = profile?.status || "available";
       $("#vehicle_type").value = profile?.vehicle_type || "car";
 
+      // actions
       $("#btnLogout").onclick = logout;
       $("#btnSave").onclick = saveProfile;
       $("#btnRefresh").onclick = refreshProfile;
 
-      $("#btnGoHub").onclick = () => toast("#saveMsg", "ℹ️ Configure l’URL HUB quand tu veux (dans le code).", "ok");
-      $("#btnGoPublic").onclick = () => toast("#saveMsg", "ℹ️ Fiche publique à brancher (route/slug).", "ok");
+      $("#btnGoHub").onclick = () => {
+        toast("#saveMsg", "ℹ️ Configure l’URL HUB quand tu veux (dans le code).", "ok");
+      };
+
+      $("#btnGoPublic").onclick = () => {
+        toast("#saveMsg", "ℹ️ Fiche publique à brancher (route/slug).", "ok");
+      };
     }
 
-    // --- Auth (OTP)
+    // --- Auth (OTP) — IMPORTANT: E.164 => avec "+"
     async function sendOtp(){
-      const phoneUi = safe($("#phone").value);
+      const phone = safe($("#phone").value).replace(/\s+/g,"");
 
-      if(!isValidInternational(phoneUi)){
+      if(!isValidPhoneE164(phone)){
         toast("#loginMsg", "❌ Mets le téléphone au format international (ex: +221...).", "bad");
         return;
       }
 
-      // ✅ Envoie normalisé pour matcher les Test Phone Numbers (souvent sans +)
-      const phone = normalizePhoneForOtp(phoneUi);
-
       toast("#loginMsg", "⏳ Envoi OTP…", "");
       try{
         const { error } = await supabase.auth.signInWithOtp({ phone });
-
         if(error){
           toast("#loginMsg", "❌ Erreur OTP : " + escapeHtml(error.message), "bad");
           return;
         }
-
-        toast("#loginMsg", "✅ OTP envoyé. Entre le code (test: 123456).", "ok");
+        toast("#loginMsg", "✅ OTP demandé. (Test: 123456 si activé dans Supabase)", "ok");
       }catch(e){
         toast("#loginMsg", "❌ Exception : " + escapeHtml(e.message || e), "bad");
       }
     }
 
     async function verifyOtp(){
-      const phoneUi = safe($("#phone").value);
+      const phone = safe($("#phone").value).replace(/\s+/g,"");
       const token = safe($("#otp").value);
 
-      if(!phoneUi || !token){
+      if(!phone || !token){
         toast("#loginMsg", "❌ Téléphone + code OTP requis.", "bad");
         return;
       }
-
-      if(!isValidInternational(phoneUi)){
+      if(!isValidPhoneE164(phone)){
         toast("#loginMsg", "❌ Téléphone invalide (ex: +221...).", "bad");
         return;
       }
-
-      // ✅ Même normalisation pour vérifier
-      const phone = normalizePhoneForOtp(phoneUi);
 
       toast("#loginMsg", "⏳ Vérification…", "");
       try{
@@ -636,14 +704,19 @@
       try{
         const raw = localStorage.getItem(LS_KEY);
         return raw ? JSON.parse(raw) : null;
-      }catch(e){ return null; }
+      }catch(e){
+        return null;
+      }
     }
 
     function setLocalProfile(p){
-      try{ localStorage.setItem(LS_KEY, JSON.stringify(p)); }catch(e){}
+      try{
+        localStorage.setItem(LS_KEY, JSON.stringify(p));
+      }catch(e){}
     }
 
     async function loadProfile(){
+      // 1) Local immediate
       const local = getLocalProfile() || {};
       const base = {
         full_name: local.full_name || "",
@@ -656,6 +729,7 @@
         fare_per_km: Number(local.fare_per_km ?? 350)
       };
 
+      // 2) Try DB (optional): table public.driver_profiles
       try{
         const userId = sessionUser?.id;
         if(!userId) return base;
@@ -702,8 +776,10 @@
         fare_per_km: Number($("#fare_per_km").value || 0)
       };
 
+      // local save always
       setLocalProfile(profile);
 
+      // Try DB upsert if table exists
       try{
         const userId = sessionUser?.id;
         if(!userId){
@@ -742,7 +818,6 @@
     // --- Boot (SAFE: pas de getSession au chargement)
     async function boot(afterVerify=false){
       try{
-        // ✅ getUser ne déclenche pas la boucle refresh comme getSession
         const { data, error } = await supabase.auth.getUser();
 
         if(error || !data?.user){
@@ -756,7 +831,7 @@
         const profile = await loadProfile();
         renderDashboard(profile);
 
-        // Listener auth changes
+        // Listen auth changes
         supabase.auth.onAuthStateChange((_event, newSession) => {
           if(!newSession?.user){
             sessionUser = null;
@@ -765,7 +840,6 @@
             sessionUser = newSession.user;
           }
         });
-
       }catch(e){
         sessionUser = null;
         renderLogin("Erreur chargement. Recharge la page (Cmd+Shift+R).");
