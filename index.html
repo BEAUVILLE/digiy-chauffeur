@@ -18,19 +18,18 @@
   <style>
     :root{
       /* ☀️ Soleil Sénégal */
-      --bg1:#fff7ed;     /* orange-50 */
-      --bg2:#fffbeb;     /* amber-50 */
+      --bg1:#fff7ed; --bg2:#fffbeb;
       --card:#ffffff;
-      --ink:#0f172a;     /* slate-900 */
-      --muted:#475569;   /* slate-600 */
-      --line:#e2e8f0;    /* slate-200 */
+      --ink:#0f172a;
+      --muted:#475569;
+      --line:#e2e8f0;
       --shadow: 0 18px 50px rgba(15,23,42,.08);
 
-      --brand:#f59e0b;   /* amber-500 */
-      --brand2:#fb923c;  /* orange-400 */
-      --ok:#16a34a;      /* green-600 */
-      --warn:#f97316;    /* orange-500 */
-      --bad:#ef4444;     /* red-500 */
+      --brand:#f59e0b;
+      --brand2:#fb923c;
+      --ok:#16a34a;
+      --warn:#f97316;
+      --bad:#ef4444;
 
       --r:18px;
     }
@@ -48,241 +47,96 @@
     }
 
     a{color:inherit}
-    .wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:22px 16px 40px;
-    }
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 40px;}
 
-    /* Top bar */
-    .top{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      margin-bottom:16px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      user-select:none;
-    }
+    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px;}
+    .brand{display:flex;align-items:center;gap:10px;user-select:none;}
     .logo{
-      width:44px;height:44px;border-radius:14px;
-      display:grid;place-items:center;
+      width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
       background: linear-gradient(135deg, rgba(245,158,11,1), rgba(251,146,60,1));
-      color:#111827;
-      box-shadow: 0 12px 26px rgba(245,158,11,.25);
-      font-weight:900;
-      font-family: Outfit, Manrope, sans-serif;
+      color:#111827;box-shadow: 0 12px 26px rgba(245,158,11,.25);
+      font-weight:900;font-family: Outfit, Manrope, sans-serif;
     }
-    .brand h1{
-      font-family: Outfit, Manrope, sans-serif;
-      font-size:18px;
-      margin:0;
-      line-height:1.1;
-    }
-    .brand p{
-      margin:2px 0 0;
-      color:var(--muted);
-      font-size:13px;
-    }
+    .brand h1{font-family: Outfit, Manrope, sans-serif;font-size:18px;margin:0;line-height:1.1;}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:13px;}
 
-    .actions{
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-    }
-
+    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background: rgba(255,255,255,.7);
-      border:1px solid var(--line);
-      box-shadow: 0 10px 22px rgba(15,23,42,.06);
-      font-size:13px;
-      color:var(--muted);
+      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+      background: rgba(255,255,255,.7);border:1px solid var(--line);
+      box-shadow: 0 10px 22px rgba(15,23,42,.06);font-size:13px;color:var(--muted);
     }
     .dot{width:10px;height:10px;border-radius:999px;background:var(--bad)}
     .dot.ok{background:var(--ok)}
 
     .btn{
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--ink);
-      border-radius:12px;
-      padding:10px 12px;
-      font-weight:800;
-      cursor:pointer;
+      border:1px solid var(--line);background:#fff;color:var(--ink);
+      border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;
       box-shadow: 0 10px 18px rgba(15,23,42,.06);
       transition:.15s transform ease, .15s opacity ease;
     }
     .btn:hover{transform: translateY(-1px)}
     .btn:active{transform: translateY(0px); opacity:.92}
-    .btn.primary{
-      border:none;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-    }
-    .btn.danger{
-      border:none;
-      background: linear-gradient(135deg, #ef4444, #fb7185);
-      color:#fff;
-    }
+    .btn.primary{border:none;background: linear-gradient(135deg, var(--brand), var(--brand2));}
+    .btn.danger{border:none;background: linear-gradient(135deg, #ef4444, #fb7185);color:#fff;}
 
-    /* Layout */
-    .grid{
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:14px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns: 1fr;}
-    }
+    .grid{display:grid;grid-template-columns: 1.05fr .95fr;gap:14px;}
+    @media (max-width: 980px){.grid{grid-template-columns: 1fr;}}
 
     .card{
-      background: rgba(255,255,255,.86);
-      border:1px solid var(--line);
-      border-radius: var(--r);
-      box-shadow: var(--shadow);
-      overflow:hidden;
+      background: rgba(255,255,255,.86);border:1px solid var(--line);
+      border-radius: var(--r);box-shadow: var(--shadow);overflow:hidden;
     }
-
     .card .hd{
-      padding:14px 14px 10px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:10px;
+      padding:14px 14px 10px;border-bottom:1px solid var(--line);
+      display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
       background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
     }
-    .card .hd h2{
-      margin:0;
-      font-family: Outfit, Manrope, sans-serif;
-      font-size:16px;
-    }
-    .card .hd small{
-      display:block;
-      margin-top:4px;
-      color:var(--muted);
-    }
-
+    .card .hd h2{margin:0;font-family: Outfit, Manrope, sans-serif;font-size:16px;}
+    .card .hd small{display:block;margin-top:4px;color:var(--muted);}
     .card .bd{ padding:14px; }
 
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    @media (max-width: 560px){
-      .row{grid-template-columns: 1fr;}
-    }
+    .row{display:grid;grid-template-columns: 1fr 1fr;gap:10px;}
+    @media (max-width: 560px){.row{grid-template-columns: 1fr;}}
 
-    label{
-      display:block;
-      font-size:12px;
-      font-weight:800;
-      color:var(--muted);
-      margin:0 0 6px;
-    }
+    label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin:0 0 6px;}
     input, select{
-      width:100%;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:#fff;
-      outline:none;
-      font-size:14px;
+      width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--line);
+      background:#fff;outline:none;font-size:14px;
     }
-    input:focus, select:focus{
-      border-color: rgba(245,158,11,.65);
-      box-shadow: 0 0 0 4px rgba(245,158,11,.16);
-    }
-
+    input:focus, select:focus{border-color: rgba(245,158,11,.65);box-shadow: 0 0 0 4px rgba(245,158,11,.16);}
     .sep{height:1px;background:var(--line); margin:12px 0}
 
     .msg{
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.7);
-      color:var(--muted);
-      font-size:13px;
+      padding:10px 12px;border-radius:12px;border:1px solid var(--line);
+      background: rgba(255,255,255,.7);color:var(--muted);font-size:13px;
     }
     .msg.ok{border-color: rgba(22,163,74,.30); background: rgba(22,163,74,.08); color:#14532d}
     .msg.bad{border-color: rgba(239,68,68,.30); background: rgba(239,68,68,.08); color:#7f1d1d}
 
-    /* Login box */
-    .center{
-      min-height: calc(100vh - 80px);
-      display:grid;
-      place-items:center;
-      padding:20px 0 40px;
-    }
-    .login{
-      width:min(520px, 100%);
-    }
-    .login .hero{
-      padding:16px 16px 0;
-    }
-    .hero h2{
-      margin:0;
-      font-family:Outfit, Manrope, sans-serif;
-      font-size:20px;
-    }
-    .hero p{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.35;
-    }
+    .center{min-height: calc(100vh - 80px);display:grid;place-items:center;padding:20px 0 40px;}
+    .login{width:min(520px, 100%);}
+    .login .hero{padding:16px 16px 0;}
+    .hero h2{margin:0;font-family:Outfit, Manrope, sans-serif;font-size:20px;}
+    .hero p{margin:6px 0 0;color:var(--muted);font-size:14px;line-height:1.35;}
 
-    .otpgrid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:10px;
-    }
-    @media (max-width: 520px){
-      .otpgrid{grid-template-columns: 1fr;}
-    }
+    .otpgrid{display:grid;grid-template-columns: 1.2fr .8fr;gap:10px;}
+    @media (max-width: 520px){.otpgrid{grid-template-columns: 1fr;}}
 
-    /* Table */
     table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      overflow:hidden;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fff;
+      width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;
+      border:1px solid var(--line);border-radius:14px;background:#fff;
     }
     thead th{
-      text-align:left;
-      font-size:12px;
-      padding:10px 10px;
-      color:var(--muted);
-      background: #fff7ed;
-      border-bottom:1px solid var(--line);
-      font-weight:900;
+      text-align:left;font-size:12px;padding:10px 10px;color:var(--muted);
+      background: #fff7ed;border-bottom:1px solid var(--line);font-weight:900;
     }
-    tbody td{
-      padding:10px 10px;
-      border-bottom:1px solid var(--line);
-      font-size:13px;
-    }
+    tbody td{padding:10px 10px;border-bottom:1px solid var(--line);font-size:13px;}
     tbody tr:last-child td{border-bottom:none}
+
     .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      font-weight:900;
-      border-radius:999px;
-      padding:6px 10px;
-      border:1px solid var(--line);
-      background:#fff;
-      font-size:12px;
+      display:inline-flex;align-items:center;gap:6px;font-weight:900;border-radius:999px;
+      padding:6px 10px;border:1px solid var(--line);background:#fff;font-size:12px;
     }
     .b-ok{border-color: rgba(22,163,74,.25); background: rgba(22,163,74,.10); color:#14532d}
     .b-warn{border-color: rgba(249,115,22,.25); background: rgba(249,115,22,.10); color:#7c2d12}
@@ -303,7 +157,6 @@
     const SUPABASE_ANON_KEY =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
 
-    // ✅ Boot SAFE (évite boucles refresh)
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
         autoRefreshToken: false,
@@ -326,7 +179,6 @@
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
     }
-
     function toast(sel, text, type=""){
       const el = document.querySelector(sel);
       if(!el) return;
@@ -336,34 +188,168 @@
     // ✅ Validation souple: accepte +221... (prod) OU 221... (test)
     function isValidPhone(phone){
       const p = String(phone || "").trim().replace(/\s+/g, "");
-      return (
-        (p.startsWith("+") && p.length >= 8) ||
-        (!p.startsWith("+") && p.length >= 7)
-      );
+      return ((p.startsWith("+") && p.length >= 8) || (!p.startsWith("+") && p.length >= 7));
     }
-
     function phoneNoPlus(phone){
-      return String(phone || "")
-        .trim()
-        .replace(/\s+/g, "")
-        .replace(/^\+/, "");
+      return String(phone || "").trim().replace(/\s+/g, "").replace(/^\+/, "");
     }
-
     function phoneE164(phone){
       const p = phoneNoPlus(phone);
       return p ? ("+" + p) : "";
     }
 
-    // --- Fake "courses" (démo terrain)
-    const DEMO_TRIPS = [
-      { id:"TRP-9A2", date:"Aujourd’hui", zone:"Saly Centre", client:"Client (privé)", amount:3500, status:"done" },
-      { id:"TRP-7F1", date:"Hier", zone:"Ngaparou", client:"Client (privé)", amount:5000, status:"done" },
-      { id:"TRP-3K8", date:"Avant-hier", zone:"Dakar Plateau", client:"Client (privé)", amount:15000, status:"pending" },
-      { id:"TRP-1M4", date:"Semaine", zone:"Somone", client:"Client (privé)", amount:4000, status:"cancel" }
-    ];
-
     // --- State
     let sessionUser = null;
+
+    // ====== TRIPS (DB + REALTIME) ======
+    let trips = [];
+    let tripsChannel = null;
+
+    function shortId(id){
+      const s = String(id || "");
+      return s ? s.slice(0,6) : "—";
+    }
+
+    function fmtDateLabel(iso){
+      if(!iso) return "—";
+      const d = new Date(iso);
+      const now = new Date();
+      const diff = Math.floor((now - d) / 86400000);
+      if(diff === 0) return "Aujourd’hui";
+      if(diff === 1) return "Hier";
+      if(diff === 2) return "Avant-hier";
+      return d.toLocaleDateString("fr-FR");
+    }
+
+    function renderTripsTable(){
+      const el = document.querySelector("#tripsBody");
+      if(!el) return;
+
+      const rows = trips.length
+        ? trips.map(t => `
+          <tr>
+            <td>${escapeHtml(fmtDateLabel(t.created_at))}</td>
+            <td><b>${escapeHtml(shortId(t.id))}</b></td>
+            <td>${escapeHtml(t.pickup_zone || "—")}</td>
+            <td>${renderTripStatus(t.status)}</td>
+            <td><b>${fmtMoney(t.amount || 0)}</b></td>
+          </tr>
+        `).join("")
+        : `<tr><td colspan="5" class="tiny" style="padding:12px">Aucune course pour le moment.</td></tr>`;
+
+      el.innerHTML = rows;
+
+      const counter = document.querySelector("#tripsCount");
+      if(counter) counter.textContent = String(trips.length);
+    }
+
+    function upsertTripLocal(row){
+      const idx = trips.findIndex(x => x.id === row.id);
+      if(idx >= 0) trips[idx] = { ...trips[idx], ...row };
+      else trips.unshift(row);
+    }
+    function removeTripLocal(row){
+      trips = trips.filter(x => x.id !== row.id);
+    }
+
+    async function loadTrips(){
+      const userId = sessionUser?.id;
+      if(!userId) return [];
+
+      const { data, error } = await supabase
+        .from("driver_trips")
+        .select("id,status,pickup_zone,amount,created_at")
+        .eq("auth_user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(50);
+
+      if(error){
+        console.log("loadTrips error:", error);
+        return [];
+      }
+      return data || [];
+    }
+
+    function stopTripsRealtime(){
+      if(tripsChannel){
+        try{ supabase.removeChannel(tripsChannel); }catch(e){}
+        tripsChannel = null;
+      }
+    }
+
+    function startTripsRealtime(){
+      const userId = sessionUser?.id;
+      if(!userId) return;
+
+      stopTripsRealtime();
+
+      tripsChannel = supabase
+        .channel("driver_trips_" + userId)
+        .on("postgres_changes",
+          { event: "INSERT", schema: "public", table: "driver_trips", filter: `auth_user_id=eq.${userId}` },
+          (payload) => { upsertTripLocal(payload.new); renderTripsTable(); }
+        )
+        .on("postgres_changes",
+          { event: "UPDATE", schema: "public", table: "driver_trips", filter: `auth_user_id=eq.${userId}` },
+          (payload) => { upsertTripLocal(payload.new); renderTripsTable(); }
+        )
+        .on("postgres_changes",
+          { event: "DELETE", schema: "public", table: "driver_trips", filter: `auth_user_id=eq.${userId}` },
+          (payload) => { removeTripLocal(payload.old); renderTripsTable(); }
+        )
+        .subscribe((status) => {
+          console.log("Realtime trips status:", status);
+        });
+    }
+
+    async function createTripTest(){
+      const userId = sessionUser?.id;
+      if(!userId){
+        toast("#saveMsg","❌ Pas connecté.","bad");
+        return;
+      }
+
+      const payload = {
+        auth_user_id: userId,
+        status: "pending",
+        pickup_city: "Dakar",
+        pickup_zone: "Saly Centre",
+        dropoff_city: "Dakar",
+        dropoff_zone: "Ngaparou",
+        distance_km: 10,
+        fare_base: 1500,
+        fare_per_km: 350,
+        client_label: "Client (privé)"
+      };
+
+      const { error } = await supabase.from("driver_trips").insert(payload);
+      if(error){
+        toast("#saveMsg","❌ Insert trip: " + escapeHtml(error.message),"bad");
+        return;
+      }
+      toast("#saveMsg","✅ Course test créée (tu dois la voir pop en live).","ok");
+    }
+
+    async function setLatestTripStatus(nextStatus){
+      const userId = sessionUser?.id;
+      if(!userId || !trips.length){
+        toast("#saveMsg","ℹ️ Aucune course à modifier.","ok");
+        return;
+      }
+      const latest = trips[0];
+
+      const { error } = await supabase
+        .from("driver_trips")
+        .update({ status: nextStatus })
+        .eq("id", latest.id)
+        .eq("auth_user_id", userId);
+
+      if(error){
+        toast("#saveMsg","❌ Update trip: " + escapeHtml(error.message),"bad");
+        return;
+      }
+      toast("#saveMsg","✅ Statut mis à jour: " + escapeHtml(nextStatus),"ok");
+    }
 
     // --- UI renderers
     function renderLogin(messageHtml=""){
@@ -386,10 +372,7 @@
             <div class="card login">
               <div class="hero">
                 <h2>Bienvenue, Chauffeur ✨</h2>
-                <p>
-                  Connexion par <b>téléphone</b> (OTP).<br/>
-                  Terrain first, rapide, propre.
-                </p>
+                <p>Connexion par <b>téléphone</b> (OTP).<br/>Terrain first, rapide, propre.</p>
               </div>
               <div class="bd">
                 ${messageHtml ? `<div class="msg">${messageHtml}</div><div class="sep"></div>` : ""}
@@ -456,9 +439,14 @@
     }
 
     function renderTripStatus(s){
-      if(s==="done") return `<span class="badge b-ok">✅ Terminé</span>`;
-      if(s==="pending") return `<span class="badge b-warn">⏳ En attente</span>`;
-      if(s==="cancel") return `<span class="badge b-idle">🚫 Annulé</span>`;
+      const x = String(s || "").toLowerCase();
+
+      if(x === "completed" || x === "done") return `<span class="badge b-ok">✅ Terminé</span>`;
+      if(x === "started") return `<span class="badge b-warn">🚕 En course</span>`;
+      if(x === "accepted") return `<span class="badge b-warn">✅ Accepté</span>`;
+      if(x === "pending") return `<span class="badge b-warn">⏳ En attente</span>`;
+      if(x === "cancelled" || x === "canceled" || x === "cancel") return `<span class="badge b-idle">🚫 Annulé</span>`;
+
       return `<span class="badge b-idle">—</span>`;
     }
 
@@ -484,6 +472,7 @@
           </div>
 
           <div class="grid">
+            <!-- Profil -->
             <div class="card">
               <div class="hd">
                 <div>
@@ -567,14 +556,15 @@
               </div>
             </div>
 
+            <!-- Trips realtime -->
             <div class="card">
               <div class="hd">
                 <div>
-                  <h2>Activité (démo)</h2>
-                  <small>Historique des courses (mock) — on branchera la table après.</small>
+                  <h2>Activité (Realtime)</h2>
+                  <small>Courses Supabase • mises à jour instantanées.</small>
                 </div>
                 <div class="right">
-                  <span class="badge b-idle">🧾 ${DEMO_TRIPS.length} entrées</span>
+                  <span class="badge b-idle">🧾 <span id="tripsCount">0</span> entrées</span>
                 </div>
               </div>
               <div class="bd">
@@ -588,23 +578,28 @@
                       <th>Montant</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    ${DEMO_TRIPS.map(t => `
-                      <tr>
-                        <td>${escapeHtml(t.date)}</td>
-                        <td><b>${escapeHtml(t.id)}</b></td>
-                        <td>${escapeHtml(t.zone)}</td>
-                        <td>${renderTripStatus(t.status)}</td>
-                        <td><b>${fmtMoney(t.amount)}</b></td>
-                      </tr>
-                    `).join("")}
-                  </tbody>
+                  <tbody id="tripsBody"></tbody>
                 </table>
 
                 <div class="sep"></div>
-                <div class="msg">🔜 Prochaine étape : brancher les courses Supabase + realtime.</div>
+
+                <div class="stack">
+                  <button class="btn" id="btnTripTest">+ Course test</button>
+                  <button class="btn" id="btnTripStart">Statut: started</button>
+                  <button class="btn" id="btnTripDone">Statut: completed</button>
+                </div>
+
+                <div class="tiny" style="margin-top:8px">
+                  ⚡ Ces boutons servent à vérifier le Realtime. Après, on branche le vrai flux client→chauffeur.
+                </div>
+
+                <div class="sep"></div>
+                <div class="msg">
+                  Si tu ne vois rien : active Realtime sur <b>public.driver_trips</b> dans Supabase, et vérifie que la table existe + RLS OK.
+                </div>
               </div>
             </div>
+
           </div>
         </div>
       `;
@@ -615,6 +610,11 @@
       $("#btnLogout").onclick = logout;
       $("#btnSave").onclick = saveProfile;
       $("#btnRefresh").onclick = refreshProfile;
+
+      // Trips buttons
+      $("#btnTripTest").onclick = createTripTest;
+      $("#btnTripStart").onclick = () => setLatestTripStatus("started");
+      $("#btnTripDone").onclick = () => setLatestTripStatus("completed");
     }
 
     // --- AUTH (OTP) — TEST + PROD AUTO
@@ -683,8 +683,10 @@
     }
 
     async function logout(){
+      stopTripsRealtime();
       try{ await supabase.auth.signOut(); }catch(e){}
       sessionUser = null;
+      trips = [];
       renderLogin("Déconnecté ✅");
     }
 
@@ -784,7 +786,6 @@
           toast("#saveMsg", "✅ Enregistré (local). DB pas prête : " + escapeHtml(error.message), "ok");
           return;
         }
-
         toast("#saveMsg", "✅ Enregistré (local + DB).", "ok");
       }catch(e){
         toast("#saveMsg", "✅ Enregistré (local).", "ok");
@@ -795,16 +796,24 @@
       toast("#saveMsg", "⏳ Rafraîchissement…", "");
       const p = await loadProfile();
       renderDashboard(p);
+
+      // Reload trips too
+      trips = await loadTrips();
+      renderTripsTable();
+      startTripsRealtime();
+
       toast("#saveMsg", "✅ OK.", "ok");
     }
 
-    // --- Boot (SAFE: pas de getSession au chargement)
+    // --- Boot (SAFE)
     async function boot(afterVerify=false){
       try{
         const { data, error } = await supabase.auth.getUser();
 
         if(error || !data?.user){
+          stopTripsRealtime();
           sessionUser = null;
+          trips = [];
           renderLogin(afterVerify ? "Session non détectée. Réessaie." : "");
           return;
         }
@@ -814,16 +823,29 @@
         const profile = await loadProfile();
         renderDashboard(profile);
 
-        supabase.auth.onAuthStateChange((_event, newSession) => {
+        // Load trips + realtime
+        trips = await loadTrips();
+        renderTripsTable();
+        startTripsRealtime();
+
+        supabase.auth.onAuthStateChange(async (_event, newSession) => {
           if(!newSession?.user){
+            stopTripsRealtime();
             sessionUser = null;
+            trips = [];
             renderLogin("Session expirée. Reconnecte-toi.");
-          }else{
+          } else {
             sessionUser = newSession.user;
+            // Re-attach realtime for this user (au cas où)
+            trips = await loadTrips();
+            renderTripsTable();
+            startTripsRealtime();
           }
         });
       }catch(e){
+        stopTripsRealtime();
         sessionUser = null;
+        trips = [];
         renderLogin("Erreur chargement. Recharge la page (Cmd+Shift+R).");
       }
     }
