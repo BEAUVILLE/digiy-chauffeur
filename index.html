@@ -320,13 +320,17 @@
       return x.toLocaleString("fr-FR") + " F CFA";
     };
     const safe = (s) => (s||"").trim();
+    function isValidPhone(phone){
+  const p = String(phone || "").trim().replace(/\s+/g, "");
 
-    function toast(sel, text, type=""){
-      const el = document.querySelector(sel);
-      if(!el) return;
-      el.innerHTML = `<div class="msg ${type}">${text}</div>`;
-    }
-
+  // Accepte :
+  // +221771342889  (prod)
+  // 221771342889   (test Supabase)
+  return (
+    (p.startsWith("+") && p.length >= 8) ||
+    (!p.startsWith("+") && p.length >= 7)
+  );
+}
     function escapeHtml(str){
       return String(str ?? "")
         .replaceAll("&","&amp;")
