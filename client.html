@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>DIGIY — Commander un chauffeur</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#16a34a" />
+  <meta name="description" content="DIGIY DRIVER — Commander un chauffeur local, paiement direct, 0% commission." />
+
+  <style>
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      background: linear-gradient(180deg,#eafff3,#f7fbf8 40%,#fff);
+      color:#0f172a;
+    }
+    header{
+      background:#16a34a;
+      color:#fff;
+      padding:18px;
+      text-align:center;
+      font-weight:900;
+      font-size:18px;
+      box-shadow:0 10px 18px rgba(22,163,74,.25);
+    }
+    main{
+      padding:16px;
+      max-width:560px;
+      margin:auto;
+    }
+    .card{
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 10px 22px rgba(2,6,23,.08);
+      padding:18px;
+      margin-bottom:16px;
+    }
+    label{
+      font-size:12px;
+      font-weight:800;
+      color:#475569;
+      display:block;
+      margin-bottom:6px;
+    }
+    input, select{
+      width:100%;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(15,23,42,.15);
+      font-size:15px;
+      margin-bottom:14px;
+    }
+    button{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:16px;
+      background:#16a34a;
+      color:#fff;
+      font-size:17px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    button:disabled{opacity:.6}
+    .info{
+      font-size:13px;
+      color:#475569;
+      margin-top:10px;
+      text-align:center;
+    }
+    .ok{
+      display:none;
+      margin-top:14px;
+      background:#eafff3;
+      border:1px solid rgba(22,163,74,.25);
+      padding:12px;
+      border-radius:14px;
+      font-weight:900;
+      color:#065f46;
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+
+<header>🚕 Commander un chauffeur</header>
+
+<main>
+  <div class="card">
+    <label>Téléphone</label>
+    <input id="phone" placeholder="+22177…" />
+
+    <label>Ville de départ</label>
+    <select id="pickupCity">
+      <option>Dakar</option>
+      <option>Saly</option>
+      <option>Thiès</option>
+    </select>
+
+    <label>Zone de départ</label>
+    <input id="pickupZone" placeholder="Plateau, Almadies…" />
+
+    <label>Ville d’arrivée</label>
+    <select id="dropCity">
+      <option>Dakar</option>
+      <option>Saly</option>
+      <option>Thiès</option>
+    </select>
+
+    <label>Zone d’arrivée</label>
+    <input id="dropZone" placeholder="Yoff, Ngor…" />
+
+    <label>Montant estimé (F CFA)</label>
+    <input id="amount" type="number" value="2000" />
+
+    <button id="btn" onclick="createTrip()">🚕 Commander maintenant</button>
+
+    <div class="info">
+      Paiement direct au chauffeur • 0% commission • DIGIY
+    </div>
+
+    <div class="ok" id="okMsg">
+      ✅ Chauffeur en cours de recherche…  
+      <br/>Merci pour votre confiance 🙏
+    </div>
+  </div>
+</main>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+/* 🔐 TES CLÉS SUPABASE — DÉJÀ INTÉGRÉES */
+const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.4Y9n9nOZcYx6bGZ7x3t8k6pJ3hVt9R9V0mYk4hJ7m9A";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* GPS client */
+let lat = null, lng = null;
+navigator.geolocation?.getCurrentPosition(
+  p => { lat = p.coords.latitude; lng = p.coords.longitude; },
+  () => {}
+);
+
+window.createTrip = async () => {
+  const btn = document.getElementById("btn");
+  btn.disabled = true;
+
+  const phone = document.getElementById("phone").value;
+  const pickupCity = document.getElementById("pickupCity").value;
+  const pickupZone = document.getElementById("pickupZone").value;
+  const dropCity = document.getElementById("dropCity").value;
+  const dropZone = document.getElementById("dropZone").value;
+  const amount = parseInt(document.getElementById("amount").value || "0");
+
+  const { error } = await supabase.rpc("create_trip", {
+    p_client_phone: phone,
+    p_pickup_city: pickupCity,
+    p_pickup_zone: pickupZone,
+    p_pickup_lat: lat,
+    p_pickup_lng: lng,
+    p_dropoff_city: dropCity,
+    p_dropoff_zone: dropZone,
+    p_dropoff_lat: null,
+    p_dropoff_lng: null,
+    p_distance_km: null,
+    p_duration_min: null,
+    p_amount: amount
+  });
+
+  if (error) {
+    alert(error.message);
+    btn.disabled = false;
+    return;
+  }
+
+  document.getElementById("okMsg").style.display = "block";
+};
+</script>
+
+</body>
+</html>
