@@ -1,858 +1,560 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>DIGIY DRIVER PRO — Espace Chauffeur</title>
-  <meta name="theme-color" content="#f59e0b" />
-  <meta name="description" content="Espace Chauffeur DIGIY DRIVER — 0% commission, terrain first." />
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Supabase JS v2 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>DIGIY DRIVER — Chauffeur (Realtime + GEO)</title>
+  <meta name="theme-color" content="#16a34a" />
+  <meta name="description" content="DIGIY DRIVER Chauffeur — courses en direct, filtrage zone & distance, 0% commission." />
 
   <style>
     :root{
-      /* ☀️ Soleil Sénégal */
-      --bg1:#fff7ed; --bg2:#fffbeb;
+      --green:#16a34a;
+      --green2:#0f7a3a;
+      --sky:#0ea5e9;
+      --ok:#22c55e;
+      --bg:#f7fbf8;
       --card:#ffffff;
-      --ink:#0f172a;
-      --muted:#475569;
-      --line:#e2e8f0;
-      --shadow: 0 18px 50px rgba(15,23,42,.08);
-
-      --brand:#f59e0b;
-      --brand2:#fb923c;
-      --ok:#16a34a;
-      --warn:#f97316;
-      --bad:#ef4444;
-
-      --r:18px;
+      --text:#0f172a;
+      --muted:#64748b;
+      --shadow: 0 10px 22px rgba(2,6,23,.08);
+      --radius:16px;
     }
-
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: Manrope, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(1200px 600px at 10% -10%, rgba(245,158,11,.22), transparent 60%),
-        radial-gradient(900px 500px at 90% 0%, rgba(251,146,60,.16), transparent 55%),
-        linear-gradient(180deg, var(--bg2), var(--bg1));
-      min-height:100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #eafff3 0%, var(--bg) 40%, #ffffff 100%);
+      color:var(--text);
     }
-
-    a{color:inherit}
-    .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 40px;}
-
-    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px;}
-    .brand{display:flex;align-items:center;gap:10px;user-select:none;}
-    .logo{
-      width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
-      background: linear-gradient(135deg, rgba(245,158,11,1), rgba(251,146,60,1));
-      color:#111827;box-shadow: 0 12px 26px rgba(245,158,11,.25);
-      font-weight:900;font-family: Outfit, Manrope, sans-serif;
+    header{
+      position:sticky; top:0; z-index:5;
+      padding:14px 14px 12px;
+      background: linear-gradient(90deg, var(--green), #22c55e);
+      color:#fff;
+      box-shadow: 0 10px 18px rgba(22,163,74,.25);
     }
-    .brand h1{font-family: Outfit, Manrope, sans-serif;font-size:18px;margin:0;line-height:1.1;}
-    .brand p{margin:2px 0 0;color:var(--muted);font-size:13px;}
-
-    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .topRow{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      max-width:980px; margin:0 auto;
+    }
+    .brand{
+      font-weight:900;
+      letter-spacing:.3px;
+      display:flex; align-items:center; gap:10px;
+      font-size:16px;
+      white-space:nowrap;
+    }
     .pill{
-      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
-      background: rgba(255,255,255,.7);border:1px solid var(--line);
-      box-shadow: 0 10px 22px rgba(15,23,42,.06);font-size:13px;color:var(--muted);
+      background: rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.25);
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
     }
-    .dot{width:10px;height:10px;border-radius:999px;background:var(--bad)}
-    .dot.ok{background:var(--ok)}
-
-    .btn{
-      border:1px solid var(--line);background:#fff;color:var(--ink);
-      border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;
-      box-shadow: 0 10px 18px rgba(15,23,42,.06);
-      transition:.15s transform ease, .15s opacity ease;
+    main{max-width:980px; margin:0 auto; padding:14px;}
+    .bar{
+      background: #ffffffcc;
+      backdrop-filter: blur(6px);
+      border:1px solid rgba(15,23,42,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
     }
-    .btn:hover{transform: translateY(-1px)}
-    .btn:active{transform: translateY(0px); opacity:.92}
-    .btn.primary{border:none;background: linear-gradient(135deg, var(--brand), var(--brand2));}
-    .btn.danger{border:none;background: linear-gradient(135deg, #ef4444, #fb7185);color:#fff;}
-
-    .grid{display:grid;grid-template-columns: 1.05fr .95fr;gap:14px;}
-    @media (max-width: 980px){.grid{grid-template-columns: 1fr;}}
-
-    .card{
-      background: rgba(255,255,255,.86);border:1px solid var(--line);
-      border-radius: var(--r);box-shadow: var(--shadow);overflow:hidden;
+    .field label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      display:block;
+      margin-bottom:6px;
     }
-    .card .hd{
-      padding:14px 14px 10px;border-bottom:1px solid var(--line);
-      display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
-      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
+    select, input{
+      width:100%;
+      padding:10px 10px;
+      border-radius:12px;
+      border:1px solid rgba(15,23,42,.12);
+      outline:none;
+      font-size:14px;
+      background:#fff;
     }
-    .card .hd h2{margin:0;font-family: Outfit, Manrope, sans-serif;font-size:16px;}
-    .card .hd small{display:block;margin-top:4px;color:var(--muted);}
-    .card .bd{ padding:14px; }
-
-    .row{display:grid;grid-template-columns: 1fr 1fr;gap:10px;}
-    @media (max-width: 560px){.row{grid-template-columns: 1fr;}}
-
-    label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin:0 0 6px;}
-    input, select{
-      width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--line);
-      background:#fff;outline:none;font-size:14px;
+    .status{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(15,23,42,.08);
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      box-shadow: var(--shadow);
     }
-    input:focus, select:focus{border-color: rgba(245,158,11,.65);box-shadow: 0 0 0 4px rgba(245,158,11,.16);}
-    .sep{height:1px;background:var(--line); margin:12px 0}
-
-    .msg{
-      padding:10px 12px;border-radius:12px;border:1px solid var(--line);
-      background: rgba(255,255,255,.7);color:var(--muted);font-size:13px;
+    .status .left{
+      display:flex; flex-direction:column; gap:2px;
     }
-    .msg.ok{border-color: rgba(22,163,74,.30); background: rgba(22,163,74,.08); color:#14532d}
-    .msg.bad{border-color: rgba(239,68,68,.30); background: rgba(239,68,68,.08); color:#7f1d1d}
-
-    .center{min-height: calc(100vh - 80px);display:grid;place-items:center;padding:20px 0 40px;}
-    .login{width:min(520px, 100%);}
-    .login .hero{padding:16px 16px 0;}
-    .hero h2{margin:0;font-family:Outfit, Manrope, sans-serif;font-size:20px;}
-    .hero p{margin:6px 0 0;color:var(--muted);font-size:14px;line-height:1.35;}
-
-    .otpgrid{display:grid;grid-template-columns: 1.2fr .8fr;gap:10px;}
-    @media (max-width: 520px){.otpgrid{grid-template-columns: 1fr;}}
-
-    table{
-      width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;
-      border:1px solid var(--line);border-radius:14px;background:#fff;
+    .status .title{font-weight:900}
+    .status .sub{font-size:12px; color:var(--muted)}
+    .status .right{
+      font-size:12px;
+      font-weight:800;
+      padding:8px 10px;
+      border-radius:999px;
+      background:#eafff3;
+      border:1px solid rgba(22,163,74,.18);
+      color:var(--green2);
+      white-space:nowrap;
     }
-    thead th{
-      text-align:left;font-size:12px;padding:10px 10px;color:var(--muted);
-      background: #fff7ed;border-bottom:1px solid var(--line);font-weight:900;
+    .grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
     }
-    tbody td{padding:10px 10px;border-bottom:1px solid var(--line);font-size:13px;}
-    tbody tr:last-child td{border-bottom:none}
-
-    .badge{
-      display:inline-flex;align-items:center;gap:6px;font-weight:900;border-radius:999px;
-      padding:6px 10px;border:1px solid var(--line);background:#fff;font-size:12px;
+    @media(max-width:860px){
+      .bar{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
     }
-    .b-ok{border-color: rgba(22,163,74,.25); background: rgba(22,163,74,.10); color:#14532d}
-    .b-warn{border-color: rgba(249,115,22,.25); background: rgba(249,115,22,.10); color:#7c2d12}
-    .b-idle{border-color: rgba(71,85,105,.25); background: rgba(71,85,105,.08); color:#334155}
-
-    .tiny{font-size:12px;color:var(--muted)}
-    .right{display:flex; gap:10px; align-items:center; justify-content:flex-end}
-    .stack{display:flex; gap:10px; flex-wrap:wrap}
+    .trip{
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border:1px solid rgba(15,23,42,.08);
+      padding:14px;
+      overflow:hidden;
+      position:relative;
+    }
+    .trip .head{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .trip .route{
+      font-weight:900;
+      font-size:15px;
+      line-height:1.2;
+    }
+    .trip .meta{
+      margin-top:8px;
+      display:flex; flex-wrap:wrap; gap:8px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+    .tag{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(15,23,42,.10);
+      background:#fff;
+    }
+    .price{
+      margin-top:10px;
+      font-size:16px;
+      font-weight:1000;
+      color:var(--green2);
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+    }
+    button{
+      width:100%;
+      padding:11px 10px;
+      border:none;
+      border-radius:12px;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+    }
+    button:disabled{opacity:.55; cursor:not-allowed}
+    .btn-accept{background:var(--green); color:#fff}
+    .btn-start{background:var(--sky); color:#fff}
+    .btn-done{background:var(--ok); color:#fff}
+    .btn-ghost{
+      background:#fff;
+      border:1px solid rgba(15,23,42,.12);
+      color:var(--text);
+    }
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      background: rgba(15,23,42,.92);
+      color:#fff;
+      padding:10px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      display:none;
+      z-index: 20;
+      max-width: 92vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   </style>
 </head>
 
 <body>
-  <div id="app"></div>
+<header>
+  <div class="topRow">
+    <div class="brand">🚕 DIGIY DRIVER <span class="pill">Chauffeur • Realtime</span></div>
+    <div class="pill" id="who">…</div>
+  </div>
+</header>
 
-  <script>
-    /* 🔐 SUPABASE — DÉJÀ POSÉ */
-    const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+<main>
+  <!-- Filtres GEO -->
+  <div class="bar">
+    <div class="field">
+      <label>📍 Zone (pickup_zone)</label>
+      <select id="zoneFilter">
+        <option value="">Toutes</option>
+        <option value="Plateau">Plateau</option>
+        <option value="Almadies">Almadies</option>
+        <option value="Yoff">Yoff</option>
+        <option value="Saly">Saly</option>
+      </select>
+    </div>
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: true,
-        detectSessionInUrl: false,
-        storageKey: "digiy-driver-auth"
-      }
-    });
+    <div class="field">
+      <label>📏 Rayon</label>
+      <select id="radiusFilter">
+        <option value="2">2 km</option>
+        <option value="3">3 km</option>
+        <option value="5" selected>5 km</option>
+        <option value="8">8 km</option>
+        <option value="10">10 km</option>
+      </select>
+    </div>
 
-    // --- Helpers
-    const $ = (sel) => document.querySelector(sel);
-    const fmtMoney = (n) => Number(n || 0).toLocaleString("fr-FR") + " F CFA";
-    const safe = (s) => (s || "").trim();
+    <div class="field">
+      <label>🎛️ Vue</label>
+      <select id="viewFilter">
+        <option value="open" selected>Demandes ouvertes (requested)</option>
+        <option value="mine">Mes courses (accepted/ongoing)</option>
+        <option value="all">Tout (requested/accepted/ongoing)</option>
+      </select>
+    </div>
+  </div>
 
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+  <div class="status">
+    <div class="left">
+      <div class="title" id="statusTitle">Connexion…</div>
+      <div class="sub" id="statusSub">Chargement Supabase / GPS</div>
+    </div>
+    <div class="right" id="gpsBadge">GPS: …</div>
+  </div>
+
+  <div class="grid" id="trips"></div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  /* 🔐 SUPABASE — URL déjà intégrée */
+  const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+  const SUPABASE_ANON_KEY = "__ANON_KEY__"; // <-- colle ta clé ici
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const tripsEl = document.getElementById("trips");
+  const zoneFilter = document.getElementById("zoneFilter");
+  const radiusFilter = document.getElementById("radiusFilter");
+  const viewFilter = document.getElementById("viewFilter");
+  const whoEl = document.getElementById("who");
+  const statusTitle = document.getElementById("statusTitle");
+  const statusSub = document.getElementById("statusSub");
+  const gpsBadge = document.getElementById("gpsBadge");
+  const toastEl = document.getElementById("toast");
+
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.style.display = "block";
+    clearTimeout(window.__t);
+    window.__t = setTimeout(()=> toastEl.style.display="none", 2400);
+  }
+
+  /* =========================
+     AUTH CHECK
+  ========================== */
+  const { data:{ user }, error:authErr } = await supabase.auth.getUser();
+  if (authErr) console.warn(authErr);
+  if (!user) {
+    statusTitle.textContent = "❌ Non connecté";
+    statusSub.textContent = "Ouvre cette page depuis l’espace chauffeur (OTP).";
+    whoEl.textContent = "Offline";
+    throw new Error("Not authenticated");
+  }
+  whoEl.textContent = (user.phone || user.email || "Chauffeur");
+
+  statusTitle.textContent = "🟢 En ligne";
+  statusSub.textContent = "Realtime actif • attente de courses";
+
+  /* =========================
+     GPS + Distance
+  ========================== */
+  let driverLat = null, driverLng = null;
+
+  function setGPSBadge(){
+    if (driverLat && driverLng) {
+      gpsBadge.textContent = "GPS: OK";
+    } else {
+      gpsBadge.textContent = "GPS: OFF";
     }
-    function toast(sel, text, type=""){
-      const el = document.querySelector(sel);
-      if(!el) return;
-      el.innerHTML = `<div class="msg ${type}">${text}</div>`;
-    }
+  }
+  setGPSBadge();
 
-    // ✅ Validation souple: accepte +221... (prod) OU 221... (test)
-    function isValidPhone(phone){
-      const p = String(phone || "").trim().replace(/\s+/g, "");
-      return ((p.startsWith("+") && p.length >= 8) || (!p.startsWith("+") && p.length >= 7));
-    }
-    function phoneNoPlus(phone){
-      return String(phone || "").trim().replace(/\s+/g, "").replace(/^\+/, "");
-    }
-    function phoneE164(phone){
-      const p = phoneNoPlus(phone);
-      return p ? ("+" + p) : "";
-    }
+  function distanceKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2-lat1) * Math.PI/180;
+    const dLon = (lon2-lon1) * Math.PI/180;
+    const a =
+      Math.sin(dLat/2)**2 +
+      Math.cos(lat1*Math.PI/180) *
+      Math.cos(lat2*Math.PI/180) *
+      Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
 
-    // --- State
-    let sessionUser = null;
+  // GPS watcher (meilleur que getCurrentPosition)
+  if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(
+      (pos)=>{
+        driverLat = pos.coords.latitude;
+        driverLng = pos.coords.longitude;
+        setGPSBadge();
+      },
+      ()=>{
+        setGPSBadge();
+        statusSub.textContent = "GPS refusé • filtrage distance désactivé";
+      },
+      { enableHighAccuracy:true, maximumAge: 8000, timeout: 12000 }
+    );
+  } else {
+    statusSub.textContent = "GPS indisponible • filtrage distance désactivé";
+  }
 
-    // ====== TRIPS (DB + REALTIME) ======
-    let trips = [];
-    let tripsChannel = null;
+  /* =========================
+     STORE (UI)
+  ========================== */
+  const store = new Map(); // id -> trip row
 
-    function shortId(id){
-      const s = String(id || "");
-      return s ? s.slice(0,6) : "—";
-    }
+  function passesFilters(trip){
+    const z = zoneFilter.value;
+    const r = parseFloat(radiusFilter.value || "5");
+    const v = viewFilter.value;
 
-    function fmtDateLabel(iso){
-      if(!iso) return "—";
-      const d = new Date(iso);
-      const now = new Date();
-      const diff = Math.floor((now - d) / 86400000);
-      if(diff === 0) return "Aujourd’hui";
-      if(diff === 1) return "Hier";
-      if(diff === 2) return "Avant-hier";
-      return d.toLocaleDateString("fr-FR");
-    }
+    // Vue
+    if (v === "open" && trip.status !== "requested") return false;
+    if (v === "mine" && !(trip.status === "accepted" || trip.status === "ongoing")) return false;
+    if (v === "all" && !["requested","accepted","ongoing"].includes(trip.status)) return false;
 
-    function renderTripsTable(){
-      const el = document.querySelector("#tripsBody");
-      if(!el) return;
+    // Zone (pickup_zone)
+    if (z && (trip.pickup_zone || "") !== z) return false;
 
-      const rows = trips.length
-        ? trips.map(t => `
-          <tr>
-            <td>${escapeHtml(fmtDateLabel(t.created_at))}</td>
-            <td><b>${escapeHtml(shortId(t.id))}</b></td>
-            <td>${escapeHtml(t.pickup_zone || "—")}</td>
-            <td>${renderTripStatus(t.status)}</td>
-            <td><b>${fmtMoney(t.amount || 0)}</b></td>
-          </tr>
-        `).join("")
-        : `<tr><td colspan="5" class="tiny" style="padding:12px">Aucune course pour le moment.</td></tr>`;
-
-      el.innerHTML = rows;
-
-      const counter = document.querySelector("#tripsCount");
-      if(counter) counter.textContent = String(trips.length);
-    }
-
-    function upsertTripLocal(row){
-      const idx = trips.findIndex(x => x.id === row.id);
-      if(idx >= 0) trips[idx] = { ...trips[idx], ...row };
-      else trips.unshift(row);
-    }
-    function removeTripLocal(row){
-      trips = trips.filter(x => x.id !== row.id);
-    }
-
-    async function loadTrips(){
-      const userId = sessionUser?.id;
-      if(!userId) return [];
-
-      const { data, error } = await supabase
-        .from("driver_trips")
-        .select("id,status,pickup_zone,amount,created_at")
-        .eq("auth_user_id", userId)
-        .order("created_at", { ascending: false })
-        .limit(50);
-
-      if(error){
-        console.log("loadTrips error:", error);
-        return [];
-      }
-      return data || [];
-    }
-
-    function stopTripsRealtime(){
-      if(tripsChannel){
-        try{ supabase.removeChannel(tripsChannel); }catch(e){}
-        tripsChannel = null;
-      }
-    }
-
-    function startTripsRealtime(){
-      const userId = sessionUser?.id;
-      if(!userId) return;
-
-      stopTripsRealtime();
-
-      tripsChannel = supabase
-        .channel("driver_trips_" + userId)
-        .on("postgres_changes",
-          { event: "INSERT", schema: "public", table: "driver_trips", filter: `auth_user_id=eq.${userId}` },
-          (payload) => { upsertTripLocal(payload.new); renderTripsTable(); }
-        )
-        .on("postgres_changes",
-          { event: "UPDATE", schema: "public", table: "driver_trips", filter: `auth_user_id=eq.${userId}` },
-          (payload) => { upsertTripLocal(payload.new); renderTripsTable(); }
-        )
-        .on("postgres_changes",
-          { event: "DELETE", schema: "public", table: "driver_trips", filter: `auth_user_id=eq.${userId}` },
-          (payload) => { removeTripLocal(payload.old); renderTripsTable(); }
-        )
-        .subscribe((status) => {
-          console.log("Realtime trips status:", status);
-        });
-    }
-
-    async function createTripTest(){
-      const userId = sessionUser?.id;
-      if(!userId){
-        toast("#saveMsg","❌ Pas connecté.","bad");
-        return;
-      }
-
-      const payload = {
-        auth_user_id: userId,
-        status: "pending",
-        pickup_city: "Dakar",
-        pickup_zone: "Saly Centre",
-        dropoff_city: "Dakar",
-        dropoff_zone: "Ngaparou",
-        distance_km: 10,
-        fare_base: 1500,
-        fare_per_km: 350,
-        client_label: "Client (privé)"
-      };
-
-      const { error } = await supabase.from("driver_trips").insert(payload);
-      if(error){
-        toast("#saveMsg","❌ Insert trip: " + escapeHtml(error.message),"bad");
-        return;
-      }
-      toast("#saveMsg","✅ Course test créée (tu dois la voir pop en live).","ok");
+    // Distance (si coords présentes côté trip + gps ok)
+    if (driverLat && driverLng && trip.pickup_lat && trip.pickup_lng) {
+      const d = distanceKm(driverLat, driverLng, trip.pickup_lat, trip.pickup_lng);
+      if (d > r) return false;
     }
 
-    async function setLatestTripStatus(nextStatus){
-      const userId = sessionUser?.id;
-      if(!userId || !trips.length){
-        toast("#saveMsg","ℹ️ Aucune course à modifier.","ok");
-        return;
-      }
-      const latest = trips[0];
+    return true;
+  }
 
-      const { error } = await supabase
-        .from("driver_trips")
-        .update({ status: nextStatus })
-        .eq("id", latest.id)
-        .eq("auth_user_id", userId);
+  function formatTripMeta(trip){
+    const z = trip.pickup_zone ? `📍 ${trip.pickup_zone}` : "📍 Zone ?";
+    const c = trip.pickup_city ? `🏙️ ${trip.pickup_city}` : "🏙️ Ville ?";
+    const km = trip.distance_km ? `🛣️ ${trip.distance_km} km` : null;
+    const min = trip.duration_min ? `⏱️ ${trip.duration_min} min` : null;
 
-      if(error){
-        toast("#saveMsg","❌ Update trip: " + escapeHtml(error.message),"bad");
-        return;
-      }
-      toast("#saveMsg","✅ Statut mis à jour: " + escapeHtml(nextStatus),"ok");
+    let distStr = null;
+    if (driverLat && driverLng && trip.pickup_lat && trip.pickup_lng) {
+      const d = distanceKm(driverLat, driverLng, trip.pickup_lat, trip.pickup_lng);
+      distStr = `📏 ${d.toFixed(1)} km`;
     }
 
-    // --- UI renderers
-    function renderLogin(messageHtml=""){
-      $("#app").innerHTML = `
-        <div class="wrap">
-          <div class="top">
-            <div class="brand">
-              <div class="logo">🦅</div>
-              <div>
-                <h1>DIGIY DRIVER PRO</h1>
-                <p>Connexion Chauffeur • 0% commission</p>
-              </div>
-            </div>
-            <div class="actions">
-              <span class="pill"><span class="dot"></span> Non connecté</span>
-            </div>
-          </div>
+    return [c, z, distStr, km, min].filter(Boolean);
+  }
 
-          <div class="center">
-            <div class="card login">
-              <div class="hero">
-                <h2>Bienvenue, Chauffeur ✨</h2>
-                <p>Connexion par <b>téléphone</b> (OTP).<br/>Terrain first, rapide, propre.</p>
-              </div>
-              <div class="bd">
-                ${messageHtml ? `<div class="msg">${messageHtml}</div><div class="sep"></div>` : ""}
+  function renderAll(){
+    tripsEl.innerHTML = "";
+    const items = Array.from(store.values())
+      .filter(passesFilters)
+      .sort((a,b)=> (new Date(b.created_at) - new Date(a.created_at)));
 
-                <div class="row">
-                  <div>
-                    <label>Téléphone (format international)</label>
-                    <input id="phone" placeholder="+221771342889" inputmode="tel" autocomplete="tel" />
-                    <div class="tiny" style="margin-top:6px">Ex: +2217xxxxxxx</div>
-                  </div>
-                  <div>
-                    <label>Module</label>
-                    <select id="module">
-                      <option value="driver">DRIVER</option>
-                      <option value="loc">LOC</option>
-                      <option value="resto">RESTO</option>
-                      <option value="market">MARKET</option>
-                    </select>
-                    <div class="tiny" style="margin-top:6px">Ici on est sur DRIVER.</div>
-                  </div>
-                </div>
-
-                <div class="sep"></div>
-
-                <div class="otpgrid">
-                  <button class="btn primary" id="btnSendOtp">Envoyer le code OTP</button>
-                  <div>
-                    <label>Code OTP</label>
-                    <input id="otp" placeholder="123456" inputmode="numeric" autocomplete="one-time-code" />
-                  </div>
-                </div>
-
-                <div class="stack" style="margin-top:10px">
-                  <button class="btn" id="btnVerify">Valider & entrer</button>
-                  <button class="btn" id="btnHelp">Aide</button>
-                </div>
-
-                <div id="loginMsg" style="margin-top:10px"></div>
-
-                <div class="sep"></div>
-                <div class="tiny">
-                  Mode test : Supabase → Auth → Phone → Test Phone Numbers (ex: 221771342889=123456).
-                </div>
-              </div>
-            </div>
+    if (!items.length){
+      tripsEl.innerHTML = `
+        <div class="trip" style="grid-column:1/-1">
+          <div class="route">Aucune course dans tes filtres</div>
+          <div class="meta">
+            <span class="tag">Essaie: Zone=Toutes</span>
+            <span class="tag">Rayon=10km</span>
+            <span class="tag">Vue=Demandes ouvertes</span>
           </div>
         </div>
       `;
+      return;
+    }
 
-      $("#btnHelp").onclick = () => {
-        $("#loginMsg").innerHTML = `
-          <div class="msg">
-            🧠 Test rapide :<br/>
-            - Dans Supabase: <b>221771342889=123456</b> (sans +)<br/>
-            - Ici: <b>+221771342889</b><br/>
-            - OTP: <b>123456</b><br/>
-            Le code gère test + prod automatiquement.
+    for (const trip of items) {
+      const card = document.createElement("div");
+      card.className = "trip";
+      card.id = "trip-" + trip.id;
+
+      const route = `📍 ${trip.pickup_city || "?"} → ${trip.dropoff_city || "?"}`;
+      const metaTags = formatTripMeta(trip).map(x=>`<span class="tag">${x}</span>`).join("");
+
+      let actionsHtml = "";
+      if (trip.status === "requested") {
+        actionsHtml = `
+          <div class="actions">
+            <button class="btn-accept" data-id="${trip.id}" data-act="accept">Accepter</button>
           </div>
         `;
-      };
-
-      $("#btnSendOtp").onclick = sendOtp;
-      $("#btnVerify").onclick = verifyOtp;
-    }
-
-    function renderTripStatus(s){
-      const x = String(s || "").toLowerCase();
-
-      if(x === "completed" || x === "done") return `<span class="badge b-ok">✅ Terminé</span>`;
-      if(x === "started") return `<span class="badge b-warn">🚕 En course</span>`;
-      if(x === "accepted") return `<span class="badge b-warn">✅ Accepté</span>`;
-      if(x === "pending") return `<span class="badge b-warn">⏳ En attente</span>`;
-      if(x === "cancelled" || x === "canceled" || x === "cancel") return `<span class="badge b-idle">🚫 Annulé</span>`;
-
-      return `<span class="badge b-idle">—</span>`;
-    }
-
-    function renderDashboard(profile){
-      const connectedDot = `<span class="pill"><span class="dot ok"></span> Connecté</span>`;
-      const who = profile?.full_name || "Chauffeur DIGIY";
-      const phone = profile?.phone || sessionUser?.phone || "—";
-
-      $("#app").innerHTML = `
-        <div class="wrap">
-          <div class="top">
-            <div class="brand">
-              <div class="logo">🦅</div>
-              <div>
-                <h1>DIGIY DRIVER PRO</h1>
-                <p>Espace Chauffeur • Paiement direct • 0% commission</p>
-              </div>
-            </div>
-            <div class="actions">
-              ${connectedDot}
-              <button class="btn danger" id="btnLogout">Déconnexion</button>
-            </div>
+      } else if (trip.status === "accepted") {
+        actionsHtml = `
+          <div class="actions">
+            <button class="btn-start" data-id="${trip.id}" data-act="start">Démarrer</button>
+            <button class="btn-ghost" data-id="${trip.id}" data-act="refresh">Rafraîchir</button>
           </div>
+        `;
+      } else if (trip.status === "ongoing") {
+        actionsHtml = `
+          <div class="actions">
+            <button class="btn-done" data-id="${trip.id}" data-act="complete">Terminer</button>
+            <button class="btn-ghost" data-id="${trip.id}" data-act="refresh">Rafraîchir</button>
+          </div>
+        `;
+      }
 
-          <div class="grid">
-            <!-- Profil -->
-            <div class="card">
-              <div class="hd">
-                <div>
-                  <h2>Profil Chauffeur</h2>
-                  <small>Nom, zone, disponibilité, tarifs — modifiable.</small>
-                </div>
-                <div class="right">
-                  <span class="badge b-ok">✅ PRO</span>
-                </div>
-              </div>
-              <div class="bd">
-                <div class="msg ok">
-                  👋 <b>${escapeHtml(who)}</b> • <span class="tiny">${escapeHtml(phone)}</span>
-                </div>
-
-                <div class="sep"></div>
-
-                <div class="row">
-                  <div>
-                    <label>Nom affiché</label>
-                    <input id="full_name" value="${escapeHtml(profile?.full_name || "")}" placeholder="Ex: Lamine Chauffeur" />
-                  </div>
-                  <div>
-                    <label>Téléphone</label>
-                    <input id="phone_ro" value="${escapeHtml(phone || "")}" disabled />
-                  </div>
-                </div>
-
-                <div class="row" style="margin-top:10px">
-                  <div>
-                    <label>Ville</label>
-                    <input id="city" value="${escapeHtml(profile?.city || "Dakar")}" placeholder="Dakar" />
-                  </div>
-                  <div>
-                    <label>Zone</label>
-                    <input id="zone" value="${escapeHtml(profile?.zone || "Saly / Petite Côte")}" placeholder="Saly Centre" />
-                  </div>
-                </div>
-
-                <div class="row" style="margin-top:10px">
-                  <div>
-                    <label>Disponibilité</label>
-                    <select id="status">
-                      <option value="available">✅ Disponible</option>
-                      <option value="busy">⏳ En course</option>
-                      <option value="offline">🌙 Hors ligne</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label>Type véhicule</label>
-                    <select id="vehicle_type">
-                      <option value="car">🚗 Voiture</option>
-                      <option value="moto">🏍️ Moto</option>
-                      <option value="van">🚐 Van</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="sep"></div>
-
-                <h3 style="margin:0 0 8px;font-family:Outfit,Manrope,sans-serif;font-size:15px">Tarifs (terrain)</h3>
-                <div class="row">
-                  <div>
-                    <label>Prix départ (prise en charge)</label>
-                    <input id="fare_base" type="number" min="0" value="${Number(profile?.fare_base ?? 1500)}" />
-                    <div class="tiny" style="margin-top:6px">${fmtMoney(profile?.fare_base ?? 1500)}</div>
-                  </div>
-                  <div>
-                    <label>Prix / km</label>
-                    <input id="fare_per_km" type="number" min="0" value="${Number(profile?.fare_per_km ?? 350)}" />
-                    <div class="tiny" style="margin-top:6px">${fmtMoney(profile?.fare_per_km ?? 350)} / km</div>
-                  </div>
-                </div>
-
-                <div class="stack" style="margin-top:12px">
-                  <button class="btn primary" id="btnSave">Enregistrer</button>
-                  <button class="btn" id="btnRefresh">Rafraîchir</button>
-                </div>
-
-                <div id="saveMsg" style="margin-top:10px"></div>
-              </div>
-            </div>
-
-            <!-- Trips realtime -->
-            <div class="card">
-              <div class="hd">
-                <div>
-                  <h2>Activité (Realtime)</h2>
-                  <small>Courses Supabase • mises à jour instantanées.</small>
-                </div>
-                <div class="right">
-                  <span class="badge b-idle">🧾 <span id="tripsCount">0</span> entrées</span>
-                </div>
-              </div>
-              <div class="bd">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>ID</th>
-                      <th>Zone</th>
-                      <th>Statut</th>
-                      <th>Montant</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tripsBody"></tbody>
-                </table>
-
-                <div class="sep"></div>
-
-                <div class="stack">
-                  <button class="btn" id="btnTripTest">+ Course test</button>
-                  <button class="btn" id="btnTripStart">Statut: started</button>
-                  <button class="btn" id="btnTripDone">Statut: completed</button>
-                </div>
-
-                <div class="tiny" style="margin-top:8px">
-                  ⚡ Ces boutons servent à vérifier le Realtime. Après, on branche le vrai flux client→chauffeur.
-                </div>
-
-                <div class="sep"></div>
-                <div class="msg">
-                  Si tu ne vois rien : active Realtime sur <b>public.driver_trips</b> dans Supabase, et vérifie que la table existe + RLS OK.
-                </div>
-              </div>
-            </div>
-
+      card.innerHTML = `
+        <div class="head">
+          <div>
+            <div class="route">${route}</div>
+            <div class="meta">${metaTags}</div>
+            <div class="price">💰 ${(trip.amount ?? 0)} F CFA</div>
+          </div>
+          <div class="pill" style="color:#0f172a;background:#fff;border-color:rgba(15,23,42,.15)">
+            ${trip.status}
           </div>
         </div>
+        ${actionsHtml}
       `;
 
-      $("#status").value = profile?.status || "available";
-      $("#vehicle_type").value = profile?.vehicle_type || "car";
-
-      $("#btnLogout").onclick = logout;
-      $("#btnSave").onclick = saveProfile;
-      $("#btnRefresh").onclick = refreshProfile;
-
-      // Trips buttons
-      $("#btnTripTest").onclick = createTripTest;
-      $("#btnTripStart").onclick = () => setLatestTripStatus("started");
-      $("#btnTripDone").onclick = () => setLatestTripStatus("completed");
+      tripsEl.appendChild(card);
     }
+  }
 
-    // --- AUTH (OTP) — TEST + PROD AUTO
-    async function sendOtp(){
-      const phoneUi = safe($("#phone").value);
+  /* =========================
+     RPC ACTIONS
+  ========================== */
+  async function rpcAction(action, tripId){
+    try{
+      if (!tripId) return;
 
-      if(!isValidPhone(phoneUi)){
-        toast("#loginMsg", "❌ Numéro invalide (ex: +2217xxxxxxx).", "bad");
+      toast(`⏳ ${action.toUpperCase()}…`);
+      let res;
+
+      if (action === "accept") {
+        res = await supabase.rpc("accept_trip", { p_trip_id: tripId });
+      } else if (action === "start") {
+        res = await supabase.rpc("start_trip", { p_trip_id: tripId });
+      } else if (action === "complete") {
+        // IMPORTANT: ta fonction prod s’appelle complete_trip(p_trip_id uuid)
+        res = await supabase.rpc("complete_trip", { p_trip_id: tripId });
+      } else if (action === "refresh") {
+        await loadInitial();
+        toast("✅ Rafraîchi");
+        return;
+      } else {
         return;
       }
 
-      const pNoPlus = phoneNoPlus(phoneUi);
-      const pPlus = phoneE164(phoneUi);
-
-      toast("#loginMsg", "⏳ Envoi OTP…", "");
-
-      try{
-        let res = await supabase.auth.signInWithOtp({ phone: pNoPlus });
-        if(res?.error){
-          res = await supabase.auth.signInWithOtp({ phone: pPlus });
-        }
-        if(res?.error){
-          toast("#loginMsg", "❌ Erreur OTP : " + escapeHtml(res.error.message), "bad");
-          return;
-        }
-        toast("#loginMsg", "✅ OTP envoyé. Entre le code (test: 123456).", "ok");
-      }catch(e){
-        toast("#loginMsg", "❌ Exception : " + escapeHtml(e.message || e), "bad");
-      }
-    }
-
-    async function verifyOtp(){
-      const phoneUi = safe($("#phone").value);
-      const token = safe($("#otp").value);
-
-      if(!phoneUi || !token){
-        toast("#loginMsg", "❌ Téléphone + code OTP requis.", "bad");
-        return;
-      }
-      if(!isValidPhone(phoneUi)){
-        toast("#loginMsg", "❌ Numéro invalide.", "bad");
+      if (res.error){
+        console.error(res.error);
+        toast("❌ " + res.error.message);
         return;
       }
 
-      const pNoPlus = phoneNoPlus(phoneUi);
-      const pPlus = phoneE164(phoneUi);
+      toast("✅ OK");
+    } catch(e){
+      console.error(e);
+      toast("❌ Erreur action");
+    }
+  }
 
-      toast("#loginMsg", "⏳ Vérification…", "");
+  // Click delegation
+  document.addEventListener("click", (e)=>{
+    const btn = e.target?.closest("button[data-act]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-id");
+    const act = btn.getAttribute("data-act");
+    rpcAction(act, id);
+  });
 
-      try{
-        let res = await supabase.auth.verifyOtp({ phone: pNoPlus, token, type: "sms" });
-        if(res?.error){
-          res = await supabase.auth.verifyOtp({ phone: pPlus, token, type: "sms" });
-        }
-        if(res?.error){
-          toast("#loginMsg", "❌ OTP invalide : " + escapeHtml(res.error.message), "bad");
-          return;
-        }
+  /* =========================
+     LOAD INITIAL DATA
+  ========================== */
+  async function loadInitial(){
+    // On charge plus large et on filtre dans l’UI
+    const { data, error } = await supabase
+      .from("driver_trips")
+      .select("*")
+      .in("status", ["requested","accepted","ongoing"])
+      .order("created_at", { ascending:false })
+      .limit(200);
 
-        sessionUser = res.data?.user || null;
-        toast("#loginMsg", "✅ Connecté ! Chargement…", "ok");
-        await boot(true);
-      }catch(e){
-        toast("#loginMsg", "❌ Exception : " + escapeHtml(e.message || e), "bad");
+    if (error){
+      console.error(error);
+      statusSub.textContent = "Erreur chargement courses";
+      return;
+    }
+    store.clear();
+    (data || []).forEach(t => store.set(t.id, t));
+    renderAll();
+  }
+
+  // On recharge quand filtres changent
+  zoneFilter.addEventListener("change", renderAll);
+  radiusFilter.addEventListener("change", renderAll);
+  viewFilter.addEventListener("change", renderAll);
+
+  // Re-render quand GPS arrive
+  setInterval(()=>{ renderAll(); }, 7000);
+
+  await loadInitial();
+
+  /* =========================
+     REALTIME
+  ========================== */
+  supabase.channel("driver-trips-live")
+    .on("postgres_changes", { event:"INSERT", schema:"public", table:"driver_trips" }, (p)=>{
+      const t = p.new;
+      if (!t?.id) return;
+      store.set(t.id, t);
+      renderAll();
+      if (t.status === "requested") toast("🚕 Nouvelle demande !");
+    })
+    .on("postgres_changes", { event:"UPDATE", schema:"public", table:"driver_trips" }, (p)=>{
+      const t = p.new;
+      if (!t?.id) return;
+
+      // On garde seulement les états qu’on affiche
+      if (["requested","accepted","ongoing"].includes(t.status)){
+        store.set(t.id, t);
+      } else {
+        store.delete(t.id);
       }
-    }
+      renderAll();
+    })
+    .subscribe();
 
-    async function logout(){
-      stopTripsRealtime();
-      try{ await supabase.auth.signOut(); }catch(e){}
-      sessionUser = null;
-      trips = [];
-      renderLogin("Déconnecté ✅");
-    }
-
-    // --- Profile storage strategy (V2)
-    const LS_KEY = "digiy_driver_profile_v2";
-
-    function getLocalProfile(){
-      try{
-        const raw = localStorage.getItem(LS_KEY);
-        return raw ? JSON.parse(raw) : null;
-      }catch(e){ return null; }
-    }
-
-    function setLocalProfile(p){
-      try{ localStorage.setItem(LS_KEY, JSON.stringify(p)); }catch(e){}
-    }
-
-    async function loadProfile(){
-      const local = getLocalProfile() || {};
-      const base = {
-        full_name: local.full_name || "",
-        phone: local.phone || (sessionUser?.phone || ""),
-        city: local.city || "Dakar",
-        zone: local.zone || "Saly / Petite Côte",
-        status: local.status || "available",
-        vehicle_type: local.vehicle_type || "car",
-        fare_base: Number(local.fare_base ?? 1500),
-        fare_per_km: Number(local.fare_per_km ?? 350)
-      };
-
-      try{
-        const userId = sessionUser?.id;
-        if(!userId) return base;
-
-        const { data, error } = await supabase
-          .from("driver_profiles")
-          .select("*")
-          .eq("auth_user_id", userId)
-          .maybeSingle();
-
-        if(error) return base;
-
-        if(data){
-          const merged = {
-            ...base,
-            full_name: data.full_name ?? base.full_name,
-            phone: data.phone ?? base.phone,
-            city: data.city ?? base.city,
-            zone: data.zone ?? base.zone,
-            status: data.status ?? base.status,
-            vehicle_type: data.vehicle_type ?? base.vehicle_type,
-            fare_base: Number(data.fare_base ?? base.fare_base),
-            fare_per_km: Number(data.fare_per_km ?? base.fare_per_km)
-          };
-          setLocalProfile(merged);
-          return merged;
-        }
-
-        return base;
-      }catch(e){
-        return base;
-      }
-    }
-
-    async function saveProfile(){
-      const profile = {
-        full_name: safe($("#full_name").value),
-        phone: safe($("#phone_ro").value),
-        city: safe($("#city").value),
-        zone: safe($("#zone").value),
-        status: $("#status").value,
-        vehicle_type: $("#vehicle_type").value,
-        fare_base: Number($("#fare_base").value || 0),
-        fare_per_km: Number($("#fare_per_km").value || 0)
-      };
-
-      setLocalProfile(profile);
-
-      try{
-        const userId = sessionUser?.id;
-        if(!userId){
-          toast("#saveMsg", "✅ Enregistré (local).", "ok");
-          return;
-        }
-
-        const payload = {
-          auth_user_id: userId,
-          ...profile,
-          updated_at: new Date().toISOString()
-        };
-
-        const { error } = await supabase
-          .from("driver_profiles")
-          .upsert(payload, { onConflict: "auth_user_id" });
-
-        if(error){
-          toast("#saveMsg", "✅ Enregistré (local). DB pas prête : " + escapeHtml(error.message), "ok");
-          return;
-        }
-        toast("#saveMsg", "✅ Enregistré (local + DB).", "ok");
-      }catch(e){
-        toast("#saveMsg", "✅ Enregistré (local).", "ok");
-      }
-    }
-
-    async function refreshProfile(){
-      toast("#saveMsg", "⏳ Rafraîchissement…", "");
-      const p = await loadProfile();
-      renderDashboard(p);
-
-      // Reload trips too
-      trips = await loadTrips();
-      renderTripsTable();
-      startTripsRealtime();
-
-      toast("#saveMsg", "✅ OK.", "ok");
-    }
-
-    // --- Boot (SAFE)
-    async function boot(afterVerify=false){
-      try{
-        const { data, error } = await supabase.auth.getUser();
-
-        if(error || !data?.user){
-          stopTripsRealtime();
-          sessionUser = null;
-          trips = [];
-          renderLogin(afterVerify ? "Session non détectée. Réessaie." : "");
-          return;
-        }
-
-        sessionUser = data.user;
-
-        const profile = await loadProfile();
-        renderDashboard(profile);
-
-        // Load trips + realtime
-        trips = await loadTrips();
-        renderTripsTable();
-        startTripsRealtime();
-
-        supabase.auth.onAuthStateChange(async (_event, newSession) => {
-          if(!newSession?.user){
-            stopTripsRealtime();
-            sessionUser = null;
-            trips = [];
-            renderLogin("Session expirée. Reconnecte-toi.");
-          } else {
-            sessionUser = newSession.user;
-            // Re-attach realtime for this user (au cas où)
-            trips = await loadTrips();
-            renderTripsTable();
-            startTripsRealtime();
-          }
-        });
-      }catch(e){
-        stopTripsRealtime();
-        sessionUser = null;
-        trips = [];
-        renderLogin("Erreur chargement. Recharge la page (Cmd+Shift+R).");
-      }
-    }
-
-    // Start
-    renderLogin("");
-    boot();
-  </script>
+</script>
 </body>
 </html>
