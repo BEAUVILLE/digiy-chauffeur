@@ -1,597 +1,266 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>DIGIY DRIVER — Chauffeur (Realtime + GEO)</title>
-  <meta name="theme-color" content="#16a34a" />
-  <meta name="description" content="DIGIY DRIVER Chauffeur — courses en direct, filtrage zone & distance, 0% commission." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DIGIY DRIVER — Chauffeur</title>
 
-  <style>
-    :root{
-      --green:#16a34a;
-      --green2:#0f7a3a;
-      --sky:#0ea5e9;
-      --ok:#22c55e;
-      --bg:#f7fbf8;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --shadow: 0 10px 22px rgba(2,6,23,.08);
-      --radius:16px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: linear-gradient(180deg, #eafff3 0%, var(--bg) 40%, #ffffff 100%);
-      color:var(--text);
-    }
-    header{
-      position:sticky; top:0; z-index:5;
-      padding:14px 14px 12px;
-      background: linear-gradient(90deg, var(--green), #22c55e);
-      color:#fff;
-      box-shadow: 0 10px 18px rgba(22,163,74,.25);
-    }
-    .topRow{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-      max-width:980px; margin:0 auto;
-    }
-    .brand{
-      font-weight:900;
-      letter-spacing:.3px;
-      display:flex; align-items:center; gap:10px;
-      font-size:16px;
-      white-space:nowrap;
-    }
-    .pill{
-      background: rgba(255,255,255,.18);
-      border:1px solid rgba(255,255,255,.25);
-      padding:7px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:700;
-    }
-    main{max-width:980px; margin:0 auto; padding:14px;}
-    .bar{
-      background: #ffffffcc;
-      backdrop-filter: blur(6px);
-      border:1px solid rgba(15,23,42,.08);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding:12px;
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:10px;
-    }
-    .field label{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
-      display:block;
-      margin-bottom:6px;
-    }
-    select, input{
-      width:100%;
-      padding:10px 10px;
-      border-radius:12px;
-      border:1px solid rgba(15,23,42,.12);
-      outline:none;
-      font-size:14px;
-      background:#fff;
-    }
-    .status{
-      margin-top:12px;
-      padding:10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(15,23,42,.08);
-      background:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      box-shadow: var(--shadow);
-    }
-    .status .left{
-      display:flex; flex-direction:column; gap:2px;
-    }
-    .status .title{font-weight:900}
-    .status .sub{font-size:12px; color:var(--muted)}
-    .status .right{
-      font-size:12px;
-      font-weight:800;
-      padding:8px 10px;
-      border-radius:999px;
-      background:#eafff3;
-      border:1px solid rgba(22,163,74,.18);
-      color:var(--green2);
-      white-space:nowrap;
-    }
-    .grid{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap:12px;
-    }
-    @media(max-width:860px){
-      .bar{grid-template-columns:1fr}
-      .grid{grid-template-columns:1fr}
-    }
-    .trip{
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border:1px solid rgba(15,23,42,.08);
-      padding:14px;
-      overflow:hidden;
-      position:relative;
-    }
-    .trip .head{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-    }
-    .trip .route{
-      font-weight:900;
-      font-size:15px;
-      line-height:1.2;
-    }
-    .trip .meta{
-      margin-top:8px;
-      display:flex; flex-wrap:wrap; gap:8px;
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
-    }
-    .tag{
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(15,23,42,.10);
-      background:#fff;
-    }
-    .price{
-      margin-top:10px;
-      font-size:16px;
-      font-weight:1000;
-      color:var(--green2);
-    }
-    .actions{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
-    }
-    button{
-      width:100%;
-      padding:11px 10px;
-      border:none;
-      border-radius:12px;
-      font-weight:900;
-      font-size:14px;
-      cursor:pointer;
-    }
-    button:disabled{opacity:.55; cursor:not-allowed}
-    .btn-accept{background:var(--green); color:#fff}
-    .btn-start{background:var(--sky); color:#fff}
-    .btn-done{background:var(--ok); color:#fff}
-    .btn-ghost{
-      background:#fff;
-      border:1px solid rgba(15,23,42,.12);
-      color:var(--text);
-    }
-    .toast{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 16px;
-      background: rgba(15,23,42,.92);
-      color:#fff;
-      padding:10px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-      display:none;
-      z-index: 20;
-      max-width: 92vw;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  </style>
+<meta name="theme-color" content="#22c55e">
+<meta name="description" content="DIGIY DRIVER Chauffeur — tableau de bord, courses en temps réel, 0% commission.">
+
+<style>
+:root{
+  --green:#22c55e;
+  --green-dark:#16a34a;
+  --bg:#f0fdf4;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --radius:18px;
+  --shadow:0 10px 25px rgba(2,6,23,.08);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,#dcfce7 0%,#f0fdf4 60%,#ffffff 100%);
+  color:var(--text);
+}
+header{
+  background:linear-gradient(90deg,var(--green),#4ade80);
+  color:#fff;
+  padding:16px;
+  box-shadow:0 8px 20px rgba(34,197,94,.35);
+}
+.header-inner{
+  max-width:980px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.brand{
+  font-weight:900;
+  font-size:18px;
+}
+.pill{
+  background:rgba(255,255,255,.25);
+  border:1px solid rgba(255,255,255,.35);
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+}
+main{
+  max-width:980px;
+  margin:auto;
+  padding:16px;
+}
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px;
+  margin-bottom:14px;
+}
+.row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+@media(max-width:860px){
+  .row{grid-template-columns:1fr}
+}
+label{
+  font-size:12px;
+  font-weight:800;
+  color:var(--muted);
+}
+select{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(15,23,42,.15);
+  font-size:14px;
+}
+.status{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.status strong{font-size:15px}
+.badge{
+  padding:8px 14px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:13px;
+  background:#dcfce7;
+  color:#14532d;
+}
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+button{
+  border:none;
+  border-radius:14px;
+  padding:12px 16px;
+  font-weight:900;
+  cursor:pointer;
+}
+.btn-main{
+  background:var(--green);
+  color:#fff;
+}
+.btn-light{
+  background:#fff;
+  border:1px solid rgba(15,23,42,.15);
+}
+.trip{
+  border:1px solid rgba(15,23,42,.1);
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:12px;
+}
+.trip strong{font-size:15px}
+.trip .price{
+  color:var(--green-dark);
+  font-weight:1000;
+  margin-top:6px;
+}
+.empty{
+  text-align:center;
+  color:var(--muted);
+  padding:24px;
+}
+</style>
 </head>
 
 <body>
+
 <header>
-  <div class="topRow">
-    <div class="brand">🚕 DIGIY DRIVER <span class="pill">Chauffeur • Realtime</span></div>
+  <div class="header-inner">
+    <div class="brand">🚕 DIGIY DRIVER</div>
     <div class="pill" id="who">…</div>
   </div>
 </header>
 
 <main>
-  <div class="bar">
-    <div class="field">
-      <label>📍 Zone (pickup_zone)</label>
-      <select id="zoneFilter">
-        <option value="">Toutes</option>
-        <option value="Plateau">Plateau</option>
-        <option value="Almadies">Almadies</option>
-        <option value="Yoff">Yoff</option>
-        <option value="Saly">Saly</option>
-      </select>
-    </div>
 
-    <div class="field">
-      <label>📏 Rayon</label>
-      <select id="radiusFilter">
-        <option value="2">2 km</option>
-        <option value="3">3 km</option>
-        <option value="5" selected>5 km</option>
-        <option value="8">8 km</option>
-        <option value="10">10 km</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>🎛️ Vue</label>
-      <select id="viewFilter">
-        <option value="open" selected>Demandes ouvertes (requested)</option>
-        <option value="mine">Mes courses (accepted/ongoing)</option>
-        <option value="all">Tout (requested/accepted/ongoing)</option>
-      </select>
+  <!-- Filtres -->
+  <div class="card">
+    <div class="row">
+      <div>
+        <label>📍 Zone</label>
+        <select id="zoneFilter">
+          <option value="">Toutes</option>
+          <option>Saly</option>
+          <option>Dakar</option>
+          <option>Plateau</option>
+        </select>
+      </div>
+      <div>
+        <label>📏 Rayon</label>
+        <select id="radiusFilter">
+          <option value="3">3 km</option>
+          <option value="5" selected>5 km</option>
+          <option value="10">10 km</option>
+        </select>
+      </div>
+      <div>
+        <label>🎛️ Vue</label>
+        <select id="viewFilter">
+          <option value="open">Demandes ouvertes</option>
+          <option value="mine">Mes courses</option>
+          <option value="all">Tout</option>
+        </select>
+      </div>
     </div>
   </div>
 
-  <div class="status">
-    <div class="left">
-      <div class="title" id="statusTitle">Connexion…</div>
-      <div class="sub" id="statusSub">Chargement Supabase / GPS</div>
+  <!-- Dashboard -->
+  <div class="card status">
+    <div>
+      <strong id="statusTitle">Connexion…</strong><br>
+      <span id="statusSub" style="color:var(--muted)">Chargement…</span>
     </div>
-    <div class="right" id="gpsBadge">GPS: …</div>
+    <div class="badge" id="gpsBadge">GPS…</div>
   </div>
 
-  <div class="grid" id="trips"></div>
+  <div class="card status">
+    <div>
+      <strong>👤 Mon compte</strong><br>
+      <span id="meLine" style="color:var(--muted)">…</span>
+    </div>
+    <div class="actions">
+      <button class="btn-light" id="btnReload">🔄 Recharger</button>
+      <button class="btn-light" id="btnLogout">🚪 Déconnexion</button>
+    </div>
+  </div>
+
+  <!-- Courses -->
+  <div class="card">
+    <strong>🚦 Courses disponibles</strong>
+    <div id="trips" style="margin-top:12px"></div>
+  </div>
+
 </main>
 
-<div class="toast" id="toast"></div>
-
 <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* 🔐 SUPABASE (clé intégrée) */
-  const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-  const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+const SUPABASE_ANON_KEY = "COLLE_TON_ANON_KEY_ICI";
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // ✅ anti-doublon
-  globalThis.__sb ||= createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const sb = globalThis.__sb;
+const tripsEl = document.getElementById("trips");
+const whoEl = document.getElementById("who");
+const statusTitle = document.getElementById("statusTitle");
+const statusSub = document.getElementById("statusSub");
+const gpsBadge = document.getElementById("gpsBadge");
+const meLine = document.getElementById("meLine");
 
-  const tripsEl = document.getElementById("trips");
-  const zoneFilter = document.getElementById("zoneFilter");
-  const radiusFilter = document.getElementById("radiusFilter");
-  const viewFilter = document.getElementById("viewFilter");
-  const whoEl = document.getElementById("who");
-  const statusTitle = document.getElementById("statusTitle");
-  const statusSub = document.getElementById("statusSub");
-  const gpsBadge = document.getElementById("gpsBadge");
-  const toastEl = document.getElementById("toast");
+/* AUTH + GUARD */
+const { data } = await sb.auth.getSession();
+const session = data.session;
+if(!session){ location.href="redirection.html"; }
 
-  function toast(msg){
-    toastEl.textContent = msg;
-    toastEl.style.display = "block";
-    clearTimeout(globalThis.__t);
-    globalThis.__t = setTimeout(()=> toastEl.style.display="none", 2400);
-  }
+const uid = session.user.id;
+const { data: profile } = await sb
+  .from("profiles")
+  .select("role_auto, pro_type")
+  .eq("id", uid)
+  .single();
 
-  /* =========================
-     AUTH CHECK (session)
-  ========================== */
-  const { data: sess } = await sb.auth.getSession();
-  const session = sess?.session;
+if(!profile || profile.pro_type!=="driver"){
+  location.href="redirection.html";
+}
 
-  if (!session){
-    statusTitle.textContent = "❌ Non connecté";
-    statusSub.textContent = "Passe par la page login OTP chauffeur, puis reviens ici.";
-    whoEl.textContent = "Offline";
-    // 🔒 porte unique
-    location.href = "redirection.html";
-    return;
-  }
+whoEl.textContent = session.user.phone || session.user.email;
+meLine.textContent = `ID ${uid.slice(0,6)}… • Chauffeur personnes`;
+statusTitle.textContent = "🟢 En ligne";
+statusSub.textContent = "Prêt à recevoir des courses";
 
-  /* =========================
-     GUARD ANTI-ACCÈS DIRECT
-     (Driver PERSONNES uniquement)
-  ========================== */
-  const uid = session.user.id;
+/* GPS */
+gpsBadge.textContent = navigator.geolocation ? "GPS OK" : "GPS indisponible";
 
-  const { data: profile, error: profErr } = await sb
-    .from("profiles")
-    .select("role_auto, pro_type, active_modules")
-    .eq("id", uid)
-    .maybeSingle();
+/* LOAD COURSES (simple placeholder) */
+function renderEmpty(){
+  tripsEl.innerHTML = `<div class="empty">Aucune course pour l’instant.<br>Reste en ligne 🚕</div>`;
+}
+renderEmpty();
 
-  if (profErr || !profile) {
-    location.href = "redirection.html";
-    return;
-  }
-
-  const role = (profile.role_auto || "").toLowerCase();
-  const proType = (profile.pro_type || "").toLowerCase();
-  const mods = Array.isArray(profile.active_modules) ? profile.active_modules : [];
-
-  // 🚫 blocage explicite FRET (au cas où)
-  if (proType === "fret" || mods.includes("fret")) {
-    location.href = "redirection.html";
-    return;
-  }
-
-  // ✅ Autorisé seulement si c'est DRIVER personnes
-  const isDriverPersons =
-    (role === "chauffeur" && proType === "driver") ||
-    proType === "driver" ||
-    mods.includes("driver");
-
-  if (!isDriverPersons) {
-    location.href = "redirection.html";
-    return;
-  }
-
-  /* =========================
-     OK — connecté & autorisé
-  ========================== */
-  const user = session.user;
-  whoEl.textContent = (user.phone || user.email || "Chauffeur");
-
-  statusTitle.textContent = "🟢 En ligne";
-  statusSub.textContent = "Realtime actif • attente de courses";
-
-  /* =========================
-     GPS + Distance
-  ========================== */
-  let driverLat = null, driverLng = null;
-
-  function setGPSBadge(){
-    gpsBadge.textContent = (driverLat && driverLng) ? "GPS: OK" : "GPS: OFF";
-  }
-  setGPSBadge();
-
-  function distanceKm(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2-lat1) * Math.PI/180;
-    const dLon = (lon2-lon1) * Math.PI/180;
-    const a =
-      Math.sin(dLat/2)**2 +
-      Math.cos(lat1*Math.PI/180) *
-      Math.cos(lat2*Math.PI/180) *
-      Math.sin(dLon/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  }
-
-  if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(
-      (pos)=>{
-        driverLat = pos.coords.latitude;
-        driverLng = pos.coords.longitude;
-        setGPSBadge();
-      },
-      ()=>{
-        setGPSBadge();
-        statusSub.textContent = "GPS refusé • filtrage distance désactivé";
-      },
-      { enableHighAccuracy:true, maximumAge: 8000, timeout: 12000 }
-    );
-  } else {
-    statusSub.textContent = "GPS indisponible • filtrage distance désactivé";
-  }
-
-  /* =========================
-     STORE + FILTERS
-  ========================== */
-  const store = new Map(); // id -> trip row
-
-  function passesFilters(trip){
-    const z = zoneFilter.value;
-    const r = parseFloat(radiusFilter.value || "5");
-    const v = viewFilter.value;
-
-    if (v === "open" && trip.status !== "requested") return false;
-    if (v === "mine" && !(trip.status === "accepted" || trip.status === "ongoing")) return false;
-    if (v === "all" && !["requested","accepted","ongoing"].includes(trip.status)) return false;
-
-    if (z && (trip.pickup_zone || "") !== z) return false;
-
-    if (driverLat && driverLng && trip.pickup_lat && trip.pickup_lng) {
-      const d = distanceKm(driverLat, driverLng, trip.pickup_lat, trip.pickup_lng);
-      if (d > r) return false;
-    }
-
-    return true;
-  }
-
-  function formatTripMeta(trip){
-    const z = trip.pickup_zone ? `📍 ${trip.pickup_zone}` : "📍 Zone ?";
-    const c = trip.pickup_city ? `🏙️ ${trip.pickup_city}` : "🏙️ Ville ?";
-    const km = trip.distance_km ? `🛣️ ${trip.distance_km} km` : null;
-    const min = trip.duration_min ? `⏱️ ${trip.duration_min} min` : null;
-
-    let distStr = null;
-    if (driverLat && driverLng && trip.pickup_lat && trip.pickup_lng) {
-      const d = distanceKm(driverLat, driverLng, trip.pickup_lat, trip.pickup_lng);
-      distStr = `📏 ${d.toFixed(1)} km`;
-    }
-
-    return [c, z, distStr, km, min].filter(Boolean);
-  }
-
-  function renderAll(){
-    tripsEl.innerHTML = "";
-    const items = Array.from(store.values())
-      .filter(passesFilters)
-      .sort((a,b)=> (new Date(b.created_at) - new Date(a.created_at)));
-
-    if (!items.length){
-      tripsEl.innerHTML = `
-        <div class="trip" style="grid-column:1/-1">
-          <div class="route">Aucune course dans tes filtres</div>
-          <div class="meta">
-            <span class="tag">Essaie: Zone=Toutes</span>
-            <span class="tag">Rayon=10km</span>
-            <span class="tag">Vue=Demandes ouvertes</span>
-          </div>
-        </div>
-      `;
-      return;
-    }
-
-    for (const trip of items) {
-      const card = document.createElement("div");
-      card.className = "trip";
-      card.id = "trip-" + trip.id;
-
-      const route = `📍 ${trip.pickup_city || "?"} → ${trip.dropoff_city || "?"}`;
-      const metaTags = formatTripMeta(trip).map(x=>`<span class="tag">${x}</span>`).join("");
-
-      let actionsHtml = "";
-      if (trip.status === "requested") {
-        actionsHtml = `
-          <div class="actions">
-            <button class="btn-accept" data-id="${trip.id}" data-act="accept">Accepter</button>
-          </div>
-        `;
-      } else if (trip.status === "accepted") {
-        actionsHtml = `
-          <div class="actions">
-            <button class="btn-start" data-id="${trip.id}" data-act="start">Démarrer</button>
-            <button class="btn-ghost" data-id="${trip.id}" data-act="refresh">Rafraîchir</button>
-          </div>
-        `;
-      } else if (trip.status === "ongoing") {
-        actionsHtml = `
-          <div class="actions">
-            <button class="btn-done" data-id="${trip.id}" data-act="complete">Terminer</button>
-            <button class="btn-ghost" data-id="${trip.id}" data-act="refresh">Rafraîchir</button>
-          </div>
-        `;
-      }
-
-      card.innerHTML = `
-        <div class="head">
-          <div>
-            <div class="route">${route}</div>
-            <div class="meta">${metaTags}</div>
-            <div class="price">💰 ${(trip.amount ?? 0)} F CFA</div>
-          </div>
-          <div class="pill" style="color:#0f172a;background:#fff;border-color:rgba(15,23,42,.15)">
-            ${trip.status}
-          </div>
-        </div>
-        ${actionsHtml}
-      `;
-
-      tripsEl.appendChild(card);
-    }
-  }
-
-  /* =========================
-     ACTIONS RPC
-     (tes fonctions doivent exister)
-  ========================== */
-  async function rpcAction(action, tripId){
-    try{
-      if (!tripId) return;
-
-      toast(`⏳ ${action.toUpperCase()}…`);
-      let res;
-
-      if (action === "accept") {
-        res = await sb.rpc("accept_trip", { p_trip_id: tripId });
-      } else if (action === "start") {
-        res = await sb.rpc("start_trip", { p_trip_id: tripId });
-      } else if (action === "complete") {
-        res = await sb.rpc("complete_trip", { p_trip_id: tripId });
-      } else if (action === "refresh") {
-        await loadInitial();
-        toast("✅ Rafraîchi");
-        return;
-      } else {
-        return;
-      }
-
-      if (res.error){
-        console.error(res.error);
-        toast("❌ " + res.error.message);
-        return;
-      }
-
-      toast("✅ OK");
-    } catch(e){
-      console.error(e);
-      toast("❌ Erreur action");
-    }
-  }
-
-  document.addEventListener("click", (e)=>{
-    const btn = e.target?.closest("button[data-act]");
-    if (!btn) return;
-    const id = btn.getAttribute("data-id");
-    const act = btn.getAttribute("data-act");
-    rpcAction(act, id);
-  });
-
-  /* =========================
-     LOAD INITIAL DATA
-     ⚠️ driver_trips doit exister (table ou view)
-  ========================== */
-  async function loadInitial(){
-    const { data, error } = await sb
-      .from("driver_trips")
-      .select("*")
-      .in("status", ["requested","accepted","ongoing"])
-      .order("created_at", { ascending:false })
-      .limit(200);
-
-    if (error){
-      console.error(error);
-      statusSub.textContent = "Erreur chargement courses (driver_trips)";
-      return;
-    }
-    store.clear();
-    (data || []).forEach(t => t?.id && store.set(t.id, t));
-    renderAll();
-  }
-
-  zoneFilter.addEventListener("change", renderAll);
-  radiusFilter.addEventListener("change", renderAll);
-  viewFilter.addEventListener("change", renderAll);
-
-  // Re-render quand GPS bouge
-  setInterval(()=>{ renderAll(); }, 7000);
-
-  await loadInitial();
-
-  /* =========================
-     REALTIME
-  ========================== */
-  sb.channel("driver-trips-live")
-    .on("postgres_changes", { event:"INSERT", schema:"public", table:"driver_trips" }, (p)=>{
-      const t = p.new;
-      if (!t?.id) return;
-      store.set(t.id, t);
-      renderAll();
-      if (t.status === "requested") toast("🚕 Nouvelle demande !");
-    })
-    .on("postgres_changes", { event:"UPDATE", schema:"public", table:"driver_trips" }, (p)=>{
-      const t = p.new;
-      if (!t?.id) return;
-
-      if (["requested","accepted","ongoing"].includes(t.status)){
-        store.set(t.id, t);
-      } else {
-        store.delete(t.id);
-      }
-      renderAll();
-    })
-    .subscribe();
+/* Actions */
+document.getElementById("btnLogout").onclick = async ()=>{
+  await sb.auth.signOut();
+  location.href="index.html";
+};
+document.getElementById("btnReload").onclick = ()=>renderEmpty();
 </script>
+
 </body>
 </html>
