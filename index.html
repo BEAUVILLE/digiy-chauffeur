@@ -533,59 +533,57 @@
       }
     }
 
-    async function rpcAction(action, tripId){
-      try{
-        if (!tripId) return;
+    async function main(){
+  const { data: sess } = await sb.auth.getSession();
+  const session = sess?.session;
 
-        toast(`⏳ ${action.toUpperCase()}…`);
-        let res;
+  if (!session){
+    statusTitle.textContent = "❌ Non connecté";
+    statusSub.textContent = "Passe par login OTP puis reviens.";
+    whoEl.textContent = "Offline";
+    STOP("./redirection.html");
+  }
 
-        if (action === "accept") {
-          res = await sb.rpc("accept_trip", { p_trip_id: tripId });
-        } else if (action === "start") {
-          res = await sb.rpc("start_trip", { p_trip_id: tripId });
-        } else if (action === "complete") {
-          res = await sb.rpc("complete_trip", { p_trip_id: tripId });
-        } else if (action === "refresh") {
-          await loadInitial();
-          toast("✅ Rafraîchi");
-          return;
-        } else {
-          return;
-        }
+  const uid = session.user.id;
 
-        if (res.error){
-          console.error(res.error);
-          toast("❌ " + res.error.message);
-          return;
-        }
+  const { data: profile, error: profErr } = await sb
+    .from("profiles")
+    .select("role_auto, pro_type, active_modules")
+    .eq("id", uid)
+    .maybeSingle();
 
-        toast("✅ OK");
-      } catch(e){
-        console.error(e);
-        toast("❌ Erreur action");
-      }
-    }
+  if (profErr || !profile){
+    STOP("./redirection.html");
+  }
 
-    document.addEventListener("click", (e)=>{
-      const btn = e.target?.closest("button[data-act]");
-      if (!btn) return;
-      const id = btn.getAttribute("data-id");
-      const act = btn.getAttribute("data-act");
-      rpcAction(act, id);
-    });
+  const role = (profile.role_auto || "").toLowerCase();
+  const proType = (profile.pro_type || "").toLowerCase();
+  const mods = Array.isArray(profile.active_modules) ? profile.active_modules : [];
 
-    async function loadInitial(){
-      const { data, error } = await sb
-        .from("driver_trips")
-        .select("*")
-        .in("status", ["requested","accepted","ongoing"])
-        .order("created_at", { ascending:false })
-        .limit(200);
+  if (proType === "fret" || mods.includes("fret")){
+    STOP("./redirection.html");
+  }
 
-      if (error){
-        console.error(error);
-        statusSub.textContent = "Erreur chargement courses (driver_trips)";
+  const isDriverPersons =
+    (role === "chauffeur" && proType === "driver") ||
+    proType === "driver" ||
+    mods.includes("driver");
+
+  if (!isDriverPersons){
+    STOP("./redirection.html");
+  }
+
+  // OK — connecté & autorisé
+  const user = session.user;
+  whoEl.textContent = (user.phone || user.email || "Chauffeur");
+  meLine.textContent = `ID: ${uid.slice(0,6)}… • ROLE: ${profile.role_auto} • TYPE: ${profile.pro_type}`;
+
+  statusTitle.textContent = "🟢 En ligne";
+  statusSub.textContent = "Realtime actif • attente de courses";
+
+  // ... le reste de ton code continue
+}
+
         tripsEl.innerHTML = `
           <div class="trip" style="grid-column:1/-1">
             <div class="route">⚠️ Impossible de charger driver_trips</div>
