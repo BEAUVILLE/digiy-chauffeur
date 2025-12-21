@@ -2,171 +2,261 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>DIGIY DRIVER — Courses en direct</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>DIGIY DRIVER — Chauffeur (Realtime + GEO Ville)</title>
   <meta name="theme-color" content="#16a34a" />
+  <meta name="description" content="DIGIY DRIVER Chauffeur — courses en direct, filtrage ville & distance, 0% commission." />
 
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f6f7f8;
-      color: #111;
+    :root{
+      --green:#16a34a;
+      --green2:#0f7a3a;
+      --sky:#0ea5e9;
+      --ok:#22c55e;
+      --bg:#f7fbf8;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --shadow: 0 10px 22px rgba(2,6,23,.08);
+      --radius:16px;
     }
-    header {
-      background: #16a34a;
-      color: #fff;
-      padding: 16px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 18px;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #eafff3 0%, var(--bg) 40%, #ffffff 100%);
+      color:var(--text);
     }
-    #status {
-      padding: 10px;
-      text-align: center;
-      font-size: 14px;
+    header{
+      position:sticky; top:0; z-index:5;
+      padding:14px;
+      background: linear-gradient(90deg, var(--green), #22c55e);
+      color:#fff;
+      box-shadow: 0 10px 18px rgba(22,163,74,.25);
     }
-    #trips {
-      padding: 12px;
+    .topRow{
+      display:flex; align-items:center; justify-content:space-between;
+      max-width:980px; margin:0 auto; gap:10px;
     }
-    .trip {
-      background: #fff;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    .brand{
+      font-weight:900; letter-spacing:.3px;
+      display:flex; align-items:center; gap:10px; font-size:16px;
     }
-    .trip strong {
-      font-size: 16px;
+    .pill{
+      background: rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.25);
+      padding:7px 10px; border-radius:999px;
+      font-size:12px; font-weight:700;
     }
-    .price {
-      color: #16a34a;
-      font-weight: bold;
-      margin-top: 6px;
+    main{max-width:980px; margin:0 auto; padding:14px;}
+    .bar{
+      background:#ffffffcc; backdrop-filter: blur(6px);
+      border:1px solid rgba(15,23,42,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
     }
-    .actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
+    .field label{
+      font-size:12px; color:var(--muted); font-weight:800; margin-bottom:6px; display:block;
     }
-    button {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      cursor: pointer;
+    select{
+      width:100%; padding:10px; border-radius:12px;
+      border:1px solid rgba(15,23,42,.12); font-size:14px;
     }
-    .btn-accept { background:#16a34a; color:#fff; }
-    .btn-start  { background:#0ea5e9; color:#fff; }
-    .btn-done   { background:#22c55e; color:#fff; }
-    button:disabled { background:#aaa; cursor:not-allowed; }
+    .status{
+      margin-top:12px; padding:10px 12px;
+      border-radius:14px; border:1px solid rgba(15,23,42,.08);
+      background:#fff; display:flex; justify-content:space-between; gap:10px;
+      box-shadow: var(--shadow);
+    }
+    .grid{
+      margin-top:14px;
+      display:grid; grid-template-columns: repeat(2,1fr); gap:12px;
+    }
+    @media(max-width:860px){
+      .bar{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
+    }
+    .trip{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(15,23,42,.08);
+      padding:14px;
+    }
+    .route{font-weight:900}
+    .meta{margin-top:8px; display:flex; flex-wrap:wrap; gap:8px; font-size:12px; color:var(--muted)}
+    .tag{padding:6px 10px; border-radius:999px; border:1px solid rgba(15,23,42,.12)}
+    .price{margin-top:10px; font-size:16px; font-weight:1000; color:var(--green2)}
+    .actions{display:flex; gap:10px; margin-top:12px}
+    button{
+      width:100%; padding:11px; border:none; border-radius:12px;
+      font-weight:900; font-size:14px; cursor:pointer;
+    }
+    .btn-accept{background:var(--green); color:#fff}
+    .btn-start{background:var(--sky); color:#fff}
+    .btn-done{background:var(--ok); color:#fff}
+    .toast{
+      position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+      background:#0f172a; color:#fff; padding:10px 14px;
+      border-radius:999px; font-size:13px; font-weight:800; display:none;
+    }
   </style>
 </head>
-<body>
 
-<header>🚕 DIGIY DRIVER — Courses</header>
-<div id="status">Connexion…</div>
-<div id="trips"></div>
+<body>
+<header>
+  <div class="topRow">
+    <div class="brand">🚕 DIGIY DRIVER <span class="pill">GEO • Ville</span></div>
+    <div class="pill" id="who">…</div>
+  </div>
+</header>
+
+<main>
+  <!-- Filtres GEO par VILLE -->
+  <div class="bar">
+    <div class="field">
+      <label>🏙️ Ville (pickup_city)</label>
+      <select id="cityFilter">
+        <option value="">Toutes</option>
+        <option value="Dakar">Dakar</option>
+        <option value="Saly">Saly</option>
+        <option value="Thiès">Thiès</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>📏 Rayon</label>
+      <select id="radiusFilter">
+        <option value="3">3 km</option>
+        <option value="5" selected>5 km</option>
+        <option value="10">10 km</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>🎛️ Vue</label>
+      <select id="viewFilter">
+        <option value="open" selected>Demandes ouvertes</option>
+        <option value="mine">Mes courses</option>
+        <option value="all">Tout</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="status">
+    <div>
+      <strong id="statusTitle">Connexion…</strong><br>
+      <small id="statusSub">Realtime actif</small>
+    </div>
+    <div class="pill" id="gpsBadge">GPS…</div>
+  </div>
+
+  <div class="grid" id="trips"></div>
+</main>
+
+<div class="toast" id="toast"></div>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-/* 🔐 SUPABASE */
 const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-const SUPABASE_ANON_KEY = "TA_SUPABASE_ANON_KEY_ICI";
+const SUPABASE_ANON_KEY = "__ANON_KEY__";
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const statusEl = document.getElementById("status");
 const tripsEl = document.getElementById("trips");
+const cityFilter = document.getElementById("cityFilter");
+const radiusFilter = document.getElementById("radiusFilter");
+const viewFilter = document.getElementById("viewFilter");
+const whoEl = document.getElementById("who");
+const gpsBadge = document.getElementById("gpsBadge");
+const toastEl = document.getElementById("toast");
 
-/* =============================
-   AUTH
-============================= */
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.style.display="block";
+  setTimeout(()=>toastEl.style.display="none",2200);
+}
+
+/* AUTH */
 const { data:{ user } } = await supabase.auth.getUser();
-if (!user) {
-  statusEl.textContent = "❌ Non connecté";
-  throw new Error("Not authenticated");
-}
-statusEl.textContent = "🟢 En ligne";
+if (!user) throw new Error("Not authenticated");
+whoEl.textContent = user.phone || user.email || "Chauffeur";
 
-/* =============================
-   UI
-============================= */
-function renderTrip(trip) {
-  let el = document.getElementById("trip-"+trip.id);
-  if (!el) {
-    el = document.createElement("div");
-    el.className = "trip";
-    el.id = "trip-"+trip.id;
-    tripsEl.prepend(el);
+/* GPS */
+let driverLat=null, driverLng=null;
+navigator.geolocation?.watchPosition(
+  p=>{ driverLat=p.coords.latitude; driverLng=p.coords.longitude; gpsBadge.textContent="GPS OK"; },
+  ()=>{ gpsBadge.textContent="GPS OFF"; },
+  { enableHighAccuracy:true }
+);
+
+function distanceKm(lat1,lon1,lat2,lon2){
+  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+/* STORE */
+const store=new Map();
+
+function passesFilters(t){
+  if (cityFilter.value && t.pickup_city!==cityFilter.value) return false;
+  if (viewFilter.value==="open" && t.status!=="requested") return false;
+  if (viewFilter.value==="mine" && !["accepted","ongoing"].includes(t.status)) return false;
+  if (driverLat && driverLng && t.pickup_lat && t.pickup_lng){
+    if (distanceKm(driverLat,driverLng,t.pickup_lat,t.pickup_lng) > parseFloat(radiusFilter.value)) return false;
   }
-
-  let actions = "";
-  if (trip.status === "requested") {
-    actions = `<button class="btn-accept" onclick="acceptTrip('${trip.id}')">Accepter</button>`;
-  } else if (trip.status === "accepted") {
-    actions = `<button class="btn-start" onclick="startTrip('${trip.id}')">Démarrer</button>`;
-  } else if (trip.status === "ongoing") {
-    actions = `<button class="btn-done" onclick="completeTrip('${trip.id}')">Terminer</button>`;
-  }
-
-  el.innerHTML = `
-    <strong>📍 ${trip.pickup_city} → ${trip.dropoff_city}</strong>
-    <div class="price">💰 ${trip.amount} F CFA</div>
-    <div class="actions">${actions}</div>
-  `;
-
-  if (trip.status === "completed") el.remove();
+  return true;
 }
 
-function removeTrip(id){
-  const el = document.getElementById("trip-"+id);
-  if (el) el.remove();
+function render(){
+  tripsEl.innerHTML="";
+  [...store.values()].filter(passesFilters).forEach(t=>{
+    const el=document.createElement("div");
+    el.className="trip";
+    el.innerHTML=`
+      <div class="route">📍 ${t.pickup_city} → ${t.dropoff_city}</div>
+      <div class="meta">
+        <span class="tag">${t.pickup_city}</span>
+        <span class="tag">${t.status}</span>
+      </div>
+      <div class="price">💰 ${t.amount} F CFA</div>
+      <div class="actions">
+        ${t.status==="requested"?`<button class="btn-accept" data-id="${t.id}">Accepter</button>`:""}
+        ${t.status==="accepted"?`<button class="btn-start" data-id="${t.id}">Démarrer</button>`:""}
+        ${t.status==="ongoing"?`<button class="btn-done" data-id="${t.id}">Terminer</button>`:""}
+      </div>`;
+    tripsEl.appendChild(el);
+  });
 }
 
-/* =============================
-   RPC ACTIONS
-============================= */
-window.acceptTrip = async (id)=>{
-  await supabase.rpc("accept_trip",{ p_trip_id:id });
-};
+document.addEventListener("click",async e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  const id=b.dataset.id;
+  if(b.classList.contains("btn-accept")) await supabase.rpc("accept_trip",{p_trip_id:id});
+  if(b.classList.contains("btn-start")) await supabase.rpc("start_trip",{p_trip_id:id});
+  if(b.classList.contains("btn-done")) await supabase.rpc("complete_trip",{p_trip_id:id});
+});
 
-window.startTrip = async (id)=>{
-  await supabase.rpc("start_trip",{ p_trip_id:id });
-};
+/* LOAD */
+async function load(){
+  const { data } = await supabase.from("driver_trips")
+    .select("*").in("status",["requested","accepted","ongoing"]);
+  store.clear(); data?.forEach(t=>store.set(t.id,t)); render();
+}
+cityFilter.onchange=radiusFilter.onchange=viewFilter.onchange=render;
+await load();
 
-window.completeTrip = async (id)=>{
-  await supabase.rpc("complete_trip",{ p_trip_id:id });
-};
-
-/* =============================
-   LOAD EXISTING
-============================= */
-const { data:initial } = await supabase
-  .from("driver_trips")
-  .select("*")
-  .in("status",["requested","accepted","ongoing"])
-  .order("created_at",{ ascending:false });
-
-initial?.forEach(renderTrip);
-
-/* =============================
-   REALTIME
-============================= */
+/* REALTIME */
 supabase.channel("driver-trips-live")
-  .on("postgres_changes",{ event:"INSERT", schema:"public", table:"driver_trips" },
-    (p)=>renderTrip(p.new))
-  .on("postgres_changes",{ event:"UPDATE", schema:"public", table:"driver_trips" },
-    (p)=>{
-      if (["requested","accepted","ongoing"].includes(p.new.status)) {
-        renderTrip(p.new);
-      } else {
-        removeTrip(p.new.id);
-      }
-    })
+  .on("postgres_changes",{event:"INSERT",schema:"public",table:"driver_trips"},p=>{store.set(p.new.id,p.new);render();})
+  .on("postgres_changes",{event:"UPDATE",schema:"public",table:"driver_trips"},p=>{store.set(p.new.id,p.new);render();})
   .subscribe();
-
 </script>
 </body>
 </html>
+
