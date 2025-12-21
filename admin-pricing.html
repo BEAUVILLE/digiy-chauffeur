@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>DIGIY ADMIN — Tarifs par ville</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#16a34a" />
+  <meta name="description" content="DIGIY ADMIN — Gestion des tarifs par ville (RIDE & FRET)." />
+
+  <style>
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Arial, sans-serif;
+      background:#f7fbf8;
+      color:#0f172a;
+    }
+    header{
+      background:#16a34a;
+      color:#fff;
+      padding:16px;
+      text-align:center;
+      font-weight:900;
+      font-size:18px;
+    }
+    main{
+      max-width:900px;
+      margin:auto;
+      padding:16px;
+    }
+    .card{
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 10px 22px rgba(2,6,23,.08);
+      padding:16px;
+      margin-bottom:14px;
+    }
+    h2{
+      margin:0 0 12px 0;
+      font-size:18px;
+    }
+    label{
+      font-size:12px;
+      font-weight:800;
+      color:#475569;
+      display:block;
+      margin-bottom:6px;
+    }
+    input, select{
+      width:100%;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid rgba(15,23,42,.15);
+      font-size:14px;
+      margin-bottom:12px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap:10px;
+    }
+    @media(max-width:720px){
+      .grid{grid-template-columns:1fr}
+    }
+    button{
+      padding:12px;
+      border:none;
+      border-radius:14px;
+      background:#16a34a;
+      color:#fff;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+      width:100%;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+      font-size:13px;
+    }
+    th, td{
+      padding:10px;
+      border-bottom:1px solid #e5e7eb;
+      text-align:left;
+    }
+    th{
+      background:#eafff3;
+      font-weight:900;
+    }
+    .badge{
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      background:#eafff3;
+      color:#065f46;
+    }
+    .danger{
+      background:#ef4444;
+    }
+  </style>
+</head>
+<body>
+
+<header>🛠️ DIGIY ADMIN — Tarifs par ville</header>
+
+<main>
+
+  <!-- FORM -->
+  <div class="card">
+    <h2>➕ Ajouter / Modifier un tarif</h2>
+
+    <label>Ville</label>
+    <input id="city" placeholder="Dakar, Saly, Thiès, DEFAULT_SN…" />
+
+    <label>Type de service</label>
+    <select id="serviceType">
+      <option value="RIDE">RIDE — Transport de personnes</option>
+      <option value="FRET">FRET — Marchandises / Taxi bagages</option>
+    </select>
+
+    <div class="grid">
+      <div>
+        <label>Base (F CFA)</label>
+        <input id="base" type="number" />
+      </div>
+      <div>
+        <label>Par km (F CFA)</label>
+        <input id="perKm" type="number" />
+      </div>
+      <div>
+        <label>Par minute (F CFA)</label>
+        <input id="perMin" type="number" />
+      </div>
+    </div>
+
+    <label>Plancher minimum (F CFA)</label>
+    <input id="minPrice" type="number" />
+
+    <button onclick="savePricing()">💾 Enregistrer le tarif</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <h2>📋 Tarifs existants</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Ville</th>
+          <th>Service</th>
+          <th>Base</th>
+          <th>Km</th>
+          <th>Min</th>
+          <th>Plancher</th>
+        </tr>
+      </thead>
+      <tbody id="pricingTable"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+/* 🔐 TES CLÉS SUPABASE */
+const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.4Y9n9nOZcYx6bGZ7x3t8k6pJ3hVt9R9V0mYk4hJ7m9A";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* AUTH CHECK (ADMIN ONLY conseillé via RLS) */
+const { data:{ user } } = await supabase.auth.getUser();
+if (!user) {
+  alert("Accès refusé");
+  throw new Error("Not authenticated");
+}
+
+/* LOAD TABLE */
+async function loadPricing(){
+  const { data } = await supabase
+    .from("pricing_rules")
+    .select("*")
+    .order("city");
+
+  const tbody = document.getElementById("pricingTable");
+  tbody.innerHTML = "";
+
+  data?.forEach(r=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.city}</td>
+      <td><span class="badge">${r.service_type || "RIDE"}</span></td>
+      <td>${r.base_fee}</td>
+      <td>${r.price_per_km}</td>
+      <td>${r.price_per_min}</td>
+      <td><strong>${r.min_price}</strong></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* SAVE */
+window.savePricing = async ()=>{
+  const payload = {
+    city: document.getElementById("city").value,
+    service_type: document.getElementById("serviceType").value,
+    base_fee: parseInt(document.getElementById("base").value),
+    price_per_km: parseInt(document.getElementById("perKm").value),
+    price_per_min: parseInt(document.getElementById("perMin").value),
+    min_price: parseInt(document.getElementById("minPrice").value),
+    active: true
+  };
+
+  const { error } = await supabase
+    .from("pricing_rules")
+    .upsert(payload, { onConflict: "city,service_type" });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("✅ Tarif enregistré");
+  loadPricing();
+};
+
+await loadPricing();
+</script>
+
+</body>
+</html>
