@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>DIGIY DRIVER — Courses en direct</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#16a34a" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f7f8;
+      color: #111;
+    }
+    header {
+      background: #16a34a;
+      color: #fff;
+      padding: 16px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    #status {
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+    #trips {
+      padding: 12px;
+    }
+    .trip {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .trip strong {
+      font-size: 16px;
+    }
+    .price {
+      color: #16a34a;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .btn-accept { background:#16a34a; color:#fff; }
+    .btn-start  { background:#0ea5e9; color:#fff; }
+    .btn-done   { background:#22c55e; color:#fff; }
+    button:disabled { background:#aaa; cursor:not-allowed; }
+  </style>
+</head>
+<body>
+
+<header>🚕 DIGIY DRIVER — Courses</header>
+<div id="status">Connexion…</div>
+<div id="trips"></div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+/* 🔐 SUPABASE */
+const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+const SUPABASE_ANON_KEY = "TA_SUPABASE_ANON_KEY_ICI";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const statusEl = document.getElementById("status");
+const tripsEl = document.getElementById("trips");
+
+/* =============================
+   AUTH
+============================= */
+const { data:{ user } } = await supabase.auth.getUser();
+if (!user) {
+  statusEl.textContent = "❌ Non connecté";
+  throw new Error("Not authenticated");
+}
+statusEl.textContent = "🟢 En ligne";
+
+/* =============================
+   UI
+============================= */
+function renderTrip(trip) {
+  let el = document.getElementById("trip-"+trip.id);
+  if (!el) {
+    el = document.createElement("div");
+    el.className = "trip";
+    el.id = "trip-"+trip.id;
+    tripsEl.prepend(el);
+  }
+
+  let actions = "";
+  if (trip.status === "requested") {
+    actions = `<button class="btn-accept" onclick="acceptTrip('${trip.id}')">Accepter</button>`;
+  } else if (trip.status === "accepted") {
+    actions = `<button class="btn-start" onclick="startTrip('${trip.id}')">Démarrer</button>`;
+  } else if (trip.status === "ongoing") {
+    actions = `<button class="btn-done" onclick="completeTrip('${trip.id}')">Terminer</button>`;
+  }
+
+  el.innerHTML = `
+    <strong>📍 ${trip.pickup_city} → ${trip.dropoff_city}</strong>
+    <div class="price">💰 ${trip.amount} F CFA</div>
+    <div class="actions">${actions}</div>
+  `;
+
+  if (trip.status === "completed") el.remove();
+}
+
+function removeTrip(id){
+  const el = document.getElementById("trip-"+id);
+  if (el) el.remove();
+}
+
+/* =============================
+   RPC ACTIONS
+============================= */
+window.acceptTrip = async (id)=>{
+  await supabase.rpc("accept_trip",{ p_trip_id:id });
+};
+
+window.startTrip = async (id)=>{
+  await supabase.rpc("start_trip",{ p_trip_id:id });
+};
+
+window.completeTrip = async (id)=>{
+  await supabase.rpc("complete_trip",{ p_trip_id:id });
+};
+
+/* =============================
+   LOAD EXISTING
+============================= */
+const { data:initial } = await supabase
+  .from("driver_trips")
+  .select("*")
+  .in("status",["requested","accepted","ongoing"])
+  .order("created_at",{ ascending:false });
+
+initial?.forEach(renderTrip);
+
+/* =============================
+   REALTIME
+============================= */
+supabase.channel("driver-trips-live")
+  .on("postgres_changes",{ event:"INSERT", schema:"public", table:"driver_trips" },
+    (p)=>renderTrip(p.new))
+  .on("postgres_changes",{ event:"UPDATE", schema:"public", table:"driver_trips" },
+    (p)=>{
+      if (["requested","accepted","ongoing"].includes(p.new.status)) {
+        renderTrip(p.new);
+      } else {
+        removeTrip(p.new.id);
+      }
+    })
+  .subscribe();
+
+</script>
+</body>
+</html>
