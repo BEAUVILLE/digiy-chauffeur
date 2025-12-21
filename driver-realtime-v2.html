@@ -47,6 +47,10 @@
       border:1px solid rgba(255,255,255,.25);
       padding:7px 10px; border-radius:999px;
       font-size:12px; font-weight:700;
+      max-width: 46vw;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
     main{max-width:980px; margin:0 auto; padding:14px;}
     .bar{
@@ -65,12 +69,15 @@
     select{
       width:100%; padding:10px; border-radius:12px;
       border:1px solid rgba(15,23,42,.12); font-size:14px;
+      background:#fff;
+      outline:none;
     }
     .status{
       margin-top:12px; padding:10px 12px;
       border-radius:14px; border:1px solid rgba(15,23,42,.08);
       background:#fff; display:flex; justify-content:space-between; gap:10px;
       box-shadow: var(--shadow);
+      align-items:center;
     }
     .grid{
       margin-top:14px;
@@ -79,6 +86,7 @@
     @media(max-width:860px){
       .bar{grid-template-columns:1fr}
       .grid{grid-template-columns:1fr}
+      .pill{max-width:62vw}
     }
     .trip{
       background:var(--card);
@@ -88,21 +96,53 @@
       padding:14px;
     }
     .route{font-weight:900}
-    .meta{margin-top:8px; display:flex; flex-wrap:wrap; gap:8px; font-size:12px; color:var(--muted)}
-    .tag{padding:6px 10px; border-radius:999px; border:1px solid rgba(15,23,42,.12)}
+    .meta{
+      margin-top:8px;
+      display:flex; flex-wrap:wrap; gap:8px;
+      font-size:12px; color:var(--muted);
+      font-weight:700;
+    }
+    .tag{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(15,23,42,.12);
+      background:#fff;
+    }
     .price{margin-top:10px; font-size:16px; font-weight:1000; color:var(--green2)}
     .actions{display:flex; gap:10px; margin-top:12px}
     button{
-      width:100%; padding:11px; border:none; border-radius:12px;
-      font-weight:900; font-size:14px; cursor:pointer;
+      width:100%;
+      padding:11px;
+      border:none;
+      border-radius:12px;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+      min-height:44px; /* mobile friendly */
+      touch-action:manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn-accept{background:var(--green); color:#fff}
     .btn-start{background:var(--sky); color:#fff}
     .btn-done{background:var(--ok); color:#fff}
     .toast{
-      position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
-      background:#0f172a; color:#fff; padding:10px 14px;
-      border-radius:999px; font-size:13px; font-weight:800; display:none;
+      position:fixed;
+      bottom:16px;
+      bottom:calc(16px + env(safe-area-inset-bottom));
+      left:50%;
+      transform:translateX(-50%);
+      background: rgba(15,23,42,.92);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
+      display:none;
+      max-width:92vw;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      z-index:20;
     }
   </style>
 </head>
@@ -161,102 +201,201 @@
 <div class="toast" id="toast"></div>
 
 <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-const SUPABASE_ANON_KEY = "__ANON_KEY__";
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
 
-const tripsEl = document.getElementById("trips");
-const cityFilter = document.getElementById("cityFilter");
-const radiusFilter = document.getElementById("radiusFilter");
-const viewFilter = document.getElementById("viewFilter");
-const whoEl = document.getElementById("who");
-const gpsBadge = document.getElementById("gpsBadge");
-const toastEl = document.getElementById("toast");
+  /* ✅ Ta vraie ANON KEY (pas de __ANON_KEY__) */
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
 
-function toast(msg){
-  toastEl.textContent = msg;
-  toastEl.style.display="block";
-  setTimeout(()=>toastEl.style.display="none",2200);
-}
+  /* ✅ Anti-doublon client */
+  globalThis.__sb ||= createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabase = globalThis.__sb;
 
-/* AUTH */
-const { data:{ user } } = await supabase.auth.getUser();
-if (!user) throw new Error("Not authenticated");
-whoEl.textContent = user.phone || user.email || "Chauffeur";
+  const tripsEl = document.getElementById("trips");
+  const cityFilter = document.getElementById("cityFilter");
+  const radiusFilter = document.getElementById("radiusFilter");
+  const viewFilter = document.getElementById("viewFilter");
+  const whoEl = document.getElementById("who");
+  const gpsBadge = document.getElementById("gpsBadge");
+  const toastEl = document.getElementById("toast");
+  const statusTitle = document.getElementById("statusTitle");
+  const statusSub = document.getElementById("statusSub");
 
-/* GPS */
-let driverLat=null, driverLng=null;
-navigator.geolocation?.watchPosition(
-  p=>{ driverLat=p.coords.latitude; driverLng=p.coords.longitude; gpsBadge.textContent="GPS OK"; },
-  ()=>{ gpsBadge.textContent="GPS OFF"; },
-  { enableHighAccuracy:true }
-);
-
-function distanceKm(lat1,lon1,lat2,lon2){
-  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
-  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-}
-
-/* STORE */
-const store=new Map();
-
-function passesFilters(t){
-  if (cityFilter.value && t.pickup_city!==cityFilter.value) return false;
-  if (viewFilter.value==="open" && t.status!=="requested") return false;
-  if (viewFilter.value==="mine" && !["accepted","ongoing"].includes(t.status)) return false;
-  if (driverLat && driverLng && t.pickup_lat && t.pickup_lng){
-    if (distanceKm(driverLat,driverLng,t.pickup_lat,t.pickup_lng) > parseFloat(radiusFilter.value)) return false;
+  let toastT = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.style.display="block";
+    clearTimeout(toastT);
+    toastT = setTimeout(()=>toastEl.style.display="none",2200);
   }
-  return true;
-}
 
-function render(){
-  tripsEl.innerHTML="";
-  [...store.values()].filter(passesFilters).forEach(t=>{
-    const el=document.createElement("div");
-    el.className="trip";
-    el.innerHTML=`
-      <div class="route">📍 ${t.pickup_city} → ${t.dropoff_city}</div>
-      <div class="meta">
-        <span class="tag">${t.pickup_city}</span>
-        <span class="tag">${t.status}</span>
-      </div>
-      <div class="price">💰 ${t.amount} F CFA</div>
-      <div class="actions">
-        ${t.status==="requested"?`<button class="btn-accept" data-id="${t.id}">Accepter</button>`:""}
-        ${t.status==="accepted"?`<button class="btn-start" data-id="${t.id}">Démarrer</button>`:""}
-        ${t.status==="ongoing"?`<button class="btn-done" data-id="${t.id}">Terminer</button>`:""}
-      </div>`;
-    tripsEl.appendChild(el);
+  /* AUTH */
+  const { data: u, error: uerr } = await supabase.auth.getUser();
+  if (uerr) console.warn(uerr);
+  const user = u?.user;
+
+  if (!user){
+    statusTitle.textContent = "❌ Non connecté";
+    statusSub.textContent = "Passe par la page login OTP chauffeur, puis reviens ici.";
+    whoEl.textContent = "Offline";
+    throw new Error("Not authenticated");
+  }
+
+  whoEl.textContent = user.phone || user.email || "Chauffeur";
+  statusTitle.textContent = "🟢 En ligne";
+  statusSub.textContent = "Realtime actif • attente de courses";
+
+  /* GPS */
+  let driverLat=null, driverLng=null;
+  navigator.geolocation?.watchPosition(
+    p=>{ driverLat=p.coords.latitude; driverLng=p.coords.longitude; gpsBadge.textContent="GPS OK"; },
+    ()=>{ gpsBadge.textContent="GPS OFF"; },
+    { enableHighAccuracy:true, maximumAge: 8000, timeout: 12000 }
+  );
+
+  function distanceKm(lat1,lon1,lat2,lon2){
+    const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
+    const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+    return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  }
+
+  /* STORE */
+  const store=new Map();
+  const ACTIVE = ["requested","accepted","ongoing"];
+
+  function passesFilters(t){
+    if (cityFilter.value && t.pickup_city!==cityFilter.value) return false;
+
+    if (viewFilter.value==="open" && t.status!=="requested") return false;
+    if (viewFilter.value==="mine" && !["accepted","ongoing"].includes(t.status)) return false;
+    if (viewFilter.value==="all" && !ACTIVE.includes(t.status)) return false;
+
+    if (driverLat && driverLng && t.pickup_lat && t.pickup_lng){
+      if (distanceKm(driverLat,driverLng,t.pickup_lat,t.pickup_lng) > parseFloat(radiusFilter.value)) return false;
+    }
+    return true;
+  }
+
+  function render(){
+    tripsEl.innerHTML="";
+
+    const items = [...store.values()]
+      .filter(passesFilters)
+      .sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
+
+    if (!items.length){
+      tripsEl.innerHTML = `
+        <div class="trip" style="grid-column:1/-1">
+          <div class="route">Aucune course pour tes filtres</div>
+          <div class="meta">
+            <span class="tag">Ville = Toutes</span>
+            <span class="tag">Rayon = 10km</span>
+            <span class="tag">Vue = Demandes ouvertes</span>
+          </div>
+        </div>`;
+      return;
+    }
+
+    for (const t of items){
+      const el=document.createElement("div");
+      el.className="trip";
+
+      const distTag = (driverLat && driverLng && t.pickup_lat && t.pickup_lng)
+        ? `<span class="tag">📏 ${distanceKm(driverLat,driverLng,t.pickup_lat,t.pickup_lng).toFixed(1)} km</span>`
+        : "";
+
+      el.innerHTML=`
+        <div class="route">📍 ${t.pickup_city || "?"} → ${t.dropoff_city || "?"}</div>
+        <div class="meta">
+          <span class="tag">${t.pickup_city || "?"}</span>
+          <span class="tag">${t.status || "?"}</span>
+          ${distTag}
+        </div>
+        <div class="price">💰 ${Number(t.amount ?? 0).toLocaleString("fr-FR")} F CFA</div>
+        <div class="actions">
+          ${t.status==="requested"?`<button class="btn-accept" data-id="${t.id}" data-act="accept">Accepter</button>`:""}
+          ${t.status==="accepted"?`<button class="btn-start" data-id="${t.id}" data-act="start">Démarrer</button>`:""}
+          ${t.status==="ongoing"?`<button class="btn-done" data-id="${t.id}" data-act="complete">Terminer</button>`:""}
+        </div>`;
+      tripsEl.appendChild(el);
+    }
+  }
+
+  /* LOAD */
+  async function load(){
+    const { data, error } = await supabase.from("driver_trips")
+      .select("*")
+      .in("status", ACTIVE);
+
+    if (error){
+      console.error(error);
+      statusTitle.textContent = "⚠️ Erreur";
+      statusSub.textContent = "driver_trips inaccessible";
+      toast("❌ Erreur chargement");
+      return;
+    }
+
+    store.clear();
+    data?.forEach(t => t?.id && store.set(t.id,t));
+    render();
+  }
+
+  cityFilter.onchange = radiusFilter.onchange = viewFilter.onchange = render;
+  await load();
+
+  /* ACTIONS */
+  async function rpcAction(act, id){
+    if (!id) return;
+    try{
+      toast("⏳ Action…");
+
+      let res;
+      if(act === "accept") res = await supabase.rpc("accept_trip",{ p_trip_id:id });
+      if(act === "start") res  = await supabase.rpc("start_trip",{ p_trip_id:id });
+      if(act === "complete") res = await supabase.rpc("complete_trip",{ p_trip_id:id });
+
+      if (res?.error){
+        console.error(res.error);
+        toast("❌ " + res.error.message);
+        return;
+      }
+
+      toast("✅ OK");
+      await load(); // fiabilité max si realtime arrive en retard
+    }catch(err){
+      console.error(err);
+      toast("❌ Erreur action");
+    }
+  }
+
+  document.addEventListener("click", async (e)=>{
+    const b = e.target.closest("button[data-act]");
+    if(!b) return;
+    rpcAction(b.dataset.act, b.dataset.id);
   });
-}
 
-document.addEventListener("click",async e=>{
-  const b=e.target.closest("button"); if(!b) return;
-  const id=b.dataset.id;
-  if(b.classList.contains("btn-accept")) await supabase.rpc("accept_trip",{p_trip_id:id});
-  if(b.classList.contains("btn-start")) await supabase.rpc("start_trip",{p_trip_id:id});
-  if(b.classList.contains("btn-done")) await supabase.rpc("complete_trip",{p_trip_id:id});
-});
+  /* REALTIME */
+  supabase.channel("driver-trips-live")
+    .on("postgres_changes",{event:"INSERT",schema:"public",table:"driver_trips"}, p=>{
+      const t = p.new;
+      if (!t?.id) return;
+      if (ACTIVE.includes(t.status)) store.set(t.id, t);
+      render();
+      if (t.status === "requested") toast("🚕 Nouvelle demande !");
+    })
+    .on("postgres_changes",{event:"UPDATE",schema:"public",table:"driver_trips"}, p=>{
+      const t = p.new;
+      if (!t?.id) return;
 
-/* LOAD */
-async function load(){
-  const { data } = await supabase.from("driver_trips")
-    .select("*").in("status",["requested","accepted","ongoing"]);
-  store.clear(); data?.forEach(t=>store.set(t.id,t)); render();
-}
-cityFilter.onchange=radiusFilter.onchange=viewFilter.onchange=render;
-await load();
+      // ✅ si la course sort de requested/accepted/ongoing => on enlève
+      if (ACTIVE.includes(t.status)) store.set(t.id, t);
+      else store.delete(t.id);
 
-/* REALTIME */
-supabase.channel("driver-trips-live")
-  .on("postgres_changes",{event:"INSERT",schema:"public",table:"driver_trips"},p=>{store.set(p.new.id,p.new);render();})
-  .on("postgres_changes",{event:"UPDATE",schema:"public",table:"driver_trips"},p=>{store.set(p.new.id,p.new);render();})
-  .subscribe();
+      render();
+    })
+    .subscribe();
 </script>
 </body>
 </html>
-
