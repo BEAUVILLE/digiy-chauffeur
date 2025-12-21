@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>DIGIY DRIVER — Courses en direct</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#16a34a" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f7f8;
+      color: #111;
+    }
+
+    header {
+      background: #16a34a;
+      color: #fff;
+      padding: 16px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    #status {
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    #trips {
+      padding: 12px;
+    }
+
+    .trip {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .trip strong {
+      font-size: 16px;
+    }
+
+    .trip .price {
+      color: #16a34a;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    .trip button {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #16a34a;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .trip button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<header>🚕 DIGIY DRIVER — Courses en direct</header>
+
+<div id="status">Connexion en cours…</div>
+<div id="trips"></div>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  /* 🔐 SUPABASE — METS TES CLÉS */
+  const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+  const SUPABASE_ANON_KEY = "TA_SUPABASE_ANON_KEY_ICI";
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const statusEl = document.getElementById("status");
+  const tripsEl = document.getElementById("trips");
+
+  /* =============================
+     AUTH CHECK
+  ============================= */
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    statusEl.textContent = "❌ Non connecté — ouvre via l’espace chauffeur";
+    throw new Error("Not authenticated");
+  }
+
+  statusEl.textContent = "🟢 En ligne — en attente de courses…";
+
+  /* =============================
+     UI HELPERS
+  ============================= */
+  function renderTrip(trip) {
+    if (document.getElementById("trip-" + trip.id)) return;
+
+    const el = document.createElement("div");
+    el.className = "trip";
+    el.id = "trip-" + trip.id;
+
+    el.innerHTML = `
+      <strong>📍 ${trip.pickup_city} → ${trip.dropoff_city}</strong>
+      <div class="price">💰 ${trip.amount} F CFA</div>
+      <button>Accepter la course</button>
+    `;
+
+    el.querySelector("button").onclick = () => acceptTrip(trip.id);
+
+    tripsEl.prepend(el);
+  }
+
+  function removeTrip(tripId) {
+    const el = document.getElementById("trip-" + tripId);
+    if (el) el.remove();
+  }
+
+  /* =============================
+     ACCEPT TRIP
+  ============================= */
+  async function acceptTrip(tripId) {
+    const btn = document.querySelector(`#trip-${tripId} button`);
+    btn.disabled = true;
+    btn.textContent = "⏳ Acceptation…";
+
+    const { data, error } = await supabase.rpc("accept_trip", {
+      p_trip_id: tripId
+    });
+
+    if (error) {
+      alert(error.message);
+      btn.disabled = false;
+      btn.textContent = "Accepter la course";
+      return;
+    }
+
+    statusEl.textContent = "🚕 Course acceptée";
+    removeTrip(tripId);
+  }
+
+  /* =============================
+     LOAD EXISTING REQUESTED
+  ============================= */
+  const { data: existingTrips } = await supabase
+    .from("driver_trips")
+    .select("*")
+    .eq("status", "requested")
+    .order("created_at", { ascending: false });
+
+  existingTrips?.forEach(renderTrip);
+
+  /* =============================
+     REALTIME
+  ============================= */
+  supabase
+    .channel("driver-trips-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "driver_trips",
+        filter: "status=eq.requested"
+      },
+      (payload) => {
+        renderTrip(payload.new);
+      }
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "driver_trips"
+      },
+      (payload) => {
+        if (payload.new.status !== "requested") {
+          removeTrip(payload.new.id);
+        }
+      }
+    )
+    .subscribe();
+</script>
+
+</body>
+</html>
