@@ -13,16 +13,14 @@
       --green2:#16a34a;
       --sky:#0ea5e9;
       --ok:#22c55e;
-
       --bg:#f0fdf4;
       --bg2:#ffffff;
       --card:#ffffff;
-
       --text:#0f172a;
       --muted:#64748b;
-
       --shadow:0 12px 28px rgba(2,6,23,.08);
       --radius:18px;
+      --warn:#f59e0b;
     }
     *{box-sizing:border-box}
     body{
@@ -60,7 +58,6 @@
       white-space:nowrap;
     }
     main{max-width:980px; margin:0 auto; padding:14px;}
-
     .card{
       background:#ffffffcc;
       backdrop-filter: blur(7px);
@@ -70,7 +67,6 @@
       padding:14px;
       margin-bottom:12px;
     }
-
     .bar{
       display:grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -80,7 +76,6 @@
       .bar{grid-template-columns:1fr}
       .grid{grid-template-columns:1fr}
     }
-
     .field label{
       font-size:12px;
       color:var(--muted);
@@ -97,7 +92,6 @@
       font-size:14px;
       background:#fff;
     }
-
     .status{
       display:flex;
       align-items:center;
@@ -108,7 +102,6 @@
     .status .left{display:flex; flex-direction:column; gap:2px}
     .status .title{font-weight:1000}
     .status .sub{font-size:12px; color:var(--muted); font-weight:800}
-
     .badge{
       font-size:12px;
       font-weight:1000;
@@ -119,7 +112,6 @@
       color:#14532d;
       white-space:nowrap;
     }
-
     .actionsTop{
       display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; align-items:center;
     }
@@ -137,13 +129,11 @@
       border:1px solid rgba(15,23,42,.14);
       color:var(--text);
     }
-
     .grid{
       display:grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap:12px;
     }
-
     .trip{
       background: var(--card);
       border-radius: var(--radius);
@@ -180,19 +170,11 @@
       font-weight:1100;
       color:var(--green2);
     }
-    .actions{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
-    }
+    .actions{display:flex; gap:10px; margin-top:12px;}
     .btn-accept{background:var(--green2); color:#fff}
     .btn-start{background:var(--sky); color:#fff}
     .btn-done{background:var(--ok); color:#fff}
-    .btn-ghost{
-      background:#fff;
-      border:1px solid rgba(15,23,42,.12);
-      color:var(--text);
-    }
+    .btn-ghost{background:#fff;border:1px solid rgba(15,23,42,.12);color:var(--text);}
     .toast{
       position: fixed;
       left: 50%;
@@ -211,11 +193,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .note{
-      margin-top:8px;
-      font-size:12px;
-      font-weight:800;
-      color:var(--muted);
+    .warn{
+      border:1px solid rgba(245,158,11,.35);
+      background: rgba(245,158,11,.12);
+      color:#7c2d12;
     }
   </style>
 </head>
@@ -263,13 +244,16 @@
         </select>
       </div>
     </div>
-
-    <div class="note">
-      Astuce : si rien n’apparaît, c’est soit qu’il n’y a pas de courses, soit que <b>driver_trips</b> n’existe pas / RLS bloque.
-    </div>
   </div>
 
-  <!-- Dashboard clair -->
+  <div class="card status" id="bannerCard" style="display:none">
+    <div class="left">
+      <div class="title">⚠️ Profil à compléter</div>
+      <div class="sub" id="bannerText">On te laisse entrer, mais mets tes infos chauffeur dès que possible.</div>
+    </div>
+    <div class="badge warn">Action requise</div>
+  </div>
+
   <div class="card status">
     <div class="left">
       <div class="title" id="statusTitle">Connexion…</div>
@@ -298,8 +282,7 @@
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
   /* =========================
-     PORTE UNIQUE = DIGIY HUB
-     (repo séparé: digiy-chauffeur -> redirige vers digiy-hub)
+     PORTE UNIQUE (HUB)
   ========================== */
   const DIGIY_GATE = "https://beauville.github.io/digiy-hub/";
 
@@ -309,7 +292,7 @@
   }
 
   /* =========================
-     SUPABASE (clé intégrée)
+     SUPABASE
   ========================== */
   const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
   const SUPABASE_ANON_KEY =
@@ -318,23 +301,20 @@
   globalThis.__sb ||= createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const sb = globalThis.__sb;
 
-  /* =========================
-     ELEMENTS UI
-  ========================== */
   const tripsEl = document.getElementById("trips");
   const zoneFilter = document.getElementById("zoneFilter");
   const radiusFilter = document.getElementById("radiusFilter");
   const viewFilter = document.getElementById("viewFilter");
-
   const whoEl = document.getElementById("who");
   const statusTitle = document.getElementById("statusTitle");
   const statusSub = document.getElementById("statusSub");
   const gpsBadge = document.getElementById("gpsBadge");
   const meLine = document.getElementById("meLine");
   const toastEl = document.getElementById("toast");
-
   const btnReload = document.getElementById("btnReload");
   const btnLogout = document.getElementById("btnLogout");
+  const bannerCard = document.getElementById("bannerCard");
+  const bannerText = document.getElementById("bannerText");
 
   function toast(msg){
     toastEl.textContent = msg;
@@ -343,60 +323,86 @@
     globalThis.__t = setTimeout(()=> toastEl.style.display="none", 2400);
   }
 
-  /* =========================
-     MAIN (pas de return illégal)
-  ========================== */
+  function getModuleHint(){
+    const url = new URL(location.href);
+    const m = (url.searchParams.get("module") || "").toLowerCase();
+    if (m) return m;
+    return (localStorage.getItem("digiy_module") || "").toLowerCase();
+  }
+
   async function main(){
-    // 1) session
+    // Session obligatoire
     const { data: sess } = await sb.auth.getSession();
     const session = sess?.session;
-
     if (!session){
       statusTitle.textContent = "❌ Non connecté";
-      statusSub.textContent = "Retour porte DIGIY HUB…";
+      statusSub.textContent = "Retour HUB…";
       whoEl.textContent = "Offline";
       STOP();
     }
 
     const uid = session.user.id;
-
-    // 2) guard profil
-    const { data: profile, error: profErr } = await sb
-      .from("profiles")
-      .select("role_auto, pro_type, active_modules")
-      .eq("id", uid)
-      .maybeSingle();
-
-    if (profErr || !profile){
-      STOP();
-    }
-
-    const role = (profile.role_auto || "").toLowerCase();
-    const proType = (profile.pro_type || "").toLowerCase();
-    const mods = Array.isArray(profile.active_modules) ? profile.active_modules : [];
-
-    // 🚫 FRET interdit ici
-    if (proType === "fret" || mods.includes("fret")){
-      STOP();
-    }
-
-    // ✅ Driver personnes seulement
-    const isDriverPersons =
-      (role === "chauffeur" && proType === "driver") ||
-      proType === "driver" ||
-      mods.includes("driver");
-
-    if (!isDriverPersons){
-      STOP();
-    }
-
-    // 3) UI connecté
     const user = session.user;
     whoEl.textContent = (user.phone || user.email || "Chauffeur");
-    meLine.textContent = `ID: ${uid.slice(0,6)}… • ${profile.role_auto || "chauffeur"} • ${profile.pro_type || "driver"}`;
+
+    // Indice module (vient du HUB)
+    const hint = getModuleHint(); // "driver" attendu
+    if (hint) localStorage.setItem("digiy_module", hint);
+
+    // Profil : on essaie, mais on ne jette PAS dehors si absent
+    let profile = null;
+    let profErr = null;
+
+    try{
+      const res = await sb
+        .from("profiles")
+        .select("role_auto, pro_type, active_modules")
+        .eq("id", uid)
+        .maybeSingle();
+
+      profile = res.data || null;
+      profErr = res.error || null;
+    }catch(e){
+      profErr = e;
+      profile = null;
+    }
+
+    // Cas RLS/profil absent -> on laisse passer si hint=driver
+    if (!profile){
+      if (hint === "driver"){
+        bannerCard.style.display = "flex";
+        bannerText.textContent = "Profil pas encore prêt (ou RLS). On te laisse entrer car HUB t’a envoyé en DRIVER. Tu compléteras après.";
+        meLine.textContent = `ID: ${uid.slice(0,6)}… • Mode: DRIVER (hint)`;
+      } else {
+        // Pas d’info fiable -> HUB
+        STOP();
+      }
+    } else {
+      const role = (profile.role_auto || "").toLowerCase();
+      const proType = (profile.pro_type || "").toLowerCase();
+      const mods = Array.isArray(profile.active_modules) ? profile.active_modules : [];
+
+      // 🚫 FRET interdit (seulement si on est sûr)
+      if (proType === "fret" || mods.includes("fret")){
+        STOP();
+      }
+
+      // ✅ Driver personnes : si profil dit driver OU hint driver
+      const isDriverPersons =
+        (role === "chauffeur" && proType === "driver") ||
+        proType === "driver" ||
+        mods.includes("driver") ||
+        hint === "driver";
+
+      if (!isDriverPersons){
+        STOP();
+      }
+
+      meLine.textContent = `ID: ${uid.slice(0,6)}… • ROLE: ${profile.role_auto || "?"} • TYPE: ${profile.pro_type || "?"}`;
+    }
 
     statusTitle.textContent = "🟢 En ligne";
-    statusSub.textContent = "Prêt à recevoir des courses";
+    statusSub.textContent = "Realtime actif • attente de courses";
 
     btnLogout?.addEventListener("click", async ()=>{
       await sb.auth.signOut();
@@ -408,7 +414,7 @@
       toast("✅ Rechargé");
     });
 
-    // 4) GPS
+    // GPS
     let driverLat = null, driverLng = null;
 
     function setGPSBadge(){
@@ -445,7 +451,7 @@
       statusSub.textContent = "GPS indisponible • filtrage distance désactivé";
     }
 
-    // 5) store + render
+    // Store
     const store = new Map();
 
     function passesFilters(trip){
@@ -550,7 +556,6 @@
       }
     }
 
-    // 6) actions RPC
     async function rpcAction(action, tripId){
       try{
         if (!tripId) return;
@@ -558,28 +563,20 @@
         toast(`⏳ ${action.toUpperCase()}…`);
         let res;
 
-        if (action === "accept") {
-          res = await sb.rpc("accept_trip", { p_trip_id: tripId });
-        } else if (action === "start") {
-          res = await sb.rpc("start_trip", { p_trip_id: tripId });
-        } else if (action === "complete") {
-          res = await sb.rpc("complete_trip", { p_trip_id: tripId });
-        } else if (action === "refresh") {
-          await loadInitial();
-          toast("✅ Rafraîchi");
-          return;
-        } else {
-          return;
-        }
+        if (action === "accept") res = await sb.rpc("accept_trip", { p_trip_id: tripId });
+        else if (action === "start") res = await sb.rpc("start_trip", { p_trip_id: tripId });
+        else if (action === "complete") res = await sb.rpc("complete_trip", { p_trip_id: tripId });
+        else if (action === "refresh") { await loadInitial(); toast("✅ Rafraîchi"); return; }
+        else return;
 
-        if (res.error){
+        if (res?.error){
           console.error(res.error);
           toast("❌ " + res.error.message);
           return;
         }
 
         toast("✅ OK");
-      } catch(e){
+      }catch(e){
         console.error(e);
         toast("❌ Erreur action");
       }
@@ -588,12 +585,9 @@
     document.addEventListener("click", (e)=>{
       const btn = e.target?.closest("button[data-act]");
       if (!btn) return;
-      const id = btn.getAttribute("data-id");
-      const act = btn.getAttribute("data-act");
-      rpcAction(act, id);
+      rpcAction(btn.getAttribute("data-act"), btn.getAttribute("data-id"));
     });
 
-    // 7) load + realtime
     async function loadInitial(){
       const { data, error } = await sb
         .from("driver_trips")
@@ -625,7 +619,6 @@
     zoneFilter.addEventListener("change", renderAll);
     radiusFilter.addEventListener("change", renderAll);
     viewFilter.addEventListener("change", renderAll);
-
     setInterval(()=>{ renderAll(); }, 7000);
 
     await loadInitial();
@@ -641,12 +634,8 @@
       .on("postgres_changes", { event:"UPDATE", schema:"public", table:"driver_trips" }, (p)=>{
         const t = p.new;
         if (!t?.id) return;
-
-        if (["requested","accepted","ongoing"].includes(t.status)){
-          store.set(t.id, t);
-        } else {
-          store.delete(t.id);
-        }
+        if (["requested","accepted","ongoing"].includes(t.status)) store.set(t.id, t);
+        else store.delete(t.id);
         renderAll();
       })
       .subscribe();
@@ -654,6 +643,5 @@
 
   main();
 </script>
-
 </body>
 </html>
