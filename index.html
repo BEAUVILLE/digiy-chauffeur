@@ -295,7 +295,40 @@
     whoEl.textContent = "Offline";
     throw new Error("Not authenticated");
   }
+  /* =========================
+     GUARD ANTI-ACCÈS DIRECT
+     (Driver PERSONNES uniquement)
+  ========================== */
+  const uid = session.user.id;
 
+  const { data: profile, error: profErr } = await sb
+    .from("profiles")
+    .select("role_auto, pro_type, active_modules")
+    .eq("id", uid)
+    .maybeSingle();
+
+  // si pas de profil ou mauvais rôle -> porte unique
+  if (profErr || !profile) {
+    location.href = "redirection.html";
+    throw new Error("No profile / access denied");
+  }
+
+  const role = (profile.role_auto || "").toLowerCase();
+  const proType = (profile.pro_type || "").toLowerCase();
+  const mods = Array.isArray(profile.active_modules) ? profile.active_modules : [];
+
+  // ✅ Autorisé seulement si c'est DRIVER personnes
+  const isDriverPersons =
+    (role === "chauffeur" && proType === "driver") ||
+    proType === "driver" ||
+    mods.includes("driver");
+
+  // 🚫 Si c’est FRET ou autre -> dehors
+  if (!isDriverPersons) {
+    location.href = "redirection.html";
+    throw new Error("Not DRIVER persons");
+  }
+  
   const user = session.user;
   whoEl.textContent = (user.phone || user.email || "Chauffeur");
 
