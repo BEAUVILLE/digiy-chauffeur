@@ -2,293 +2,436 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>DIGIY ADMIN — Tarifs par ville</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#16a34a" />
-  <meta name="description" content="DIGIY ADMIN — Gestion des tarifs par ville (RIDE & FRET)." />
+  <title>DIGIY DRIVER — Chauffeur (Realtime + GEO)</title>
+  <meta name="theme-color" content="#22c55e" />
+  <meta name="description" content="DIGIY DRIVER Chauffeur — tableau de bord, courses en direct, filtrage zone & distance, 0% commission." />
 
   <style>
     :root{
-      --green:#16a34a; --bg:#f7fbf8; --text:#0f172a; --muted:#475569;
-      --line:rgba(15,23,42,.12); --shadow:0 10px 22px rgba(2,6,23,.08);
-      --radius:16px;
+      --green:#22c55e; --green2:#16a34a; --sky:#0ea5e9; --ok:#22c55e;
+      --bg:#f0fdf4; --bg2:#ffffff; --card:#ffffff;
+      --text:#0f172a; --muted:#64748b;
+      --shadow:0 12px 28px rgba(2,6,23,.08); --radius:18px;
+      --warn:#f59e0b; --warnBg:rgba(245,158,11,.12); --warnBd:rgba(245,158,11,.35); --warnTx:#7c2d12;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#dcfce7 0%,var(--bg) 55%,var(--bg2) 100%);
+      color:var(--text);
+    }
     header{
-      background:linear-gradient(90deg,var(--green),#22c55e);
-      color:#fff;padding:16px;text-align:center;font-weight:1000;font-size:18px;
-      position:sticky;top:0;z-index:5; box-shadow:0 10px 18px rgba(22,163,74,.25);
+      position:sticky; top:0; z-index:5;
+      padding:16px 14px;
+      background:linear-gradient(90deg,var(--green),#4ade80);
+      color:#fff; box-shadow:0 10px 22px rgba(34,197,94,.32);
     }
-    main{max-width:980px;margin:auto;padding:16px}
-    .card{
-      background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
-      padding:16px;margin-bottom:14px;border:1px solid rgba(15,23,42,.06);
+    .topRow{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:980px;margin:0 auto;}
+    .brand{font-weight:1000;display:flex;align-items:center;gap:10px;font-size:17px;white-space:nowrap;}
+    .pill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);padding:7px 11px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap;}
+    main{max-width:980px;margin:0 auto;padding:14px;}
+    .card{background:#ffffffcc;backdrop-filter:blur(7px);border:1px solid rgba(15,23,42,.08);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:12px;}
+    .bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+    @media(max-width:860px){.bar{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+    .field label{font-size:12px;color:var(--muted);font-weight:900;display:block;margin-bottom:6px;}
+    select,input{width:100%;padding:11px 12px;border-radius:14px;border:1px solid rgba(15,23,42,.12);outline:none;font-size:14px;background:#fff;}
+    .status{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+    .status .left{display:flex;flex-direction:column;gap:2px}
+    .status .title{font-weight:1000}
+    .status .sub{font-size:12px;color:var(--muted);font-weight:800}
+    .badge{font-size:12px;font-weight:1000;padding:8px 10px;border-radius:999px;background:#dcfce7;border:1px solid rgba(34,197,94,.22);color:#14532d;white-space:nowrap;}
+    .badge.warn{background:var(--warnBg);border:1px solid var(--warnBd);color:var(--warnTx);}
+    .actionsTop{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
+    button{padding:11px 12px;border:none;border-radius:14px;font-weight:1000;font-size:14px;cursor:pointer;}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .btn-light{background:#fff;border:1px solid rgba(15,23,42,.14);color:var(--text);}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+    .trip{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(15,23,42,.08);padding:14px;overflow:hidden;}
+    .trip .head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+    .trip .route{font-weight:1000;font-size:15px;line-height:1.2;}
+    .trip .meta{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--muted);font-weight:900;}
+    .tag{padding:6px 10px;border-radius:999px;border:1px solid rgba(15,23,42,.10);background:#fff;}
+    .price{margin-top:10px;font-size:16px;font-weight:1100;color:var(--green2);}
+    .actions{display:flex;gap:10px;margin-top:12px;}
+    .btn-accept{background:var(--green2);color:#fff}
+    .btn-start{background:var(--sky);color:#fff}
+    .btn-done{background:var(--ok);color:#fff}
+    .btn-ghost{background:#fff;border:1px solid rgba(15,23,42,.12);color:var(--text);}
+    .toast{
+      position:fixed;left:50%;transform:translateX(-50%);bottom:16px;
+      background:rgba(15,23,42,.92);color:#fff;padding:10px 12px;border-radius:999px;
+      font-size:13px;font-weight:900;display:none;z-index:20;max-width:92vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
-    h2{margin:0 0 12px 0;font-size:18px}
-    label{font-size:12px;font-weight:900;color:var(--muted);display:block;margin:10px 0 6px}
-    input,select{
-      width:100%;padding:10px;border-radius:12px;border:1px solid var(--line);
-      font-size:14px;font-weight:800;outline:none;background:#fff;
-    }
-    input:focus,select:focus{border-color:rgba(22,163,74,.35);box-shadow:0 0 0 3px rgba(22,163,74,.10)}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    @media(max-width:720px){.grid{grid-template-columns:1fr}}
-    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media(max-width:720px){.row2{grid-template-columns:1fr}}
-    button{
-      padding:12px;border:none;border-radius:14px;background:var(--green);color:#fff;
-      font-weight:1000;font-size:14px;cursor:pointer;width:100%;
-    }
-    button:disabled{opacity:.65;cursor:not-allowed}
-    table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
-    th,td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}
-    th{background:#eafff3;font-weight:1000}
-    .badge{
-      padding:4px 8px;border-radius:999px;font-size:11px;font-weight:1000;
-      background:#eafff3;color:#065f46;border:1px solid rgba(22,163,74,.18);
-    }
-    .topbar{
-      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;
-    }
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 10px;border-radius:999px;border:1px solid rgba(15,23,42,.10);
-      background:#fff;font-size:12px;font-weight:1000;
-    }
-    .dot{width:10px;height:10px;border-radius:50%}
-    .dot.ok{background:#22c55e}
-    .dot.bad{background:#ef4444}
-    .msg{
-      margin-top:10px;padding:10px 12px;border-radius:14px;
-      border:1px solid var(--line);background:#fff;font-weight:900;font-size:13px;
-    }
-    .msg.ok{background:#eafff3;border-color:rgba(22,163,74,.25);color:#065f46}
-    .msg.bad{background:#fff1f2;border-color:rgba(220,38,38,.25);color:#8a1010}
+    a.link{color:#14532d;font-weight:1000;text-decoration:none;border-bottom:2px solid rgba(20,83,45,.25)}
   </style>
 </head>
-<body>
 
-<header>🛠️ DIGIY ADMIN — Tarifs par ville</header>
+<body>
+<header>
+  <div class="topRow">
+    <div class="brand">🚕 DIGIY DRIVER <span class="pill">Personnes • Realtime</span></div>
+    <div class="pill" id="who">…</div>
+  </div>
+</header>
 
 <main>
-  <div class="card">
-    <div class="topbar">
-      <div class="pill"><span class="dot" id="dotAuth"></span><span id="authTxt">Connexion…</span></div>
-      <div class="pill" id="who">—</div>
-    </div>
-    <div id="msg" class="msg" style="display:none;"></div>
-  </div>
 
-  <!-- FORM -->
   <div class="card">
-    <h2>➕ Ajouter / Modifier un tarif</h2>
-
-    <div class="row2">
-      <div>
-        <label>Ville</label>
-        <input id="city" placeholder="Dakar, Saly, Thiès, DEFAULT_SN…" />
+    <div class="bar">
+      <div class="field">
+        <label>📍 Zone (pickup_zone)</label>
+        <select id="zoneFilter">
+          <option value="">Toutes</option>
+          <option value="Plateau">Plateau</option>
+          <option value="Almadies">Almadies</option>
+          <option value="Yoff">Yoff</option>
+          <option value="Saly">Saly</option>
+        </select>
       </div>
-      <div>
-        <label>Type de service</label>
-        <select id="serviceType">
-          <option value="RIDE">RIDE — Transport de personnes</option>
-          <option value="FRET">FRET — Marchandises / Taxi bagages</option>
+      <div class="field">
+        <label>📏 Rayon</label>
+        <select id="radiusFilter">
+          <option value="2">2 km</option>
+          <option value="3">3 km</option>
+          <option value="5" selected>5 km</option>
+          <option value="8">8 km</option>
+          <option value="10">10 km</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>🎛️ Vue</label>
+        <select id="viewFilter">
+          <option value="open" selected>Demandes ouvertes (requested)</option>
+          <option value="mine">Mes courses (accepted/ongoing)</option>
+          <option value="all">Tout (requested/accepted/ongoing)</option>
         </select>
       </div>
     </div>
-
-    <div class="grid">
-      <div>
-        <label>Base (F CFA)</label>
-        <input id="base" type="number" inputmode="numeric" placeholder="1500" />
-      </div>
-      <div>
-        <label>Par km (F CFA)</label>
-        <input id="perKm" type="number" inputmode="numeric" placeholder="320" />
-      </div>
-      <div>
-        <label>Par minute (F CFA)</label>
-        <input id="perMin" type="number" inputmode="numeric" placeholder="60" />
-      </div>
-    </div>
-
-    <label>Plancher minimum (F CFA)</label>
-    <input id="minPrice" type="number" inputmode="numeric" placeholder="3000" />
-
-    <button id="btnSave">💾 Enregistrer le tarif</button>
   </div>
 
-  <!-- TABLE -->
-  <div class="card">
-    <div class="topbar">
-      <h2 style="margin:0">📋 Tarifs existants</h2>
-      <button id="btnReload" style="max-width:220px">↻ Recharger</button>
+  <div class="card status" id="softCard" style="display:none">
+    <div class="left">
+      <div class="title" id="softTitle">⚠️ Session manquante</div>
+      <div class="sub" id="softSub">
+        Reviens par le HUB (porte d’entrée) pour recevoir la session.
+        <br/>👉 <a class="link" href="https://beauville.github.io/digiy-hub/">Ouvrir le HUB</a>
+      </div>
     </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Ville</th>
-          <th>Service</th>
-          <th>Base</th>
-          <th>Km</th>
-          <th>Min</th>
-          <th>Plancher</th>
-        </tr>
-      </thead>
-      <tbody id="pricingTable"></tbody>
-    </table>
+    <div class="badge warn">Handoff</div>
   </div>
+
+  <div class="card status">
+    <div class="left">
+      <div class="title" id="statusTitle">Connexion…</div>
+      <div class="sub" id="statusSub">Chargement Supabase / GPS</div>
+    </div>
+    <div class="badge" id="gpsBadge">GPS: …</div>
+  </div>
+
+  <div class="card status">
+    <div class="left">
+      <div class="title">👤 Dashboard Chauffeur</div>
+      <div class="sub" id="meLine">Chargement…</div>
+    </div>
+    <div class="actionsTop">
+      <button class="btn-light" id="btnReload">🔄 Recharger</button>
+      <button class="btn-light" id="btnLogout">🚪 Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="grid" id="trips"></div>
 </main>
+
+<div class="toast" id="toast"></div>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* 🔐 SUPABASE — TA VRAIE CLÉ (celle qui marche partout chez toi) */
   const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
   const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsImJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
 
-  // ✅ singleton (évite "already declared")
   globalThis.__sb ||= createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const sb = globalThis.__sb;
 
-  const $ = (id)=>document.getElementById(id);
+  const tripsEl = document.getElementById("trips");
+  const zoneFilter = document.getElementById("zoneFilter");
+  const radiusFilter = document.getElementById("radiusFilter");
+  const viewFilter = document.getElementById("viewFilter");
+  const whoEl = document.getElementById("who");
+  const statusTitle = document.getElementById("statusTitle");
+  const statusSub = document.getElementById("statusSub");
+  const gpsBadge = document.getElementById("gpsBadge");
+  const meLine = document.getElementById("meLine");
+  const toastEl = document.getElementById("toast");
+  const btnReload = document.getElementById("btnReload");
+  const btnLogout = document.getElementById("btnLogout");
+  const softCard = document.getElementById("softCard");
+  const softTitle = document.getElementById("softTitle");
+  const softSub = document.getElementById("softSub");
 
-  const dotAuth = $("dotAuth");
-  const authTxt = $("authTxt");
-  const whoEl = $("who");
-  const msgEl = $("msg");
-  const tbody = $("pricingTable");
-  const btnSave = $("btnSave");
-
-  function msg(text, type="ok"){
-    msgEl.style.display = "block";
-    msgEl.className = "msg " + (type === "bad" ? "bad" : "ok");
-    msgEl.textContent = text;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.style.display = "block";
+    clearTimeout(globalThis.__t);
+    globalThis.__t = setTimeout(()=> toastEl.style.display="none", 2400);
+  }
+  function showSoft(title, html){
+    softTitle.textContent = title;
+    softSub.innerHTML = html;
+    softCard.style.display = "flex";
   }
 
-  function setAuth(ok, label){
-    dotAuth.className = "dot " + (ok ? "ok" : "bad");
-    authTxt.textContent = label;
+  function getTokensFromUrl(){
+    const u = new URL(location.href);
+    const at = u.searchParams.get("at");
+    const rt = u.searchParams.get("rt");
+    return { at, rt };
+  }
+  function cleanUrlTokens(){
+    const u = new URL(location.href);
+    u.searchParams.delete("at");
+    u.searchParams.delete("rt");
+    history.replaceState({}, "", u.toString());
   }
 
-  function toInt(v){
-    const n = parseInt(String(v ?? "").trim(), 10);
-    return Number.isFinite(n) ? n : null;
+  async function ensureSession(){
+    // 1) session déjà là ?
+    let { data } = await sb.auth.getSession();
+    if (data?.session) return data.session;
+
+    // 2) sinon, essayer handoff tokens
+    const { at, rt } = getTokensFromUrl();
+    if (at && rt){
+      const res = await sb.auth.setSession({ access_token: at, refresh_token: rt });
+      if (res?.data?.session){
+        cleanUrlTokens();
+        return res.data.session;
+      }
+    }
+    return null;
   }
 
-  // ✅ Guard simple UI (à compléter en RLS côté DB)
-  const ADMIN_EMAILS = ["admin@digiylyfe.com"];
+  async function main(){
+    statusTitle.textContent = "Connexion…";
+    statusSub.textContent = "Vérification session…";
 
-  async function guard(){
-    const { data } = await sb.auth.getSession();
-    const session = data?.session;
-
-    if(!session){
-      setAuth(false, "Non connecté");
-      whoEl.textContent = "—";
-      msg("Accès refusé : connecte-toi via ton login OTP/admin.", "bad");
-      throw new Error("Not authenticated");
+    const session = await ensureSession();
+    if (!session){
+      statusTitle.textContent = "❌ Session introuvable";
+      statusSub.textContent = "Reviens via le HUB (porte d’entrée).";
+      whoEl.textContent = "Offline";
+      showSoft(
+        "⚠️ Pas de session",
+        `Reviens par le HUB pour recevoir la session (handoff).<br/>👉 <a class="link" href="https://beauville.github.io/digiy-hub/">Ouvrir le HUB</a>`
+      );
+      return; // IMPORTANT : on ne redirige PAS automatiquement, on affiche.
     }
 
-    const user = session.user;
-    whoEl.textContent = user.email || user.phone || user.id || "Admin";
-    const isAdmin = user.email && ADMIN_EMAILS.includes(user.email);
+    const uid = session.user.id;
+    whoEl.textContent = session.user.phone || session.user.email || "Chauffeur";
+    meLine.textContent = `ID: ${uid.slice(0,6)}… • Connecté`;
+    statusTitle.textContent = "🟢 En ligne";
+    statusSub.textContent = "Realtime actif • attente de courses";
 
-    if(!isAdmin){
-      setAuth(false, "Pas admin");
-      msg("Accès refusé : compte non admin.", "bad");
-      throw new Error("Not admin");
+    btnLogout?.addEventListener("click", async ()=>{
+      await sb.auth.signOut();
+      location.href = "https://beauville.github.io/digiy-hub/";
+    });
+
+    // GPS
+    let driverLat=null, driverLng=null;
+    function setGPSBadge(){ gpsBadge.textContent = (driverLat && driverLng) ? "GPS: OK" : "GPS: OFF"; }
+    setGPSBadge();
+
+    function distanceKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2-lat1) * Math.PI/180;
+      const dLon = (lon2-lon1) * Math.PI/180;
+      const a =
+        Math.sin(dLat/2)**2 +
+        Math.cos(lat1*Math.PI/180) *
+        Math.cos(lat2*Math.PI/180) *
+        Math.sin(dLon/2)**2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    setAuth(true, "Admin OK");
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(
+        (pos)=>{ driverLat = pos.coords.latitude; driverLng = pos.coords.longitude; setGPSBadge(); },
+        ()=>{ setGPSBadge(); statusSub.textContent = "GPS refusé • filtrage distance désactivé"; },
+        { enableHighAccuracy:true, maximumAge: 8000, timeout: 12000 }
+      );
+    } else {
+      statusSub.textContent = "GPS indisponible • filtrage distance désactivé";
+    }
+
+    // Store
+    const store = new Map();
+
+    function passesFilters(trip){
+      const z = zoneFilter.value;
+      const r = parseFloat(radiusFilter.value || "5");
+      const v = viewFilter.value;
+
+      if (v === "open" && trip.status !== "requested") return false;
+      if (v === "mine" && !(trip.status === "accepted" || trip.status === "ongoing")) return false;
+      if (v === "all" && !["requested","accepted","ongoing"].includes(trip.status)) return false;
+
+      if (z && (trip.pickup_zone || "") !== z) return false;
+
+      if (driverLat && driverLng && trip.pickup_lat && trip.pickup_lng) {
+        const d = distanceKm(driverLat, driverLng, trip.pickup_lat, trip.pickup_lng);
+        if (d > r) return false;
+      }
+      return true;
+    }
+
+    function formatTripMeta(trip){
+      const z = trip.pickup_zone ? `📍 ${trip.pickup_zone}` : "📍 Zone ?";
+      const c = trip.pickup_city ? `🏙️ ${trip.pickup_city}` : "🏙️ Ville ?";
+
+      let distStr = null;
+      if (driverLat && driverLng && trip.pickup_lat && trip.pickup_lng) {
+        const d = distanceKm(driverLat, driverLng, trip.pickup_lat, trip.pickup_lng);
+        distStr = `📏 ${d.toFixed(1)} km`;
+      }
+
+      const km = trip.distance_km ? `🛣️ ${trip.distance_km} km` : null;
+      const min = trip.duration_min ? `⏱️ ${trip.duration_min} min` : null;
+      return [c, z, distStr, km, min].filter(Boolean);
+    }
+
+    function renderAll(){
+      tripsEl.innerHTML = "";
+      const items = Array.from(store.values())
+        .filter(passesFilters)
+        .sort((a,b)=> (new Date(b.created_at) - new Date(a.created_at)));
+
+      if (!items.length){
+        tripsEl.innerHTML = `
+          <div class="trip" style="grid-column:1/-1">
+            <div class="route">Aucune course dans tes filtres</div>
+            <div class="meta">
+              <span class="tag">Zone=Toutes</span>
+              <span class="tag">Rayon=10km</span>
+              <span class="tag">Vue=Demandes ouvertes</span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      for (const trip of items) {
+        const card = document.createElement("div");
+        card.className = "trip";
+
+        const route = `📍 ${trip.pickup_city || "?"} → ${trip.dropoff_city || "?"}`;
+        const metaTags = formatTripMeta(trip).map(x=>`<span class="tag">${x}</span>`).join("");
+
+        let actionsHtml = "";
+        if (trip.status === "requested") {
+          actionsHtml = `<div class="actions"><button class="btn-accept" data-id="${trip.id}" data-act="accept">Accepter</button></div>`;
+        } else if (trip.status === "accepted") {
+          actionsHtml = `<div class="actions">
+            <button class="btn-start" data-id="${trip.id}" data-act="start">Démarrer</button>
+            <button class="btn-ghost" data-id="${trip.id}" data-act="refresh">Rafraîchir</button>
+          </div>`;
+        } else if (trip.status === "ongoing") {
+          actionsHtml = `<div class="actions">
+            <button class="btn-done" data-id="${trip.id}" data-act="complete">Terminer</button>
+            <button class="btn-ghost" data-id="${trip.id}" data-act="refresh">Rafraîchir</button>
+          </div>`;
+        }
+
+        card.innerHTML = `
+          <div class="head">
+            <div>
+              <div class="route">${route}</div>
+              <div class="meta">${metaTags}</div>
+              <div class="price">💰 ${(trip.amount ?? 0)} F CFA</div>
+            </div>
+            <div class="pill" style="color:#0f172a;background:#fff;border-color:rgba(15,23,42,.15)">${trip.status}</div>
+          </div>
+          ${actionsHtml}
+        `;
+
+        tripsEl.appendChild(card);
+      }
+    }
+
+    async function loadInitial(){
+      const { data, error } = await sb
+        .from("driver_trips")
+        .select("*")
+        .in("status", ["requested","accepted","ongoing"])
+        .order("created_at", { ascending:false })
+        .limit(200);
+
+      if (error){
+        console.error(error);
+        statusSub.textContent = "Erreur chargement (driver_trips)";
+        tripsEl.innerHTML = `
+          <div class="trip" style="grid-column:1/-1">
+            <div class="route">⚠️ driver_trips inaccessible</div>
+            <div class="meta"><span class="tag">Table/view manquante ?</span><span class="tag">RLS bloque ?</span></div>
+          </div>
+        `;
+        return;
+      }
+      store.clear();
+      (data || []).forEach(t => t?.id && store.set(t.id, t));
+      renderAll();
+    }
+
+    async function rpcAction(action, tripId){
+      if (!tripId) return;
+      toast(`⏳ ${action.toUpperCase()}…`);
+
+      let res;
+      if (action === "accept") res = await sb.rpc("accept_trip", { p_trip_id: tripId });
+      else if (action === "start") res = await sb.rpc("start_trip", { p_trip_id: tripId });
+      else if (action === "complete") res = await sb.rpc("complete_trip", { p_trip_id: tripId });
+      else if (action === "refresh") { await loadInitial(); toast("✅ Rafraîchi"); return; }
+      else return;
+
+      if (res?.error){ console.error(res.error); toast("❌ " + res.error.message); return; }
+      toast("✅ OK");
+    }
+
+    document.addEventListener("click", (e)=>{
+      const btn = e.target?.closest("button[data-act]");
+      if (!btn) return;
+      rpcAction(btn.getAttribute("data-act"), btn.getAttribute("data-id"));
+    });
+
+    btnReload?.addEventListener("click", async ()=>{ await loadInitial(); toast("✅ Rechargé"); });
+
+    zoneFilter.addEventListener("change", renderAll);
+    radiusFilter.addEventListener("change", renderAll);
+    viewFilter.addEventListener("change", renderAll);
+    setInterval(()=>{ renderAll(); }, 7000);
+
+    await loadInitial();
+
+    sb.channel("driver-trips-live")
+      .on("postgres_changes", { event:"INSERT", schema:"public", table:"driver_trips" }, (p)=>{
+        const t = p.new; if (!t?.id) return;
+        store.set(t.id, t); renderAll();
+        if (t.status === "requested") toast("🚕 Nouvelle demande !");
+      })
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"driver_trips" }, (p)=>{
+        const t = p.new; if (!t?.id) return;
+        if (["requested","accepted","ongoing"].includes(t.status)) store.set(t.id, t);
+        else store.delete(t.id);
+        renderAll();
+      })
+      .subscribe();
   }
 
-  async function loadPricing(){
-    tbody.innerHTML = "";
-    const { data, error } = await sb
-      .from("pricing_rules")
-      .select("city, service_type, base_fee, price_per_km, price_per_min, min_price, active")
-      .order("city", { ascending:true });
-
-    if(error){
-      msg("Erreur chargement: " + error.message, "bad");
-      return;
-    }
-
-    const rows = data || [];
-    if(!rows.length){
-      tbody.innerHTML = `<tr><td colspan="6">Aucun tarif pour l’instant.</td></tr>`;
-      return;
-    }
-
-    for(const r of rows){
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${r.city ?? ""}</td>
-        <td><span class="badge">${r.service_type ?? "RIDE"}</span></td>
-        <td>${r.base_fee ?? ""}</td>
-        <td>${r.price_per_km ?? ""}</td>
-        <td>${r.price_per_min ?? ""}</td>
-        <td><strong>${r.min_price ?? ""}</strong></td>
-      `;
-      tbody.appendChild(tr);
-    }
-  }
-
-  async function savePricing(){
-    const city = String($("city").value || "").trim();
-    const service_type = $("serviceType").value;
-
-    const payload = {
-      city,
-      service_type,
-      base_fee: toInt($("base").value),
-      price_per_km: toInt($("perKm").value),
-      price_per_min: toInt($("perMin").value),
-      min_price: toInt($("minPrice").value),
-      active: true
-    };
-
-    if(!city){
-      msg("Ville obligatoire (ex: Dakar).", "bad");
-      return;
-    }
-    if(payload.base_fee == null || payload.price_per_km == null || payload.price_per_min == null || payload.min_price == null){
-      msg("Remplis tous les montants (base/km/min/plancher).", "bad");
-      return;
-    }
-
-    btnSave.disabled = true;
-    btnSave.textContent = "Enregistrement…";
-
-    try{
-      const { error } = await sb
-        .from("pricing_rules")
-        .upsert(payload, { onConflict: "city,service_type" });
-
-      if(error) throw error;
-
-      msg("✅ Tarif enregistré", "ok");
-      await loadPricing();
-    }catch(e){
-      msg("Erreur: " + (e?.message || "inconnue"), "bad");
-    }finally{
-      btnSave.disabled = false;
-      btnSave.textContent = "💾 Enregistrer le tarif";
-    }
-  }
-
-  $("btnSave").addEventListener("click", savePricing);
-  $("btnReload").addEventListener("click", loadPricing);
-
-  // START
-  await guard();
-  await loadPricing();
+  main();
 </script>
-
 </body>
 </html>
-
