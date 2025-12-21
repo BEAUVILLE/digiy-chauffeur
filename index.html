@@ -13,14 +13,21 @@
       --green2:#16a34a;
       --sky:#0ea5e9;
       --ok:#22c55e;
+
       --bg:#f0fdf4;
       --bg2:#ffffff;
       --card:#ffffff;
+
       --text:#0f172a;
       --muted:#64748b;
+
       --shadow:0 12px 28px rgba(2,6,23,.08);
       --radius:18px;
+
       --warn:#f59e0b;
+      --warnBg:rgba(245,158,11,.12);
+      --warnBd:rgba(245,158,11,.35);
+      --warnTx:#7c2d12;
     }
     *{box-sizing:border-box}
     body{
@@ -58,6 +65,7 @@
       white-space:nowrap;
     }
     main{max-width:980px; margin:0 auto; padding:14px;}
+
     .card{
       background:#ffffffcc;
       backdrop-filter: blur(7px);
@@ -92,6 +100,7 @@
       font-size:14px;
       background:#fff;
     }
+
     .status{
       display:flex;
       align-items:center;
@@ -112,6 +121,12 @@
       color:#14532d;
       white-space:nowrap;
     }
+    .badge.warn{
+      background:var(--warnBg);
+      border:1px solid var(--warnBd);
+      color:var(--warnTx);
+    }
+
     .actionsTop{
       display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; align-items:center;
     }
@@ -129,6 +144,7 @@
       border:1px solid rgba(15,23,42,.14);
       color:var(--text);
     }
+
     .grid{
       display:grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -174,7 +190,12 @@
     .btn-accept{background:var(--green2); color:#fff}
     .btn-start{background:var(--sky); color:#fff}
     .btn-done{background:var(--ok); color:#fff}
-    .btn-ghost{background:#fff;border:1px solid rgba(15,23,42,.12);color:var(--text);}
+    .btn-ghost{
+      background:#fff;
+      border:1px solid rgba(15,23,42,.12);
+      color:var(--text);
+    }
+
     .toast{
       position: fixed;
       left: 50%;
@@ -192,11 +213,6 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-    .warn{
-      border:1px solid rgba(245,158,11,.35);
-      background: rgba(245,158,11,.12);
-      color:#7c2d12;
     }
   </style>
 </head>
@@ -246,12 +262,13 @@
     </div>
   </div>
 
-  <div class="card status" id="bannerCard" style="display:none">
+  <!-- Bandeau soft (on ne vire pas) -->
+  <div class="card status" id="softCard" style="display:none">
     <div class="left">
-      <div class="title">⚠️ Profil à compléter</div>
-      <div class="sub" id="bannerText">On te laisse entrer, mais mets tes infos chauffeur dès que possible.</div>
+      <div class="title" id="softTitle">⚠️ Profil à compléter</div>
+      <div class="sub" id="softSub">On te laisse entrer. Mets tes infos chauffeur quand tu peux.</div>
     </div>
-    <div class="badge warn">Action requise</div>
+    <div class="badge warn">Soft-guard</div>
   </div>
 
   <div class="card status">
@@ -281,19 +298,14 @@
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* =========================
-     PORTE UNIQUE (HUB)
-  ========================== */
+  /* PORTE HUB */
   const DIGIY_GATE = "https://beauville.github.io/digiy-hub/";
-
   function STOP(){
     location.replace(DIGIY_GATE);
     throw new Error("DIGIY_GATE");
   }
 
-  /* =========================
-     SUPABASE
-  ========================== */
+  /* SUPABASE */
   const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
   const SUPABASE_ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
@@ -301,6 +313,7 @@
   globalThis.__sb ||= createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const sb = globalThis.__sb;
 
+  /* UI */
   const tripsEl = document.getElementById("trips");
   const zoneFilter = document.getElementById("zoneFilter");
   const radiusFilter = document.getElementById("radiusFilter");
@@ -313,8 +326,9 @@
   const toastEl = document.getElementById("toast");
   const btnReload = document.getElementById("btnReload");
   const btnLogout = document.getElementById("btnLogout");
-  const bannerCard = document.getElementById("bannerCard");
-  const bannerText = document.getElementById("bannerText");
+  const softCard = document.getElementById("softCard");
+  const softTitle = document.getElementById("softTitle");
+  const softSub = document.getElementById("softSub");
 
   function toast(msg){
     toastEl.textContent = msg;
@@ -323,17 +337,17 @@
     globalThis.__t = setTimeout(()=> toastEl.style.display="none", 2400);
   }
 
-  function getModuleHint(){
-    const url = new URL(location.href);
-    const m = (url.searchParams.get("module") || "").toLowerCase();
-    if (m) return m;
-    return (localStorage.getItem("digiy_module") || "").toLowerCase();
+  function showSoft(title, sub){
+    softTitle.textContent = title;
+    softSub.textContent = sub;
+    softCard.style.display = "flex";
   }
 
   async function main(){
-    // Session obligatoire
+    // Session obligatoire (seule vraie raison de virer)
     const { data: sess } = await sb.auth.getSession();
     const session = sess?.session;
+
     if (!session){
       statusTitle.textContent = "❌ Non connecté";
       statusSub.textContent = "Retour HUB…";
@@ -342,16 +356,13 @@
     }
 
     const uid = session.user.id;
-    const user = session.user;
-    whoEl.textContent = (user.phone || user.email || "Chauffeur");
+    whoEl.textContent = (session.user.phone || session.user.email || "Chauffeur");
+    statusTitle.textContent = "🟢 En ligne";
+    statusSub.textContent = "Chargement profil & courses…";
 
-    // Indice module (vient du HUB)
-    const hint = getModuleHint(); // "driver" attendu
-    if (hint) localStorage.setItem("digiy_module", hint);
-
-    // Profil : on essaie, mais on ne jette PAS dehors si absent
+    // Profil : on tente, mais on NE VIRE PAS si ça échoue
     let profile = null;
-    let profErr = null;
+    let profError = null;
 
     try{
       const res = await sb
@@ -361,57 +372,31 @@
         .maybeSingle();
 
       profile = res.data || null;
-      profErr = res.error || null;
+      profError = res.error || null;
     }catch(e){
-      profErr = e;
+      profError = e;
       profile = null;
     }
 
-    // Cas RLS/profil absent -> on laisse passer si hint=driver
-    if (!profile){
-      if (hint === "driver"){
-        bannerCard.style.display = "flex";
-        bannerText.textContent = "Profil pas encore prêt (ou RLS). On te laisse entrer car HUB t’a envoyé en DRIVER. Tu compléteras après.";
-        meLine.textContent = `ID: ${uid.slice(0,6)}… • Mode: DRIVER (hint)`;
-      } else {
-        // Pas d’info fiable -> HUB
-        STOP();
-      }
-    } else {
-      const role = (profile.role_auto || "").toLowerCase();
+    // Cas clair : si profil dit FRET => dehors (seule interdiction dure)
+    if (profile){
       const proType = (profile.pro_type || "").toLowerCase();
       const mods = Array.isArray(profile.active_modules) ? profile.active_modules : [];
-
-      // 🚫 FRET interdit (seulement si on est sûr)
       if (proType === "fret" || mods.includes("fret")){
         STOP();
       }
-
-      // ✅ Driver personnes : si profil dit driver OU hint driver
-      const isDriverPersons =
-        (role === "chauffeur" && proType === "driver") ||
-        proType === "driver" ||
-        mods.includes("driver") ||
-        hint === "driver";
-
-      if (!isDriverPersons){
-        STOP();
-      }
-
       meLine.textContent = `ID: ${uid.slice(0,6)}… • ROLE: ${profile.role_auto || "?"} • TYPE: ${profile.pro_type || "?"}`;
+    } else {
+      // Profil absent / RLS / erreur -> SOFT ONLY
+      showSoft("⚠️ Profil pas prêt", "Ton accès est OK. On n’a pas encore pu lire ton profil (RLS/profil). Tu complèteras après.");
+      meLine.textContent = `ID: ${uid.slice(0,6)}… • Mode: DRIVER (soft)`;
+      if (profError) console.warn("profiles read error (soft):", profError);
     }
 
-    statusTitle.textContent = "🟢 En ligne";
-    statusSub.textContent = "Realtime actif • attente de courses";
-
+    // Logout
     btnLogout?.addEventListener("click", async ()=>{
       await sb.auth.signOut();
       STOP();
-    });
-
-    btnReload?.addEventListener("click", async ()=>{
-      await loadInitial();
-      toast("✅ Rechargé");
     });
 
     // GPS
@@ -614,7 +599,13 @@
       store.clear();
       (data || []).forEach(t => t?.id && store.set(t.id, t));
       renderAll();
+      statusSub.textContent = "Realtime actif • attente de courses";
     }
+
+    btnReload?.addEventListener("click", async ()=>{
+      await loadInitial();
+      toast("✅ Rechargé");
+    });
 
     zoneFilter.addEventListener("change", renderAll);
     radiusFilter.addEventListener("change", renderAll);
@@ -645,3 +636,4 @@
 </script>
 </body>
 </html>
+
