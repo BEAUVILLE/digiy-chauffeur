@@ -131,6 +131,7 @@
       font-size:14px;
       cursor:pointer;
     }
+    button:disabled{opacity:.55; cursor:not-allowed}
     .btn-light{
       background:#fff;
       border:1px solid rgba(15,23,42,.14);
@@ -150,6 +151,7 @@
       border:1px solid rgba(15,23,42,.08);
       padding:14px;
       overflow:hidden;
+      position:relative;
     }
     .trip .head{
       display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
@@ -209,6 +211,12 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .note{
+      margin-top:8px;
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+    }
   </style>
 </head>
 
@@ -255,6 +263,10 @@
         </select>
       </div>
     </div>
+
+    <div class="note">
+      Astuce : si rien n’apparaît, c’est soit qu’il n’y a pas de courses, soit que <b>driver_trips</b> n’existe pas / RLS bloque.
+    </div>
   </div>
 
   <!-- Dashboard clair -->
@@ -268,7 +280,7 @@
 
   <div class="card status">
     <div class="left">
-      <div class="title">👤 Mon Dashboard Chauffeur</div>
+      <div class="title">👤 Dashboard Chauffeur</div>
       <div class="sub" id="meLine">Chargement profil…</div>
     </div>
     <div class="actionsTop">
@@ -285,7 +297,20 @@
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* 🔐 SUPABASE (clé intégrée) */
+  /* =========================
+     PORTE UNIQUE = DIGIY HUB
+     (repo séparé: digiy-chauffeur -> redirige vers digiy-hub)
+  ========================== */
+  const DIGIY_GATE = "https://beauville.github.io/digiy-hub/";
+
+  function STOP(){
+    location.replace(DIGIY_GATE);
+    throw new Error("DIGIY_GATE");
+  }
+
+  /* =========================
+     SUPABASE (clé intégrée)
+  ========================== */
   const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
   const SUPABASE_ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
@@ -293,16 +318,21 @@
   globalThis.__sb ||= createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const sb = globalThis.__sb;
 
+  /* =========================
+     ELEMENTS UI
+  ========================== */
   const tripsEl = document.getElementById("trips");
   const zoneFilter = document.getElementById("zoneFilter");
   const radiusFilter = document.getElementById("radiusFilter");
   const viewFilter = document.getElementById("viewFilter");
+
   const whoEl = document.getElementById("who");
   const statusTitle = document.getElementById("statusTitle");
   const statusSub = document.getElementById("statusSub");
   const gpsBadge = document.getElementById("gpsBadge");
   const meLine = document.getElementById("meLine");
   const toastEl = document.getElementById("toast");
+
   const btnReload = document.getElementById("btnReload");
   const btnLogout = document.getElementById("btnLogout");
 
@@ -313,28 +343,24 @@
     globalThis.__t = setTimeout(()=> toastEl.style.display="none", 2400);
   }
 
-  // ✅ Toute la logique dans une fonction => plus de "Illegal return"
+  /* =========================
+     MAIN (pas de return illégal)
+  ========================== */
   async function main(){
-    /* =========================
-       AUTH CHECK (session)
-    ========================== */
+    // 1) session
     const { data: sess } = await sb.auth.getSession();
     const session = sess?.session;
 
     if (!session){
       statusTitle.textContent = "❌ Non connecté";
-      statusSub.textContent = "Passe par login OTP puis reviens.";
+      statusSub.textContent = "Retour porte DIGIY HUB…";
       whoEl.textContent = "Offline";
-      location.href = "redirection.html";
-      return;
+      STOP();
     }
 
-    /* =========================
-       GUARD ANTI-ACCÈS DIRECT
-       (Driver PERSONNES uniquement)
-    ========================== */
     const uid = session.user.id;
 
+    // 2) guard profil
     const { data: profile, error: profErr } = await sb
       .from("profiles")
       .select("role_auto, pro_type, active_modules")
@@ -342,44 +368,39 @@
       .maybeSingle();
 
     if (profErr || !profile){
-      location.href = "redirection.html";
-      return;
+      STOP();
     }
 
     const role = (profile.role_auto || "").toLowerCase();
     const proType = (profile.pro_type || "").toLowerCase();
     const mods = Array.isArray(profile.active_modules) ? profile.active_modules : [];
 
-    // 🚫 blocage explicite FRET
+    // 🚫 FRET interdit ici
     if (proType === "fret" || mods.includes("fret")){
-      location.href = "redirection.html";
-      return;
+      STOP();
     }
 
-    // ✅ Autorisé seulement DRIVER personnes
+    // ✅ Driver personnes seulement
     const isDriverPersons =
       (role === "chauffeur" && proType === "driver") ||
       proType === "driver" ||
       mods.includes("driver");
 
     if (!isDriverPersons){
-      location.href = "redirection.html";
-      return;
+      STOP();
     }
 
-    /* =========================
-       OK — connecté & autorisé
-    ========================== */
+    // 3) UI connecté
     const user = session.user;
     whoEl.textContent = (user.phone || user.email || "Chauffeur");
-    meLine.textContent = `ID: ${uid.slice(0,6)}… • ROLE: ${profile.role_auto} • TYPE: ${profile.pro_type}`;
+    meLine.textContent = `ID: ${uid.slice(0,6)}… • ${profile.role_auto || "chauffeur"} • ${profile.pro_type || "driver"}`;
 
     statusTitle.textContent = "🟢 En ligne";
-    statusSub.textContent = "Realtime actif • attente de courses";
+    statusSub.textContent = "Prêt à recevoir des courses";
 
     btnLogout?.addEventListener("click", async ()=>{
       await sb.auth.signOut();
-      location.href = "index.html";
+      STOP();
     });
 
     btnReload?.addEventListener("click", async ()=>{
@@ -387,9 +408,7 @@
       toast("✅ Rechargé");
     });
 
-    /* =========================
-       GPS + Distance
-    ========================== */
+    // 4) GPS
     let driverLat = null, driverLng = null;
 
     function setGPSBadge(){
@@ -426,9 +445,7 @@
       statusSub.textContent = "GPS indisponible • filtrage distance désactivé";
     }
 
-    /* =========================
-       STORE + FILTERS
-    ========================== */
+    // 5) store + render
     const store = new Map();
 
     function passesFilters(trip){
@@ -476,7 +493,7 @@
           <div class="trip" style="grid-column:1/-1">
             <div class="route">Aucune course dans tes filtres</div>
             <div class="meta">
-              <span class="tag">Essaie: Zone=Toutes</span>
+              <span class="tag">Zone=Toutes</span>
               <span class="tag">Rayon=10km</span>
               <span class="tag">Vue=Demandes ouvertes</span>
             </div>
@@ -533,60 +550,64 @@
       }
     }
 
-    async function main(){
-  const { data: sess } = await sb.auth.getSession();
-  const session = sess?.session;
+    // 6) actions RPC
+    async function rpcAction(action, tripId){
+      try{
+        if (!tripId) return;
 
-  if (!session){
-    statusTitle.textContent = "❌ Non connecté";
-    statusSub.textContent = "Passe par login OTP puis reviens.";
-    whoEl.textContent = "Offline";
-    STOP("./redirection.html");
-  }
+        toast(`⏳ ${action.toUpperCase()}…`);
+        let res;
 
-  const uid = session.user.id;
+        if (action === "accept") {
+          res = await sb.rpc("accept_trip", { p_trip_id: tripId });
+        } else if (action === "start") {
+          res = await sb.rpc("start_trip", { p_trip_id: tripId });
+        } else if (action === "complete") {
+          res = await sb.rpc("complete_trip", { p_trip_id: tripId });
+        } else if (action === "refresh") {
+          await loadInitial();
+          toast("✅ Rafraîchi");
+          return;
+        } else {
+          return;
+        }
 
-  const { data: profile, error: profErr } = await sb
-    .from("profiles")
-    .select("role_auto, pro_type, active_modules")
-    .eq("id", uid)
-    .maybeSingle();
+        if (res.error){
+          console.error(res.error);
+          toast("❌ " + res.error.message);
+          return;
+        }
 
-  if (profErr || !profile){
-    STOP("./redirection.html");
-  }
+        toast("✅ OK");
+      } catch(e){
+        console.error(e);
+        toast("❌ Erreur action");
+      }
+    }
 
-  const role = (profile.role_auto || "").toLowerCase();
-  const proType = (profile.pro_type || "").toLowerCase();
-  const mods = Array.isArray(profile.active_modules) ? profile.active_modules : [];
+    document.addEventListener("click", (e)=>{
+      const btn = e.target?.closest("button[data-act]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-id");
+      const act = btn.getAttribute("data-act");
+      rpcAction(act, id);
+    });
 
-  if (proType === "fret" || mods.includes("fret")){
-    STOP("./redirection.html");
-  }
+    // 7) load + realtime
+    async function loadInitial(){
+      const { data, error } = await sb
+        .from("driver_trips")
+        .select("*")
+        .in("status", ["requested","accepted","ongoing"])
+        .order("created_at", { ascending:false })
+        .limit(200);
 
-  const isDriverPersons =
-    (role === "chauffeur" && proType === "driver") ||
-    proType === "driver" ||
-    mods.includes("driver");
-
-  if (!isDriverPersons){
-    STOP("./redirection.html");
-  }
-
-  // OK — connecté & autorisé
-  const user = session.user;
-  whoEl.textContent = (user.phone || user.email || "Chauffeur");
-  meLine.textContent = `ID: ${uid.slice(0,6)}… • ROLE: ${profile.role_auto} • TYPE: ${profile.pro_type}`;
-
-  statusTitle.textContent = "🟢 En ligne";
-  statusSub.textContent = "Realtime actif • attente de courses";
-
-  // ... le reste de ton code continue
-}
-
+      if (error){
+        console.error(error);
+        statusSub.textContent = "Erreur chargement (driver_trips)";
         tripsEl.innerHTML = `
           <div class="trip" style="grid-column:1/-1">
-            <div class="route">⚠️ Impossible de charger driver_trips</div>
+            <div class="route">⚠️ driver_trips inaccessible</div>
             <div class="meta">
               <span class="tag">Table/view manquante ?</span>
               <span class="tag">RLS bloque ?</span>
@@ -631,7 +652,6 @@
       .subscribe();
   }
 
-  // lancement
   main();
 </script>
 
