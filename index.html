@@ -208,7 +208,6 @@
 </header>
 
 <main>
-  <!-- Filtres GEO -->
   <div class="bar">
     <div class="field">
       <label>📍 Zone (pickup_zone)</label>
@@ -258,10 +257,14 @@
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* 🔐 SUPABASE — URL déjà intégrée */
+  /* 🔐 SUPABASE (clé intégrée) */
   const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-  const SUPABASE_ANON_KEY = "__ANON_KEY__"; // <-- colle ta clé ici
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+
+  // ✅ anti-doublon (même si tu inclus ce module sur plusieurs pages)
+  globalThis.__sb ||= createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const sb = globalThis.__sb;
 
   const tripsEl = document.getElementById("trips");
   const zoneFilter = document.getElementById("zoneFilter");
@@ -276,21 +279,24 @@
   function toast(msg){
     toastEl.textContent = msg;
     toastEl.style.display = "block";
-    clearTimeout(window.__t);
-    window.__t = setTimeout(()=> toastEl.style.display="none", 2400);
+    clearTimeout(globalThis.__t);
+    globalThis.__t = setTimeout(()=> toastEl.style.display="none", 2400);
   }
 
   /* =========================
-     AUTH CHECK
+     AUTH CHECK (session)
   ========================== */
-  const { data:{ user }, error:authErr } = await supabase.auth.getUser();
-  if (authErr) console.warn(authErr);
-  if (!user) {
+  const { data: sess } = await sb.auth.getSession();
+  const session = sess?.session;
+
+  if (!session){
     statusTitle.textContent = "❌ Non connecté";
-    statusSub.textContent = "Ouvre cette page depuis l’espace chauffeur (OTP).";
+    statusSub.textContent = "Passe par la page login OTP chauffeur, puis reviens ici.";
     whoEl.textContent = "Offline";
     throw new Error("Not authenticated");
   }
+
+  const user = session.user;
   whoEl.textContent = (user.phone || user.email || "Chauffeur");
 
   statusTitle.textContent = "🟢 En ligne";
@@ -302,11 +308,7 @@
   let driverLat = null, driverLng = null;
 
   function setGPSBadge(){
-    if (driverLat && driverLng) {
-      gpsBadge.textContent = "GPS: OK";
-    } else {
-      gpsBadge.textContent = "GPS: OFF";
-    }
+    gpsBadge.textContent = (driverLat && driverLng) ? "GPS: OK" : "GPS: OFF";
   }
   setGPSBadge();
 
@@ -322,7 +324,6 @@
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
-  // GPS watcher (meilleur que getCurrentPosition)
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(
       (pos)=>{
@@ -341,7 +342,7 @@
   }
 
   /* =========================
-     STORE (UI)
+     STORE + FILTERS
   ========================== */
   const store = new Map(); // id -> trip row
 
@@ -355,10 +356,10 @@
     if (v === "mine" && !(trip.status === "accepted" || trip.status === "ongoing")) return false;
     if (v === "all" && !["requested","accepted","ongoing"].includes(trip.status)) return false;
 
-    // Zone (pickup_zone)
+    // Zone
     if (z && (trip.pickup_zone || "") !== z) return false;
 
-    // Distance (si coords présentes côté trip + gps ok)
+    // Distance (si coords présentes + gps ok)
     if (driverLat && driverLng && trip.pickup_lat && trip.pickup_lng) {
       const d = distanceKm(driverLat, driverLng, trip.pickup_lat, trip.pickup_lng);
       if (d > r) return false;
@@ -452,7 +453,8 @@
   }
 
   /* =========================
-     RPC ACTIONS
+     ACTIONS RPC
+     (tes fonctions doivent exister)
   ========================== */
   async function rpcAction(action, tripId){
     try{
@@ -462,12 +464,11 @@
       let res;
 
       if (action === "accept") {
-        res = await supabase.rpc("accept_trip", { p_trip_id: tripId });
+        res = await sb.rpc("accept_trip", { p_trip_id: tripId });
       } else if (action === "start") {
-        res = await supabase.rpc("start_trip", { p_trip_id: tripId });
+        res = await sb.rpc("start_trip", { p_trip_id: tripId });
       } else if (action === "complete") {
-        // IMPORTANT: ta fonction prod s’appelle complete_trip(p_trip_id uuid)
-        res = await supabase.rpc("complete_trip", { p_trip_id: tripId });
+        res = await sb.rpc("complete_trip", { p_trip_id: tripId });
       } else if (action === "refresh") {
         await loadInitial();
         toast("✅ Rafraîchi");
@@ -489,7 +490,6 @@
     }
   }
 
-  // Click delegation
   document.addEventListener("click", (e)=>{
     const btn = e.target?.closest("button[data-act]");
     if (!btn) return;
@@ -500,10 +500,10 @@
 
   /* =========================
      LOAD INITIAL DATA
+     ⚠️ driver_trips doit exister (table ou view)
   ========================== */
   async function loadInitial(){
-    // On charge plus large et on filtre dans l’UI
-    const { data, error } = await supabase
+    const { data, error } = await sb
       .from("driver_trips")
       .select("*")
       .in("status", ["requested","accepted","ongoing"])
@@ -512,20 +512,19 @@
 
     if (error){
       console.error(error);
-      statusSub.textContent = "Erreur chargement courses";
+      statusSub.textContent = "Erreur chargement courses (driver_trips)";
       return;
     }
     store.clear();
-    (data || []).forEach(t => store.set(t.id, t));
+    (data || []).forEach(t => t?.id && store.set(t.id, t));
     renderAll();
   }
 
-  // On recharge quand filtres changent
   zoneFilter.addEventListener("change", renderAll);
   radiusFilter.addEventListener("change", renderAll);
   viewFilter.addEventListener("change", renderAll);
 
-  // Re-render quand GPS arrive
+  // Re-render quand GPS bouge
   setInterval(()=>{ renderAll(); }, 7000);
 
   await loadInitial();
@@ -533,7 +532,7 @@
   /* =========================
      REALTIME
   ========================== */
-  supabase.channel("driver-trips-live")
+  sb.channel("driver-trips-live")
     .on("postgres_changes", { event:"INSERT", schema:"public", table:"driver_trips" }, (p)=>{
       const t = p.new;
       if (!t?.id) return;
@@ -545,7 +544,6 @@
       const t = p.new;
       if (!t?.id) return;
 
-      // On garde seulement les états qu’on affiche
       if (["requested","accepted","ongoing"].includes(t.status)){
         store.set(t.id, t);
       } else {
@@ -554,7 +552,6 @@
       renderAll();
     })
     .subscribe();
-
 </script>
 </body>
 </html>
