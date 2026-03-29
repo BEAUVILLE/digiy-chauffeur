@@ -3,332 +3,1156 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>DIGIY DRIVER — Chauffeur (Realtime + GEO)</title>
-  <meta name="theme-color" content="#22c55e" />
-  <meta name="description" content="DIGIY DRIVER Chauffeur — tableau de bord, courses en direct, filtrage zone & distance, 0% commission." />
+  <title>DIGIY DRIVER AMBASSADEUR — Galerie publique</title>
+  <meta name="theme-color" content="#0b1220" />
+  <meta
+    name="description"
+    content="DIGIY DRIVER AMBASSADEUR — La mobilité avec style et savoir-être. Galerie publique des chauffeurs, contact direct WhatsApp."
+  />
 
   <style>
     :root{
-      --green:#22c55e;
-      --green2:#16a34a;
-      --sky:#0ea5e9;
-      --ok:#22c55e;
-
-      --bg:#f0fdf4;
-      --bg2:#ffffff;
-      --card:#ffffff;
-
-      --text:#0f172a;
-      --muted:#64748b;
-
-      --shadow:0 12px 28px rgba(2,6,23,.08);
-      --radius:18px;
-
-      --warn:#f59e0b;
-      --warnBg:rgba(245,158,11,.12);
-      --warnBd:rgba(245,158,11,.35);
-      --warnTx:#7c2d12;
+      --bg:#071018;
+      --bg2:#0b1521;
+      --panel:#0f1b2a;
+      --panel-2:#132235;
+      --card:#0f1a29;
+      --line:rgba(255,255,255,.10);
+      --line-soft:rgba(255,255,255,.06);
+      --text:#f8fafc;
+      --muted:rgba(226,232,240,.72);
+      --gold:#f4c95d;
+      --gold-2:#d4a63a;
+      --green:#1fa86a;
+      --green-2:#157a4f;
+      --sky:#3b82f6;
+      --danger:#f59e0b;
+      --shadow:0 18px 60px rgba(0,0,0,.40);
+      --radius:22px;
     }
+
     *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: linear-gradient(180deg, #dcfce7 0%, var(--bg) 55%, var(--bg2) 100%);
       color:var(--text);
+      font-family:Outfit,Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(900px 500px at 10% 0%, rgba(244,201,93,.10), transparent 55%),
+        radial-gradient(900px 560px at 100% 10%, rgba(31,168,106,.12), transparent 55%),
+        linear-gradient(180deg, #08111a 0%, #0b1220 42%, #070d15 100%);
     }
-    header{
-      position:sticky; top:0; z-index:5;
-      padding:16px 14px;
-      background: linear-gradient(90deg, var(--green), #4ade80);
-      color:#fff;
-      box-shadow: 0 10px 22px rgba(34,197,94,.32);
-    }
-    .topRow{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-      max-width:980px; margin:0 auto;
-    }
-    .brand{
+
+    .floating-back{
+      position:fixed;
+      top:calc(env(safe-area-inset-top, 0px) + 12px);
+      left:calc(env(safe-area-inset-left, 0px) + 12px);
+      z-index:99999;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:12px 16px;
+      border-radius:999px;
+      border:1px solid rgba(244,201,93,.24);
+      background:linear-gradient(135deg, rgba(244,201,93,.96), rgba(31,168,106,.94));
+      color:#071018;
+      text-decoration:none;
+      font-size:14px;
       font-weight:1000;
-      letter-spacing:.3px;
-      display:flex; align-items:center; gap:10px;
-      font-size:17px;
-      white-space:nowrap;
+      line-height:1;
+      box-shadow:0 16px 40px rgba(0,0,0,.26);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      transition:transform .18s ease, box-shadow .18s ease;
     }
-    .pill{
-      background: rgba(255,255,255,.22);
-      border:1px solid rgba(255,255,255,.35);
+    .floating-back:hover{
+      transform:translateY(-1px);
+      box-shadow:0 20px 46px rgba(0,0,0,.32);
+    }
+
+    .page{
+      max-width:1180px;
+      margin:0 auto;
+      padding:18px 14px 40px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      padding:10px 0 14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+      flex-wrap:wrap;
+    }
+
+    .brand-badge{
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(244,201,93,1), rgba(212,166,58,.92));
+      color:#08111a;
+      font-size:24px;
+      font-weight:1000;
+      box-shadow:0 14px 36px rgba(244,201,93,.22);
+      border:1px solid rgba(255,255,255,.10);
+      flex:0 0 auto;
+    }
+
+    .brand-copy{
+      min-width:0;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
       padding:7px 11px;
       border-radius:999px;
-      font-size:12px;
-      font-weight:900;
-      white-space:nowrap;
+      border:1px solid rgba(244,201,93,.20);
+      background:rgba(244,201,93,.08);
+      color:#ffe8a6;
+      font-size:11px;
+      font-weight:1000;
+      letter-spacing:.08em;
+      text-transform:uppercase;
     }
-    main{max-width:980px; margin:0 auto; padding:14px;}
 
-    .card{
-      background:#ffffffcc;
-      backdrop-filter: blur(7px);
-      border:1px solid rgba(15,23,42,.08);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding:14px;
-      margin-bottom:12px;
+    .brand-title{
+      margin-top:8px;
+      font-size:22px;
+      font-weight:1000;
+      letter-spacing:.02em;
+      line-height:1.05;
     }
-    .bar{
+
+    .brand-sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
+      line-height:1.45;
+      max-width:720px;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:12px;
+      font-weight:950;
+      border:1px solid var(--line);
+      color:var(--text);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:rgba(255,255,255,.05);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+
+    .pill.gold{
+      color:#ffe8a6;
+      border-color:rgba(244,201,93,.22);
+      background:rgba(244,201,93,.08);
+    }
+
+    .pill.green{
+      color:#c8ffe5;
+      border-color:rgba(31,168,106,.25);
+      background:rgba(31,168,106,.10);
+    }
+
+    .dot{
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      background:var(--green);
+      box-shadow:0 0 0 4px rgba(31,168,106,.16);
+    }
+
+    .lang-switch{
+      display:flex;
+      gap:6px;
+      padding:4px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+    }
+
+    .lang-switch button{
+      border:none;
+      padding:8px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:1000;
+      font-size:12px;
+      background:transparent;
+      color:var(--text);
+      font-family:inherit;
+    }
+
+    .lang-switch button.active{
+      background:#f8fafc;
+      color:#09111a;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      margin-top:8px;
+      border-radius:28px;
+      border:1px solid var(--line);
+      background:
+        radial-gradient(700px 320px at 8% 0%, rgba(244,201,93,.12), transparent 60%),
+        radial-gradient(700px 360px at 100% 20%, rgba(31,168,106,.14), transparent 60%),
+        linear-gradient(180deg, rgba(15,27,42,.92), rgba(11,18,32,.96));
+      box-shadow:var(--shadow);
+      padding:22px;
+    }
+
+    .hero-grid{
+      position:relative;
+      z-index:1;
       display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns:1.2fr .8fr;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    .hero-main h1{
+      margin:14px 0 10px;
+      font-size:clamp(34px, 5vw, 58px);
+      line-height:1.02;
+      font-weight:1000;
+      letter-spacing:-.03em;
+    }
+
+    .hero-main h1 .gold{
+      background:linear-gradient(135deg, #fff4c7, var(--gold));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    .hero-main p{
+      margin:0;
+      max-width:760px;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.7;
+      font-weight:750;
+    }
+
+    .hero-signature{
+      margin-top:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(244,201,93,.22);
+      background:rgba(244,201,93,.08);
+      color:#ffe8a6;
+      font-size:13px;
+      font-weight:1000;
+    }
+
+    .hero-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .hero-badge{
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:950;
+    }
+
+    .hero-badge b{
+      color:#fff2be;
+    }
+
+    .hero-panel{
+      border-radius:22px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      padding:16px;
+      display:grid;
+      gap:12px;
+      align-content:start;
+    }
+
+    .panel-title{
+      font-size:14px;
+      font-weight:1000;
+      color:#ffe8a6;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .panel-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
       gap:10px;
     }
-    @media(max-width:860px){
-      .bar{grid-template-columns:1fr}
-      .grid{grid-template-columns:1fr}
+
+    .panel-box{
+      border-radius:16px;
+      border:1px solid var(--line-soft);
+      background:rgba(255,255,255,.04);
+      padding:12px;
     }
-    .field label{
-      font-size:12px;
+
+    .panel-k{
+      font-size:11px;
       color:var(--muted);
       font-weight:900;
-      display:block;
-      margin-bottom:6px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
     }
-    select, input{
-      width:100%;
-      padding:11px 12px;
-      border-radius:14px;
-      border:1px solid rgba(15,23,42,.12);
-      outline:none;
-      font-size:14px;
-      background:#fff;
+
+    .panel-v{
+      margin-top:8px;
+      font-size:20px;
+      font-weight:1000;
+      color:var(--text);
+    }
+
+    .panel-note{
+      border-radius:16px;
+      border:1px solid rgba(244,201,93,.16);
+      background:rgba(244,201,93,.07);
+      color:#fff2be;
+      font-size:13px;
+      line-height:1.55;
+      font-weight:800;
+      padding:12px;
+    }
+
+    .card{
+      margin-top:14px;
+      border-radius:24px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      box-shadow:var(--shadow);
+      padding:16px;
     }
 
     .status{
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
     }
-    .status .left{display:flex; flex-direction:column; gap:2px}
-    .status .title{font-weight:1000}
-    .status .sub{font-size:12px; color:var(--muted); font-weight:800}
+
+    .status .left{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .status .title{
+      font-weight:1000;
+      font-size:19px;
+      line-height:1.2;
+      color:#fff4c7;
+    }
+
+    .status .sub{
+      font-size:14px;
+      color:var(--muted);
+      font-weight:800;
+      line-height:1.55;
+      max-width:760px;
+    }
+
     .badge{
       font-size:12px;
       font-weight:1000;
       padding:8px 10px;
       border-radius:999px;
-      background:#dcfce7;
-      border:1px solid rgba(34,197,94,.22);
-      color:#14532d;
+      border:1px solid rgba(244,201,93,.22);
+      background:rgba(244,201,93,.08);
+      color:#ffe8a6;
       white-space:nowrap;
     }
+
     .badge.warn{
-      background:var(--warnBg);
-      border:1px solid var(--warnBd);
-      color:var(--warnTx);
+      background:rgba(245,158,11,.10);
+      border-color:rgba(245,158,11,.28);
+      color:#ffd8a6;
     }
 
-    .actionsTop{
-      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; align-items:center;
+    .navRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
     }
-    button{
-      padding:11px 12px;
+
+    .navBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:12px 15px;
+      border-radius:14px;
+      font-weight:1000;
+      font-size:14px;
+      text-decoration:none;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    .navBtn:hover{
+      transform:translateY(-1px);
+      border-color:rgba(244,201,93,.24);
+    }
+
+    .navBtn.main{
+      background:linear-gradient(135deg, var(--green), var(--green-2));
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 12px 24px rgba(31,168,106,.22);
+    }
+
+    .navBtn.sky{
+      background:linear-gradient(135deg, #3b82f6, #2563eb);
+      color:#fff;
+      border-color:transparent;
+    }
+
+    .navBtn.gold{
+      background:linear-gradient(135deg, rgba(244,201,93,.18), rgba(212,166,58,.12));
+      color:#fff1bd;
+      border-color:rgba(244,201,93,.22);
+    }
+
+    .bar{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+    }
+
+    .field label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:900;
+      display:block;
+      margin-bottom:7px;
+    }
+
+    select,input{
+      width:100%;
+      padding:12px 13px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      outline:none;
+      font-size:14px;
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-weight:900;
+      font-family:inherit;
+    }
+
+    select option{
+      color:#08111a;
+    }
+
+    input::placeholder{
+      color:rgba(226,232,240,.45);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .driver{
+      position:relative;
+      overflow:hidden;
+      border-radius:24px;
+      border:1px solid var(--line);
+      background:
+        radial-gradient(500px 180px at 100% 0%, rgba(244,201,93,.08), transparent 60%),
+        linear-gradient(180deg, rgba(19,34,53,.96), rgba(11,18,32,.98));
+      box-shadow:0 18px 40px rgba(0,0,0,.28);
+      padding:16px;
+      transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .driver:hover{
+      transform:translateY(-2px);
+      border-color:rgba(244,201,93,.24);
+      box-shadow:0 22px 50px rgba(0,0,0,.34);
+    }
+
+    .driver::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:3px;
+      background:linear-gradient(90deg, rgba(244,201,93,.98), rgba(31,168,106,.92));
+    }
+
+    .driver-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .identity{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      min-width:0;
+    }
+
+    .avatar{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, rgba(244,201,93,.18), rgba(31,168,106,.18));
+      border:1px solid rgba(244,201,93,.18);
+      color:#fff2be;
+      font-size:18px;
+      font-weight:1000;
+      flex:0 0 auto;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .identity-copy{
+      min-width:0;
+    }
+
+    .name{
+      font-weight:1000;
+      font-size:18px;
+      line-height:1.15;
+      color:#fff4c7;
+    }
+
+    .titleline{
+      margin-top:6px;
+      font-size:12px;
+      color:#d7fbe9;
+      font-weight:900;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+
+    .meta{
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:900;
+    }
+
+    .tag{
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .tag.gold{
+      border-color:rgba(244,201,93,.22);
+      color:#fff1bd;
+      background:rgba(244,201,93,.08);
+    }
+
+    .tag.green{
+      border-color:rgba(31,168,106,.24);
+      color:#d4ffe7;
+      background:rgba(31,168,106,.10);
+    }
+
+    .tag.off{
+      color:#dbe6f3;
+    }
+
+    .side-badge{
+      padding:8px 11px;
+      border-radius:999px;
+      border:1px solid rgba(244,201,93,.18);
+      background:rgba(244,201,93,.08);
+      color:#fff1bd;
+      font-size:11px;
+      font-weight:1000;
+      white-space:nowrap;
+    }
+
+    .desc{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.7;
+      min-height:48px;
+      font-weight:750;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+      flex-wrap:wrap;
+    }
+
+    button,a.btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:12px 13px;
       border:none;
       border-radius:14px;
       font-weight:1000;
       font-size:14px;
       cursor:pointer;
+      text-decoration:none;
+      user-select:none;
+      transition:transform .16s ease, filter .16s ease;
+      font-family:inherit;
     }
-    button:disabled{opacity:.55; cursor:not-allowed}
-    .btn-light{
-      background:#fff;
-      border:1px solid rgba(15,23,42,.14);
+
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    .btn-main{
+      background:linear-gradient(135deg, var(--gold), var(--gold-2));
+      color:#08111a;
+      box-shadow:0 12px 24px rgba(244,201,93,.16);
+    }
+
+    .btn-sky{
+      background:linear-gradient(135deg, #3b82f6, #2563eb);
+      color:#fff;
+    }
+
+    .btn-ghost{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--line);
       color:var(--text);
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap:12px;
+    .footCta{text-align:center}
+    .footCta .big{
+      font-weight:1100;
+      font-size:17px;
+      color:#fff4c7;
     }
-    .trip{
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border:1px solid rgba(15,23,42,.08);
-      padding:14px;
-      overflow:hidden;
-      position:relative;
-    }
-    .trip .head{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-    }
-    .trip .route{
-      font-weight:1000;
-      font-size:15px;
-      line-height:1.2;
-    }
-    .trip .meta{
-      margin-top:8px;
-      display:flex; flex-wrap:wrap; gap:8px;
-      font-size:12px;
+    .footCta .small{
+      margin-top:6px;
       color:var(--muted);
       font-weight:900;
-    }
-    .tag{
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(15,23,42,.10);
-      background:#fff;
-    }
-    .price{
-      margin-top:10px;
-      font-size:16px;
-      font-weight:1100;
-      color:var(--green2);
-    }
-    .actions{display:flex; gap:10px; margin-top:12px;}
-    .btn-accept{background:var(--green2); color:#fff}
-    .btn-start{background:var(--sky); color:#fff}
-    .btn-done{background:var(--ok); color:#fff}
-    .btn-ghost{
-      background:#fff;
-      border:1px solid rgba(15,23,42,.12);
-      color:var(--text);
+      font-size:13px;
+      line-height:1.5;
+      max-width:760px;
+      margin-inline:auto;
     }
 
     .toast{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 16px;
-      background: rgba(15,23,42,.92);
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:16px;
+      background:rgba(8,17,26,.94);
       color:#fff;
       padding:10px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 900;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:900;
       display:none;
-      z-index: 20;
-      max-width: 92vw;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      z-index:30;
+      max-width:92vw;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      border:1px solid var(--line);
+    }
+
+    @media(max-width:980px){
+      .hero-grid{grid-template-columns:1fr}
+    }
+
+    @media(max-width:860px){
+      .bar{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
+    }
+
+    @media(max-width:768px){
+      .floating-back{
+        top:calc(env(safe-area-inset-top, 0px) + 10px);
+        left:calc(env(safe-area-inset-left, 0px) + 10px);
+        padding:11px 14px;
+        font-size:13px;
+      }
+      .hero{padding:18px}
+      .brand-title{font-size:20px}
     }
   </style>
 </head>
 
 <body>
-<header>
-  <div class="topRow">
-    <div class="brand">🚕 DIGIY DRIVER <span class="pill">Personnes • Realtime</span></div>
-    <div class="pill" id="who">…</div>
-  </div>
-</header>
+<a class="floating-back" id="floatingSiteBtn" href="https://digiylyfe.com/" aria-label="Retour au site DIGIYLYFE">
+  ↩️ Retour site
+</a>
 
-<main>
+<div class="page">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-badge">🚕</div>
+      <div class="brand-copy">
+        <div class="eyebrow" data-i18n="eyebrow">DIGIY DRIVER AMBASSADEUR</div>
+        <div class="brand-title" data-i18n="brand_title">La mobilité avec style et savoir-être.</div>
+        <div class="brand-sub" data-i18n="brand_sub">
+          Une galerie pensée pour montrer non pas la masse, mais la tenue, la présence et la qualité humaine du service.
+        </div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <div class="pill gold"><span>👑</span><span data-i18n="pill_class">Sélection Ambassadeur</span></div>
+      <div class="pill green"><span class="dot"></span><span id="onlinePill">…</span></div>
+      <div class="pill" id="countPill">…</div>
+
+      <div class="lang-switch" aria-label="Language switch">
+        <button id="lang-fr" class="active" type="button">FR</button>
+        <button id="lang-wo" type="button">WO</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="hero-main">
+        <div class="eyebrow" data-i18n="hero_eyebrow">Galerie publique premium</div>
+        <h1>
+          <span class="gold" data-i18n="hero_title">DIGIY DRIVER AMBASSADEUR</span>
+        </h1>
+        <p data-i18n="hero_sub">
+          La mobilité avec style et savoir-être. Filtre par zone, regarde les profils, puis contacte directement le bon chauffeur sur WhatsApp.
+        </p>
+
+        <div class="hero-signature" data-i18n="hero_signature">
+          Un style. Un savoir-être. Une présence.
+        </div>
+
+        <div class="hero-badges">
+          <div class="hero-badge" data-i18n="hero_badge_1"><b>Ambassadeur</b> = représentation de la maison</div>
+          <div class="hero-badge" data-i18n="hero_badge_2">Contact direct • WhatsApp</div>
+          <div class="hero-badge" data-i18n="hero_badge_3">0% commission</div>
+        </div>
+      </div>
+
+      <aside class="hero-panel">
+        <div class="panel-title" data-i18n="panel_title">Vue d’ensemble</div>
+        <div class="panel-grid">
+          <div class="panel-box">
+            <div class="panel-k" data-i18n="panel_count_k">Chauffeurs visibles</div>
+            <div class="panel-v" id="statTotal">—</div>
+          </div>
+          <div class="panel-box">
+            <div class="panel-k" data-i18n="panel_online_k">Contact direct</div>
+            <div class="panel-v" id="statOnline">—</div>
+          </div>
+          <div class="panel-box">
+            <div class="panel-k" data-i18n="panel_zone_k">Zones couvertes</div>
+            <div class="panel-v" id="statZones">—</div>
+          </div>
+          <div class="panel-box">
+            <div class="panel-k" data-i18n="panel_public_k">Visibilité</div>
+            <div class="panel-v" id="liveBadge">Galerie publique</div>
+          </div>
+        </div>
+
+        <div class="panel-note" data-i18n="panel_note">
+          Ici, on met en avant des profils qui portent une certaine tenue de service.
+        </div>
+      </aside>
+    </div>
+  </section>
 
   <div class="card">
-    <div class="bar">
+    <div class="status">
+      <div class="left">
+        <div class="title" data-i18n="section_title">Trouver le bon ambassadeur</div>
+        <div class="sub" data-i18n="section_sub">
+          Cherche par zone, ville ou type de véhicule pour trouver le profil qui te correspond.
+        </div>
+      </div>
+      <div class="badge" id="badgeTop" data-i18n="badge_public">Galerie publique</div>
+    </div>
+
+    <div class="navRow">
+      <a class="navBtn" id="siteBtnTop" href="#" data-i18n="nav_site">← Retour au site</a>
+      <a class="navBtn gold" id="galleryBtnTop" href="#" data-i18n="nav_gallery">🚕 Nos chauffeurs</a>
+      <a class="navBtn sky" id="orderBtnTop" href="#" data-i18n="nav_order">📲 Réserver un chauffeur</a>
+      <a class="navBtn main" id="joinBtnTop" href="#" data-i18n="nav_recruit">🦅 Rejoindre la sélection</a>
+      <a class="navBtn" id="cockpitBtnTop" href="#" data-i18n="nav_cockpit">🚖 Mon espace chauffeur</a>
+    </div>
+
+    <div class="bar" style="margin-top:14px;">
       <div class="field">
-        <label>📍 Zone (pickup_zone)</label>
+        <label data-i18n="label_zone">📍 Zone recherchée</label>
         <select id="zoneFilter">
-          <option value="">Toutes</option>
-          <option value="Plateau">Plateau</option>
-          <option value="Almadies">Almadies</option>
-          <option value="Yoff">Yoff</option>
-          <option value="Saly">Saly</option>
+          <option value="" data-i18n="zone_all">Toutes</option>
         </select>
       </div>
 
       <div class="field">
-        <label>📏 Rayon</label>
-        <select id="radiusFilter">
-          <option value="2">2 km</option>
-          <option value="3">3 km</option>
-          <option value="5" selected>5 km</option>
-          <option value="8">8 km</option>
-          <option value="10">10 km</option>
-        </select>
+        <label data-i18n="label_search">🔎 Nom, ville ou voiture</label>
+        <input id="qFilter" placeholder="Nom, ville ou voiture…" />
       </div>
 
       <div class="field">
-        <label>🎛️ Vue</label>
-        <select id="viewFilter">
-          <option value="open" selected>Demandes ouvertes (requested)</option>
-          <option value="mine">Mes courses (accepted/ongoing)</option>
-          <option value="all">Tout (requested/accepted/ongoing)</option>
+        <label data-i18n="label_avail">📞 Contact</label>
+        <select id="availFilter">
+          <option value="all" selected data-i18n="avail_all">Tous les profils</option>
+          <option value="direct" data-i18n="avail_online">WhatsApp direct</option>
+          <option value="contact" data-i18n="avail_offline">À contacter</option>
         </select>
       </div>
     </div>
   </div>
 
-  <!-- Bandeau soft (on ne vire pas) -->
-  <div class="card status" id="softCard" style="display:none">
-    <div class="left">
-      <div class="title" id="softTitle">⚠️ Profil à compléter</div>
-      <div class="sub" id="softSub">On te laisse entrer. Mets tes infos chauffeur quand tu peux.</div>
-    </div>
-    <div class="badge warn">Soft-guard</div>
-  </div>
+  <div class="grid" id="drivers"></div>
 
-  <div class="card status">
-    <div class="left">
-      <div class="title" id="statusTitle">Connexion…</div>
-      <div class="sub" id="statusSub">Chargement Supabase / GPS</div>
+  <div class="card footCta">
+    <div class="big" data-i18n="cta_driver_title">Vous êtes chauffeur ambassadeur ?</div>
+    <div class="small" data-i18n="cta_driver_sub">
+      Rejoins DIGIY DRIVER AMBASSADEUR et fais grandir ta présence avec style et savoir-être.
     </div>
-    <div class="badge" id="gpsBadge">GPS: …</div>
-  </div>
 
-  <div class="card status">
-    <div class="left">
-      <div class="title">👤 Dashboard Chauffeur</div>
-      <div class="sub" id="meLine">Chargement profil…</div>
-    </div>
-    <div class="actionsTop">
-      <button class="btn-light" id="btnReload">🔄 Recharger</button>
-      <button class="btn-light" id="btnLogout">🚪 Déconnexion</button>
+    <div class="actions" style="justify-content:center; margin-top:12px;">
+      <a class="btn btn-ghost" id="siteBtnBottom" href="#" data-i18n="nav_site">← Retour au site</a>
+      <a class="btn btn-ghost" id="galleryBtnBottom" href="#" data-i18n="nav_gallery">Nos chauffeurs</a>
+      <a class="btn btn-sky" id="orderBtnBottom" href="#" data-i18n="cta_order_ride">Réserver un chauffeur</a>
+      <a class="btn btn-main" id="joinBtnBottom" href="#" data-i18n="cta_become_driver">Rejoindre la sélection</a>
+      <a class="btn btn-ghost" id="cockpitBtnBottom" href="#" data-i18n="nav_cockpit">Mon espace chauffeur</a>
     </div>
   </div>
-
-  <div class="grid" id="trips"></div>
-</main>
+</div>
 
 <div class="toast" id="toast"></div>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* PORTE HUB */
-  const DIGIY_GATE = "https://beauville.github.io/digiy-hub/";
-  function STOP(){
-    location.replace(DIGIY_GATE);
-    throw new Error("DIGIY_GATE");
+  const DIGIY_LANG = {
+    fr: {
+      eyebrow: "DIGIY DRIVER AMBASSADEUR",
+      brand_title: "La mobilité avec style et savoir-être.",
+      brand_sub: "Une galerie pensée pour montrer non pas la masse, mais la tenue, la présence et la qualité humaine du service.",
+      pill_class: "Sélection Ambassadeur",
+
+      hero_eyebrow: "Galerie publique premium",
+      hero_title: "DIGIY DRIVER AMBASSADEUR",
+      hero_sub: "La mobilité avec style et savoir-être. Filtre par zone, regarde les profils, puis contacte directement le bon chauffeur sur WhatsApp.",
+      hero_signature: "Un style. Un savoir-être. Une présence.",
+      hero_badge_1: "Ambassadeur = représentation de la maison",
+      hero_badge_2: "Contact direct • WhatsApp",
+      hero_badge_3: "0% commission",
+
+      panel_title: "Vue d’ensemble",
+      panel_count_k: "Chauffeurs visibles",
+      panel_online_k: "Contact direct",
+      panel_zone_k: "Zones couvertes",
+      panel_public_k: "Visibilité",
+      panel_note: "Ici, on met en avant des profils qui portent une certaine tenue de service.",
+
+      section_title: "Trouver le bon ambassadeur",
+      section_sub: "Cherche par zone, ville ou type de véhicule pour trouver le profil qui te correspond.",
+
+      badge_public: "Galerie publique",
+      badge_loading: "Chargement…",
+      badge_fallback: "⚠️ Galerie publique",
+
+      nav_site: "← Retour au site",
+      nav_gallery: "🚕 Nos chauffeurs",
+      nav_order: "📲 Réserver un chauffeur",
+      nav_recruit: "🦅 Rejoindre la sélection",
+      nav_cockpit: "🚖 Mon espace chauffeur",
+
+      label_zone: "📍 Zone recherchée",
+      zone_all: "Toutes",
+
+      label_search: "🔎 Nom, ville ou voiture",
+      search_ph: "Nom, ville ou voiture…",
+
+      label_avail: "📞 Contact",
+      avail_all: "Tous les profils",
+      avail_online: "WhatsApp direct",
+      avail_offline: "À contacter",
+
+      count_drivers: (n) => `${n} chauffeur(s)`,
+      online_now: (n) => `${n} en contact direct`,
+      zones_live: (n) => `${n} zone(s) couvertes`,
+
+      stat_total: (n) => `${n}`,
+      stat_online: (n) => `${n}`,
+      stat_zones: (n) => `${n}`,
+
+      empty_title: "Aucun chauffeur trouvé",
+      empty_tag_1: "Change les filtres",
+      empty_tag_2: "Ou contacte WhatsApp",
+      btn_support_whatsapp: "WhatsApp support",
+      btn_order_ride: "Réserver un chauffeur",
+
+      driver_default_name: "Chauffeur Ambassadeur",
+      driver_desc_default: "Profil public DIGIY DRIVER AMBASSADEUR. La mobilité avec style et savoir-être.",
+      driver_tagline: "Mobilité avec style et savoir-être",
+      tag_online: "📞 WhatsApp direct",
+      tag_offline: "🕊️ À contacter",
+      pill_public: "Chauffeur sélectionné",
+      btn_whatsapp: "WhatsApp",
+      btn_profile: "Voir le profil",
+
+      cta_driver_title: "Vous êtes chauffeur ambassadeur ?",
+      cta_driver_sub: "Rejoins DIGIY DRIVER AMBASSADEUR et fais grandir ta présence avec style et savoir-être.",
+      cta_become_driver: "Rejoindre la sélection",
+      cta_order_ride: "Réserver un chauffeur",
+      cta_whatsapp: "WhatsApp support",
+
+      fallback_title: "⚠️ Galerie pas encore branchée",
+      fallback_tag_1: "La source Supabase \"public_driver_cards\" n’est pas accessible",
+      fallback_tag_2: "RLS / vue publique à créer",
+      toast_fallback: "Galerie en mode public"
+    },
+
+    wo: {
+      eyebrow: "DIGIY DRIVER AMBASSADEUR",
+      brand_title: "Mobility ak style ak savoir-être.",
+      brand_sub: "Galerie bii dafay won li gën a am solo: taxaw, teey, ak melokaanu service bi.",
+      pill_class: "Sélection Ambassadeur",
+
+      hero_eyebrow: "Galerie publique premium",
+      hero_title: "DIGIY DRIVER AMBASSADEUR",
+      hero_sub: "Mobility ak style ak savoir-être. Tànn zone, seetal profil yi, te jokkook chauffeur bi ci WhatsApp.",
+      hero_signature: "Style. Savoir-être. Présence.",
+      hero_badge_1: "Ambassadeur = ku di teewal kër gi",
+      hero_badge_2: "Contact direct • WhatsApp",
+      hero_badge_3: "0% commission",
+
+      panel_title: "Xool bu gaaw",
+      panel_count_k: "Chauffeur yi ñuy won",
+      panel_online_k: "WhatsApp direct",
+      panel_zone_k: "Zone yi ñu mën a dikk",
+      panel_public_k: "Visibilité",
+      panel_note: "Fii, ñuy jëkk ci profil yu yor teey ak yëngu-yëngu bu rafet.",
+
+      section_title: "Seetal ambassadeur bi gën a baax",
+      section_sub: "Seet ci zone, dëkk walla voiture ngir gis profil bi la gën a yombal.",
+
+      badge_public: "Galerie publique",
+      badge_loading: "Di yük…",
+      badge_fallback: "⚠️ Galerie publique",
+
+      nav_site: "← Dellu ci site bi",
+      nav_gallery: "🚕 Sunu chauffeurs",
+      nav_order: "📲 Réserver un chauffeur",
+      nav_recruit: "🦅 Duggal ci sélection bi",
+      nav_cockpit: "🚖 Sama espace chauffeur",
+
+      label_zone: "📍 Zone bi nga seet",
+      zone_all: "Yépp",
+
+      label_search: "🔎 Tur, dëkk walla voiture",
+      search_ph: "Tur, dëkk walla voiture…",
+
+      label_avail: "📞 Jokkook",
+      avail_all: "Profils yépp",
+      avail_online: "WhatsApp direct",
+      avail_offline: "À contacter",
+
+      count_drivers: (n) => `${n} chauffeur`,
+      online_now: (n) => `${n} ci WhatsApp direct`,
+      zones_live: (n) => `${n} zone yu ñuy liggéey`,
+
+      stat_total: (n) => `${n}`,
+      stat_online: (n) => `${n}`,
+      stat_zones: (n) => `${n}`,
+
+      empty_title: "Amul chauffeur bu ñu gis",
+      empty_tag_1: "Soppi filtre yi",
+      empty_tag_2: "Walla bataaxal WhatsApp",
+      btn_support_whatsapp: "WhatsApp support",
+      btn_order_ride: "Réserver un chauffeur",
+
+      driver_default_name: "Chauffeur Ambassadeur",
+      driver_desc_default: "Profil public DIGIY DRIVER AMBASSADEUR. Mobility ak style ak savoir-être.",
+      driver_tagline: "Mobility ak style ak savoir-être",
+      tag_online: "📞 WhatsApp direct",
+      tag_offline: "🕊️ À contacter",
+      pill_public: "Chauffeur sélectionné",
+      btn_whatsapp: "WhatsApp",
+      btn_profile: "Xool profil bi",
+
+      cta_driver_title: "Yow, yaa di chauffeur ambassadeur ?",
+      cta_driver_sub: "Duggal sa bopp ci DIGIY DRIVER AMBASSADEUR ak style ak savoir-être.",
+      cta_become_driver: "Duggal ci sélection bi",
+      cta_order_ride: "Réserver un chauffeur",
+      cta_whatsapp: "WhatsApp support",
+
+      fallback_title: "⚠️ Galerie bi du connecté",
+      fallback_tag_1: "Source Supabase \"public_driver_cards\" duñu ko jàpp",
+      fallback_tag_2: "RLS / vue publique war nañu ko def",
+      toast_fallback: "Galerie bi ci mode public"
+    }
+  };
+
+  let CURRENT_LANG = localStorage.getItem("digiy_lang") || "fr";
+
+  function t(key, ...args){
+    const pack = DIGIY_LANG[CURRENT_LANG] || DIGIY_LANG.fr;
+    const val = pack[key];
+    if (typeof val === "function") return val(...args);
+    return (val != null) ? String(val) : String((DIGIY_LANG.fr[key] ?? key));
   }
 
-  /* SUPABASE */
+  function digiyBasePath(){
+    const parts = location.pathname.split("/").filter(Boolean);
+    const isGh = /\.github\.io$/i.test(location.hostname);
+    if(isGh && parts.length > 0) return "/" + parts[0] + "/";
+    return "/";
+  }
+
+  function digiyLocal(path){
+    path = String(path || "").replace(/^\/+/, "");
+    return digiyBasePath() + path;
+  }
+
   const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-  const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+  const SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const PUBLIC_SOURCE = "public_driver_cards";
 
-  globalThis.__sb ||= createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const sb = globalThis.__sb;
+  const qs = new URLSearchParams(location.search);
+  const slug = (qs.get("slug") || "").trim();
 
-  /* UI */
-  const tripsEl = document.getElementById("trips");
+  const SITE_URL = "https://digiylyfe.com/";
+  const GALLERY_URL = location.pathname + location.search;
+  const ORDER_RIDE_URL = digiyLocal("commander-course.html");
+  const DRIVER_JOIN_URL = "https://commencer-a-payer.digiylyfe.com/?module=DRIVER";
+  const COCKPIT_URL = "https://pro-driver.digiylyfe.com/cockpit.html";
+  const PROFILE_URL = digiyLocal("fiche-chauffeur.html");
+
+  function withSlug(url){
+    const u = new URL(url, location.href);
+    if (slug) u.searchParams.set("slug", slug);
+    return u.toString();
+  }
+
+  function commanderUrlForDriver(d){
+    const u = new URL(ORDER_RIDE_URL, location.href);
+    if (d?.name) u.searchParams.set("driver", d.name);
+    if (d?.whatsapp) u.searchParams.set("wa", normPhone(d.whatsapp));
+    if (d?.slug) u.searchParams.set("slug", d.slug);
+    return u.toString();
+  }
+
+  function profileUrlForDriver(d){
+    const u = new URL(PROFILE_URL, location.href);
+    if (d?.slug) u.searchParams.set("slug", d.slug);
+    return u.toString();
+  }
+
+  function applyLanguage(lang){
+    CURRENT_LANG = (lang === "wo") ? "wo" : "fr";
+    localStorage.setItem("digiy_lang", CURRENT_LANG);
+    document.documentElement.setAttribute("lang", CURRENT_LANG === "wo" ? "wo" : "fr");
+
+    document.querySelectorAll("[data-i18n]").forEach(el=>{
+      const key = el.dataset.i18n;
+      const val = t(key);
+      if (val) el.textContent = val;
+    });
+
+    const q = document.getElementById("qFilter");
+    if (q) q.setAttribute("placeholder", t("search_ph"));
+
+    document.getElementById("lang-fr")?.classList.toggle("active", CURRENT_LANG==="fr");
+    document.getElementById("lang-wo")?.classList.toggle("active", CURRENT_LANG==="wo");
+
+    refreshTopStats();
+    render();
+  }
+
+  document.getElementById("lang-fr").addEventListener("click", ()=> applyLanguage("fr"));
+  document.getElementById("lang-wo").addEventListener("click", ()=> applyLanguage("wo"));
+
+  const driversEl = document.getElementById("drivers");
   const zoneFilter = document.getElementById("zoneFilter");
-  const radiusFilter = document.getElementById("radiusFilter");
-  const viewFilter = document.getElementById("viewFilter");
-  const whoEl = document.getElementById("who");
-  const statusTitle = document.getElementById("statusTitle");
-  const statusSub = document.getElementById("statusSub");
-  const gpsBadge = document.getElementById("gpsBadge");
-  const meLine = document.getElementById("meLine");
+  const qFilter = document.getElementById("qFilter");
+  const availFilter = document.getElementById("availFilter");
+  const countPill = document.getElementById("countPill");
+  const onlinePill = document.getElementById("onlinePill");
+  const liveBadge = document.getElementById("liveBadge");
+  const badgeTop = document.getElementById("badgeTop");
   const toastEl = document.getElementById("toast");
-  const btnReload = document.getElementById("btnReload");
-  const btnLogout = document.getElementById("btnLogout");
-  const softCard = document.getElementById("softCard");
-  const softTitle = document.getElementById("softTitle");
-  const softSub = document.getElementById("softSub");
+
+  const statTotal = document.getElementById("statTotal");
+  const statOnline = document.getElementById("statOnline");
+  const statZones = document.getElementById("statZones");
+
+  [
+    ["floatingSiteBtn", SITE_URL],
+    ["siteBtnTop", SITE_URL],
+    ["siteBtnBottom", SITE_URL],
+    ["galleryBtnTop", GALLERY_URL],
+    ["galleryBtnBottom", GALLERY_URL],
+    ["orderBtnTop", ORDER_RIDE_URL],
+    ["orderBtnBottom", ORDER_RIDE_URL],
+    ["joinBtnTop", DRIVER_JOIN_URL],
+    ["joinBtnBottom", DRIVER_JOIN_URL],
+    ["cockpitBtnTop", COCKPIT_URL],
+    ["cockpitBtnBottom", COCKPIT_URL]
+  ].forEach(([id, url])=>{
+    const el = document.getElementById(id);
+    if (el) el.href = withSlug(url);
+  });
+
+  let ALL = [];
 
   function toast(msg){
     toastEl.textContent = msg;
@@ -337,303 +1161,243 @@
     globalThis.__t = setTimeout(()=> toastEl.style.display="none", 2400);
   }
 
-  function showSoft(title, sub){
-    softTitle.textContent = title;
-    softSub.textContent = sub;
-    softCard.style.display = "flex";
+  function esc(s){
+    return String(s ?? "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[m]));
   }
 
-  async function main(){
-    // Session obligatoire (seule vraie raison de virer)
-    const { data: sess } = await sb.auth.getSession();
-    const session = sess?.session;
+  function normPhone(p){
+    let digits = String(p ?? "").replace(/\D/g, "");
+    if (digits.length === 9 && digits.startsWith("7")) digits = "221" + digits;
+    return digits || "";
+  }
 
-    if (!session){
-      statusTitle.textContent = "❌ Non connecté";
-      statusSub.textContent = "Retour HUB…";
-      whoEl.textContent = "Offline";
-      STOP();
+  function normalizeText(v){
+    return String(v || "").trim();
+  }
+
+  function getZoneCount(items){
+    return new Set(
+      items.map(d => normalizeText(d.zone)).filter(Boolean)
+    ).size;
+  }
+
+  function getDirectCount(items){
+    return items.filter(d => !!normPhone(d.whatsapp)).length;
+  }
+
+  function sortDrivers(rows){
+    return [...rows].sort((a,b)=>{
+      const ar = Number(a.rating || 0);
+      const br = Number(b.rating || 0);
+      if (br !== ar) return br - ar;
+
+      return String(a.name || "").localeCompare(String(b.name || ""), "fr", { sensitivity:"base" });
+    });
+  }
+
+  function rebuildZoneOptions(items){
+    const current = zoneFilter.value || "";
+    const zones = Array.from(
+      new Set(
+        items
+          .map(d => normalizeText(d.zone))
+          .filter(Boolean)
+      )
+    ).sort((a,b)=>a.localeCompare(b, "fr", { sensitivity:"base" }));
+
+    zoneFilter.innerHTML =
+      `<option value="">${esc(t("zone_all"))}</option>` +
+      zones.map(z => `<option value="${esc(z)}">${esc(z)}</option>`).join("");
+
+    if (zones.includes(current)) zoneFilter.value = current;
+  }
+
+  function refreshTopStats(){
+    countPill.textContent = t("count_drivers", ALL.length);
+    onlinePill.textContent = t("online_now", getDirectCount(ALL));
+
+    statTotal.textContent = t("stat_total", ALL.length);
+    statOnline.textContent = t("stat_online", getDirectCount(ALL));
+    statZones.textContent = t("stat_zones", getZoneCount(ALL));
+  }
+
+  function passes(d){
+    const z = (zoneFilter.value || "").trim();
+    const q = (qFilter.value || "").trim().toLowerCase();
+    const a = availFilter.value || "all";
+    const hasWhatsapp = !!normPhone(d.whatsapp);
+
+    if (z && String(d.zone || "") !== z) return false;
+    if (a === "direct" && !hasWhatsapp) return false;
+    if (a === "contact" && hasWhatsapp) return false;
+
+    if (q){
+      const hay = [
+        d.name,
+        d.city,
+        d.zone,
+        d.car,
+        d.description
+      ].join(" ").toLowerCase();
+
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }
+
+  function initials(name){
+    const parts = String(name || "")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2);
+    return parts.map(p => p[0]?.toUpperCase() || "").join("") || "DA";
+  }
+
+  function render(){
+    const items = sortDrivers(ALL.filter(passes));
+    countPill.textContent = t("count_drivers", items.length);
+
+    if (!items.length){
+      driversEl.innerHTML = `
+        <div class="driver" style="grid-column:1/-1">
+          <div class="name">${esc(t("empty_title"))}</div>
+          <div class="meta">
+            <span class="tag">${esc(t("empty_tag_1"))}</span>
+            <span class="tag">${esc(t("empty_tag_2"))}</span>
+          </div>
+          <div class="actions">
+            <a class="btn btn-main" href="https://wa.me/221771342889" rel="noopener">${esc(t("btn_support_whatsapp"))}</a>
+            <a class="btn btn-ghost" href="${esc(withSlug(ORDER_RIDE_URL))}" rel="noopener">${esc(t("btn_order_ride"))}</a>
+            <a class="btn btn-ghost" href="${esc(withSlug(SITE_URL))}" rel="noopener">${esc(t("nav_site"))}</a>
+          </div>
+        </div>
+      `;
+      return;
     }
 
-    const uid = session.user.id;
-    whoEl.textContent = (session.user.phone || session.user.email || "Chauffeur");
-    statusTitle.textContent = "🟢 En ligne";
-    statusSub.textContent = "Chargement profil & courses…";
+    driversEl.innerHTML = items.map(d => {
+      const name = d.name || t("driver_default_name");
+      const nameEsc = esc(name);
+      const city = esc(d.city || "");
+      const zone = esc(d.zone || "");
+      const car = esc(d.car || "");
+      const desc = esc(d.description || t("driver_desc_default"));
+      const rating = (d.rating != null && d.rating !== "") ? Number(d.rating) : null;
+      const wa = normPhone(d.whatsapp);
+      const mono = esc(initials(name));
 
-    // Profil : on tente, mais on NE VIRE PAS si ça échoue
-    let profile = null;
-    let profError = null;
+      const statusTag = wa
+        ? `<span class="tag green">${esc(t("tag_online"))}</span>`
+        : `<span class="tag off">${esc(t("tag_offline"))}</span>`;
+
+      const rateTag = (rating && !Number.isNaN(rating))
+        ? `<span class="tag gold">⭐ ${rating.toFixed(1)}</span>`
+        : "";
+
+      return `
+        <div class="driver">
+          <div class="driver-top">
+            <div class="identity">
+              <div class="avatar">${mono}</div>
+              <div class="identity-copy">
+                <div class="name">${nameEsc}</div>
+                <div class="titleline">${esc(t("driver_tagline"))}</div>
+                <div class="meta">
+                  ${city ? `<span class="tag">🏙️ ${city}</span>` : ``}
+                  ${zone ? `<span class="tag">📍 ${zone}</span>` : ``}
+                  ${car ? `<span class="tag">🚗 ${car}</span>` : ``}
+                  ${statusTag}
+                  ${rateTag}
+                </div>
+              </div>
+            </div>
+            <div class="side-badge">${esc(t("pill_public"))}</div>
+          </div>
+
+          <div class="desc">${desc}</div>
+
+          <div class="actions">
+            ${
+              wa
+                ? `<a class="btn btn-main" href="https://wa.me/${wa}" rel="noopener">${esc(t("btn_whatsapp"))}</a>`
+                : `<button class="btn btn-main" disabled>${esc(t("btn_whatsapp"))}</button>`
+            }
+            ${
+              d.slug
+                ? `<a class="btn btn-ghost" href="${esc(profileUrlForDriver(d))}" rel="noopener">${esc(t("btn_profile"))}</a>`
+                : ``
+            }
+            <a class="btn btn-sky" href="${esc(commanderUrlForDriver(d))}" rel="noopener">${esc(t("btn_order_ride"))}</a>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  async function load(){
+    liveBadge.textContent = t("badge_loading");
+    if (badgeTop) badgeTop.textContent = t("badge_loading");
 
     try{
-      const res = await sb
-        .from("profiles")
-        .select("role_auto, pro_type, active_modules")
-        .eq("id", uid)
-        .maybeSingle();
-
-      profile = res.data || null;
-      profError = res.error || null;
-    }catch(e){
-      profError = e;
-      profile = null;
-    }
-
-    // Cas clair : si profil dit FRET => dehors (seule interdiction dure)
-    if (profile){
-      const proType = (profile.pro_type || "").toLowerCase();
-      const mods = Array.isArray(profile.active_modules) ? profile.active_modules : [];
-      if (proType === "fret" || mods.includes("fret")){
-        STOP();
-      }
-      meLine.textContent = `ID: ${uid.slice(0,6)}… • ROLE: ${profile.role_auto || "?"} • TYPE: ${profile.pro_type || "?"}`;
-    } else {
-      // Profil absent / RLS / erreur -> SOFT ONLY
-      showSoft("⚠️ Profil pas prêt", "Ton accès est OK. On n’a pas encore pu lire ton profil (RLS/profil). Tu complèteras après.");
-      meLine.textContent = `ID: ${uid.slice(0,6)}… • Mode: DRIVER (soft)`;
-      if (profError) console.warn("profiles read error (soft):", profError);
-    }
-
-    // Logout
-    btnLogout?.addEventListener("click", async ()=>{
-      await sb.auth.signOut();
-      STOP();
-    });
-
-    // GPS
-    let driverLat = null, driverLng = null;
-
-    function setGPSBadge(){
-      gpsBadge.textContent = (driverLat && driverLng) ? "GPS: OK" : "GPS: OFF";
-    }
-    setGPSBadge();
-
-    function distanceKm(lat1, lon1, lat2, lon2) {
-      const R = 6371;
-      const dLat = (lat2-lat1) * Math.PI/180;
-      const dLon = (lon2-lon1) * Math.PI/180;
-      const a =
-        Math.sin(dLat/2)**2 +
-        Math.cos(lat1*Math.PI/180) *
-        Math.cos(lat2*Math.PI/180) *
-        Math.sin(dLon/2)**2;
-      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    }
-
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(
-        (pos)=>{
-          driverLat = pos.coords.latitude;
-          driverLng = pos.coords.longitude;
-          setGPSBadge();
-        },
-        ()=>{
-          setGPSBadge();
-          statusSub.textContent = "GPS refusé • filtrage distance désactivé";
-        },
-        { enableHighAccuracy:true, maximumAge: 8000, timeout: 12000 }
-      );
-    } else {
-      statusSub.textContent = "GPS indisponible • filtrage distance désactivé";
-    }
-
-    // Store
-    const store = new Map();
-
-    function passesFilters(trip){
-      const z = zoneFilter.value;
-      const r = parseFloat(radiusFilter.value || "5");
-      const v = viewFilter.value;
-
-      if (v === "open" && trip.status !== "requested") return false;
-      if (v === "mine" && !(trip.status === "accepted" || trip.status === "ongoing")) return false;
-      if (v === "all" && !["requested","accepted","ongoing"].includes(trip.status)) return false;
-
-      if (z && (trip.pickup_zone || "") !== z) return false;
-
-      if (driverLat && driverLng && trip.pickup_lat && trip.pickup_lng) {
-        const d = distanceKm(driverLat, driverLng, trip.pickup_lat, trip.pickup_lng);
-        if (d > r) return false;
-      }
-      return true;
-    }
-
-    function formatTripMeta(trip){
-      const z = trip.pickup_zone ? `📍 ${trip.pickup_zone}` : "📍 Zone ?";
-      const c = trip.pickup_city ? `🏙️ ${trip.pickup_city}` : "🏙️ Ville ?";
-
-      let distStr = null;
-      if (driverLat && driverLng && trip.pickup_lat && trip.pickup_lng) {
-        const d = distanceKm(driverLat, driverLng, trip.pickup_lat, trip.pickup_lng);
-        distStr = `📏 ${d.toFixed(1)} km`;
-      }
-
-      const km = trip.distance_km ? `🛣️ ${trip.distance_km} km` : null;
-      const min = trip.duration_min ? `⏱️ ${trip.duration_min} min` : null;
-
-      return [c, z, distStr, km, min].filter(Boolean);
-    }
-
-    function renderAll(){
-      tripsEl.innerHTML = "";
-      const items = Array.from(store.values())
-        .filter(passesFilters)
-        .sort((a,b)=> (new Date(b.created_at) - new Date(a.created_at)));
-
-      if (!items.length){
-        tripsEl.innerHTML = `
-          <div class="trip" style="grid-column:1/-1">
-            <div class="route">Aucune course dans tes filtres</div>
-            <div class="meta">
-              <span class="tag">Zone=Toutes</span>
-              <span class="tag">Rayon=10km</span>
-              <span class="tag">Vue=Demandes ouvertes</span>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      for (const trip of items) {
-        const card = document.createElement("div");
-        card.className = "trip";
-
-        const route = `📍 ${trip.pickup_city || "?"} → ${trip.dropoff_city || "?"}`;
-        const metaTags = formatTripMeta(trip).map(x=>`<span class="tag">${x}</span>`).join("");
-
-        let actionsHtml = "";
-        if (trip.status === "requested") {
-          actionsHtml = `
-            <div class="actions">
-              <button class="btn-accept" data-id="${trip.id}" data-act="accept">Accepter</button>
-            </div>
-          `;
-        } else if (trip.status === "accepted") {
-          actionsHtml = `
-            <div class="actions">
-              <button class="btn-start" data-id="${trip.id}" data-act="start">Démarrer</button>
-              <button class="btn-ghost" data-id="${trip.id}" data-act="refresh">Rafraîchir</button>
-            </div>
-          `;
-        } else if (trip.status === "ongoing") {
-          actionsHtml = `
-            <div class="actions">
-              <button class="btn-done" data-id="${trip.id}" data-act="complete">Terminer</button>
-              <button class="btn-ghost" data-id="${trip.id}" data-act="refresh">Rafraîchir</button>
-            </div>
-          `;
-        }
-
-        card.innerHTML = `
-          <div class="head">
-            <div>
-              <div class="route">${route}</div>
-              <div class="meta">${metaTags}</div>
-              <div class="price">💰 ${(trip.amount ?? 0)} F CFA</div>
-            </div>
-            <div class="pill" style="color:#0f172a;background:#fff;border-color:rgba(15,23,42,.15)">
-              ${trip.status}
-            </div>
-          </div>
-          ${actionsHtml}
-        `;
-
-        tripsEl.appendChild(card);
-      }
-    }
-
-    async function rpcAction(action, tripId){
-      try{
-        if (!tripId) return;
-
-        toast(`⏳ ${action.toUpperCase()}…`);
-        let res;
-
-        if (action === "accept") res = await sb.rpc("accept_trip", { p_trip_id: tripId });
-        else if (action === "start") res = await sb.rpc("start_trip", { p_trip_id: tripId });
-        else if (action === "complete") res = await sb.rpc("complete_trip", { p_trip_id: tripId });
-        else if (action === "refresh") { await loadInitial(); toast("✅ Rafraîchi"); return; }
-        else return;
-
-        if (res?.error){
-          console.error(res.error);
-          toast("❌ " + res.error.message);
-          return;
-        }
-
-        toast("✅ OK");
-      }catch(e){
-        console.error(e);
-        toast("❌ Erreur action");
-      }
-    }
-
-    document.addEventListener("click", (e)=>{
-      const btn = e.target?.closest("button[data-act]");
-      if (!btn) return;
-      rpcAction(btn.getAttribute("data-act"), btn.getAttribute("data-id"));
-    });
-
-    async function loadInitial(){
       const { data, error } = await sb
-        .from("driver_trips")
+        .from(PUBLIC_SOURCE)
         .select("*")
-        .in("status", ["requested","accepted","ongoing"])
-        .order("created_at", { ascending:false })
-        .limit(200);
+        .limit(250);
 
-      if (error){
-        console.error(error);
-        statusSub.textContent = "Erreur chargement (driver_trips)";
-        tripsEl.innerHTML = `
-          <div class="trip" style="grid-column:1/-1">
-            <div class="route">⚠️ driver_trips inaccessible</div>
-            <div class="meta">
-              <span class="tag">Table/view manquante ?</span>
-              <span class="tag">RLS bloque ?</span>
-            </div>
+      if (error) throw error;
+
+      ALL = Array.isArray(data) ? data : [];
+      rebuildZoneOptions(ALL);
+      refreshTopStats();
+      liveBadge.textContent = t("badge_public");
+      if (badgeTop) badgeTop.textContent = t("badge_public");
+      render();
+    }catch(e){
+      console.warn("Public gallery error:", e);
+      liveBadge.textContent = t("badge_fallback");
+      if (badgeTop) badgeTop.textContent = t("badge_fallback");
+      countPill.textContent = "…";
+      onlinePill.textContent = "…";
+      statTotal.textContent = "—";
+      statOnline.textContent = "—";
+      statZones.textContent = "—";
+      ALL = [];
+
+      driversEl.innerHTML = `
+        <div class="driver" style="grid-column:1/-1">
+          <div class="name">${esc(t("fallback_title"))}</div>
+          <div class="meta">
+            <span class="tag">${esc(t("fallback_tag_1"))}</span>
+            <span class="tag">${esc(t("fallback_tag_2"))}</span>
           </div>
-        `;
-        return;
-      }
+          <div class="actions">
+            <a class="btn btn-main" href="https://wa.me/221771342889" rel="noopener">${esc(t("cta_whatsapp"))}</a>
+            <a class="btn btn-ghost" href="${esc(withSlug(ORDER_RIDE_URL))}" rel="noopener">${esc(t("btn_order_ride"))}</a>
+            <a class="btn btn-ghost" href="${esc(withSlug(SITE_URL))}" rel="noopener">${esc(t("nav_site"))}</a>
+          </div>
+        </div>
+      `;
 
-      store.clear();
-      (data || []).forEach(t => t?.id && store.set(t.id, t));
-      renderAll();
-      statusSub.textContent = "Realtime actif • attente de courses";
+      toast(t("toast_fallback"));
     }
-
-    btnReload?.addEventListener("click", async ()=>{
-      await loadInitial();
-      toast("✅ Rechargé");
-    });
-
-    zoneFilter.addEventListener("change", renderAll);
-    radiusFilter.addEventListener("change", renderAll);
-    viewFilter.addEventListener("change", renderAll);
-    setInterval(()=>{ renderAll(); }, 7000);
-
-    await loadInitial();
-
-    sb.channel("driver-trips-live")
-      .on("postgres_changes", { event:"INSERT", schema:"public", table:"driver_trips" }, (p)=>{
-        const t = p.new;
-        if (!t?.id) return;
-        store.set(t.id, t);
-        renderAll();
-        if (t.status === "requested") toast("🚕 Nouvelle demande !");
-      })
-      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"driver_trips" }, (p)=>{
-        const t = p.new;
-        if (!t?.id) return;
-        if (["requested","accepted","ongoing"].includes(t.status)) store.set(t.id, t);
-        else store.delete(t.id);
-        renderAll();
-      })
-      .subscribe();
   }
 
-  main();
+  zoneFilter.addEventListener("change", render);
+  availFilter.addEventListener("change", render);
+  qFilter.addEventListener("input", () => {
+    clearTimeout(globalThis.__q);
+    globalThis.__q = setTimeout(render, 120);
+  });
+
+  applyLanguage(CURRENT_LANG);
+  load();
 </script>
 </body>
 </html>
-
