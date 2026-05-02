@@ -154,6 +154,84 @@
       justify-content:flex-end;
     }
 
+    .top-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      text-decoration:none;
+      font-size:12px;
+      font-weight:900;
+      line-height:1;
+      white-space:nowrap;
+      transition:transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .top-link:hover{
+      transform:translateY(-1px);
+      border-color:rgba(244,201,93,.28);
+      background:rgba(244,201,93,.08);
+    }
+
+    .top-link.gold{
+      color:#ffe8a6;
+      border-color:rgba(244,201,93,.22);
+      background:rgba(244,201,93,.08);
+    }
+
+    .top-link.green{
+      color:#d4ffe7;
+      border-color:rgba(31,168,106,.25);
+      background:rgba(31,168,106,.10);
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .hero-action{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:13px 15px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      text-decoration:none;
+      font-size:14px;
+      font-weight:900;
+      box-shadow:0 10px 26px rgba(0,0,0,.16);
+      transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+
+    .hero-action:hover{
+      transform:translateY(-1px);
+      border-color:rgba(244,201,93,.26);
+      box-shadow:0 14px 32px rgba(0,0,0,.20);
+    }
+
+    .hero-action.main{
+      background:linear-gradient(135deg, var(--gold), var(--gold-2));
+      color:#071018;
+      border-color:transparent;
+    }
+
+    .hero-action.green{
+      background:linear-gradient(135deg, var(--green), var(--green-2));
+      color:#fff;
+      border-color:transparent;
+    }
+
     .pill{
       border-radius:999px;
       padding:8px 12px;
@@ -721,6 +799,16 @@
     }
 
     @media(max-width:768px){
+      .top-actions{
+        width:100%;
+        justify-content:flex-start;
+      }
+      .top-link{
+        padding:9px 11px;
+      }
+      .hero-action{
+        width:100%;
+      }
       .floating-back{
         top:calc(env(safe-area-inset-top, 0px) + 10px);
         left:calc(env(safe-area-inset-left, 0px) + 10px);
@@ -752,6 +840,9 @@
     </div>
 
     <div class="top-actions">
+      <a class="top-link" href="https://digiylyfe.com/" data-i18n="top_site">🌍 Site</a>
+      <a class="top-link green" href="https://digiy-hub.digiylyfe.com/" data-i18n="top_hub">🧭 HUB</a>
+      <a class="top-link gold" href="https://tarifs.digiylyfe.com/" data-i18n="top_tarifs">📦 Tarifs</a>
       <div class="pill gold"><span>👑</span><span data-i18n="pill_class">Sélection Ambassadeur</span></div>
       <div class="pill green"><span class="dot"></span><span id="onlinePill">…</span></div>
       <div class="pill" id="countPill">…</div>
@@ -782,6 +873,12 @@
           <div class="hero-badge" data-i18n="hero_badge_1"><b>Ambassadeur</b> = représentation de la maison</div>
           <div class="hero-badge" data-i18n="hero_badge_2">Contact direct • WhatsApp</div>
           <div class="hero-badge" data-i18n="hero_badge_3">0% commission</div>
+        </div>
+
+        <div class="hero-actions" aria-label="Liens DIGIYLYFE">
+          <a class="hero-action main" href="https://digiylyfe.com/" data-i18n="hero_site">🌍 Retour site DIGIYLYFE</a>
+          <a class="hero-action green" href="https://digiy-hub.digiylyfe.com/" data-i18n="hero_hub">🧭 Ouvrir le HUB</a>
+          <a class="hero-action" href="https://tarifs.digiylyfe.com/" data-i18n="hero_tarifs">📦 Voir les tarifs</a>
         </div>
       </div>
 
@@ -885,6 +982,12 @@
       brand_title: "La mobilité avec style et savoir-être.",
       brand_sub: "Une galerie pensée pour montrer non pas la masse, mais la tenue, la présence et la qualité humaine du service.",
       pill_class: "Sélection Ambassadeur",
+      top_site: "🌍 Site",
+      top_hub: "🧭 HUB",
+      top_tarifs: "📦 Tarifs",
+      hero_site: "🌍 Retour site DIGIYLYFE",
+      hero_hub: "🧭 Ouvrir le HUB",
+      hero_tarifs: "📦 Voir les tarifs",
 
       hero_eyebrow: "Galerie publique premium",
       hero_title: "DIGIY DRIVER AMBASSADEUR",
@@ -965,6 +1068,12 @@
       brand_title: "Mobility ak style ak savoir-être.",
       brand_sub: "Galerie bii dafay won li gën a am solo: taxaw, teey, ak melokaanu service bi.",
       pill_class: "Sélection Ambassadeur",
+      top_site: "🌍 Site",
+      top_hub: "🧭 HUB",
+      top_tarifs: "📦 Tarifs",
+      hero_site: "🌍 Retour site DIGIYLYFE",
+      hero_hub: "🧭 Ouvrir le HUB",
+      hero_tarifs: "📦 Voir les tarifs",
 
       hero_eyebrow: "Galerie publique premium",
       hero_title: "DIGIY DRIVER AMBASSADEUR",
@@ -1072,6 +1181,7 @@
   const qs = new URLSearchParams(location.search);
   const slug = (qs.get("slug") || "").trim();
 
+  // Ajuster ces constantes si ce fichier vit dans un autre repo / sous-domaine.
   const SITE_URL = "https://digiylyfe.com/";
   const GALLERY_URL = (() => {
     const u = new URL(location.href);
@@ -1163,7 +1273,9 @@
     toastEl.textContent = msg;
     toastEl.style.display = "block";
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(()=> toastEl.style.display="none", 2400);
+    toastTimer = setTimeout(()=> {
+      toastEl.style.display = "none";
+    }, 2400);
   }
 
   function esc(s){
@@ -1278,6 +1390,18 @@
     }catch(_){}
   }
 
+  function bindOrderButtons(){
+    driversEl.querySelectorAll(".js-order-btn").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        try{
+          const raw = el.getAttribute("data-driver") || "{}";
+          const parsed = JSON.parse(raw);
+          rememberCommanderMeta(parsed);
+        }catch(_){}
+      });
+    });
+  }
+
   function render(){
     const items = sortDrivers(ALL.filter(passes));
     countPill.textContent = t("count_drivers", items.length);
@@ -1301,7 +1425,7 @@
       return;
     }
 
-    driversEl.innerHTML = items.map((d, idx) => {
+    driversEl.innerHTML = items.map(d => {
       const name = d.name || t("driver_default_name");
       const nameEsc = esc(name);
       const city = esc(d.city || "");
@@ -1373,18 +1497,6 @@
     bindOrderButtons();
   }
 
-  function bindOrderButtons(){
-    driversEl.querySelectorAll(".js-order-btn").forEach(el=>{
-      el.addEventListener("click", ()=>{
-        try{
-          const raw = el.getAttribute("data-driver") || "{}";
-          const parsed = JSON.parse(raw);
-          rememberCommanderMeta(parsed);
-        }catch(_){}
-      });
-    });
-  }
-
   async function load(){
     liveBadge.textContent = t("badge_loading");
     if (badgeTop) badgeTop.textContent = t("badge_loading");
@@ -1443,5 +1555,72 @@
   applyLanguage(CURRENT_LANG);
   load();
 </script>
+  <!-- ============================================================
+     DIGIY AUDIO — CHAUFFEUR
+     ============================================================ -->
+
+<button id="digiy-audio-driver" style="
+position:fixed;
+bottom:90px;
+left:24px;
+z-index:99999;
+background:#111827;
+color:#fff;
+font-family:'Outfit',sans-serif;
+font-weight:800;
+font-size:14px;
+padding:12px 18px;
+border-radius:999px;
+border:none;
+cursor:pointer;
+box-shadow:0 6px 18px rgba(0,0,0,.25);
+">
+▶ Écouter chauffeur
+</button>
+
+<script>
+(function(){
+
+var TEXTE = "Bienvenue. Ici, tu peux trouver un chauffeur disponible tout de suite. Appelle directement, discute du prix et pars sans attendre. Pas d’intermédiaire. Tu vois le chauffeur, tu le contactes. Simple. DIGIYLYFE.";
+
+var btn = document.getElementById('digiy-audio-driver');
+
+if(!('speechSynthesis' in window)) return;
+
+var synth = window.speechSynthesis;
+var playing = false;
+var utt;
+
+function stop(){
+  synth.cancel();
+  playing = false;
+  btn.innerHTML = "▶ Écouter chauffeur";
+}
+
+function play(){
+  synth.cancel();
+
+  utt = new SpeechSynthesisUtterance(TEXTE);
+  utt.lang = 'fr-FR';
+  utt.rate = 0.9;
+
+  utt.onend = stop;
+
+  synth.speak(utt);
+
+  playing = true;
+  btn.innerHTML = "■ Arrêter";
+}
+
+btn.onclick = function(){
+  playing ? stop() : play();
+};
+
+})();
+</script>
+
+<!-- ============================================================
+     FIN AUDIO CHAUFFEUR
+     ============================================================ -->
 </body>
 </html>
