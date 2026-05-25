@@ -1581,15 +1581,41 @@ box-shadow:0 6px 18px rgba(0,0,0,.25);
 <script>
 (function(){
 
-var TEXTE = "Bienvenue. Ici, tu peux trouver un chauffeur disponible tout de suite. Appelle directement, discute du prix et pars sans attendre. Pas d’intermédiaire. Tu vois le chauffeur, tu le contactes. Simple. DIGIYLYFE.";
+var TEXTE = "Bienvenue. Ici, tu peux trouver un chauffeur disponible tout de suite. Appelle directement, discute du prix et pars sans attendre. Contact direct sur WhatsApp. Zéro intermédiaire. Zéro pour cent de commission. Tu vois le chauffeur, tu le contactes. Simple. DIGIYLYFE.";
 
 var btn = document.getElementById('digiy-audio-driver');
 
-if(!('speechSynthesis' in window)) return;
+if(!btn || !('speechSynthesis' in window)) return;
 
 var synth = window.speechSynthesis;
 var playing = false;
 var utt;
+
+/*
+  Doctrine audio DIGIY :
+  Le texte visible reste normal.
+  La voix reçoit une version adaptée pour mieux prononcer les mots terrain.
+*/
+function digiyAudioPronounce(input){
+  return String(input || "")
+    .replace(/\bDIGIYLYFE\b/gi, "diji i laïfe")
+    .replace(/\bDIGIY\b/gi, "diji i")
+    .replace(/\bBUILD\b/gi, "artisans tout corps de métiers")
+    .replace(/\bQR\b/gi, "Q R")
+    .replace(/\bSMS\b/gi, "S M S")
+    .replace(/\bWhatsApp\b/gi, "Ouatsap")
+    .replace(/\bWave\b/gi, "Ouève")
+    .replace(/0\s*%/g, "zéro pour cent");
+}
+
+function pickFrenchVoice(){
+  var voices = synth.getVoices ? synth.getVoices() : [];
+  return voices.find(function(v){
+    return /^fr[-_]/i.test(v.lang || "");
+  }) || voices.find(function(v){
+    return /fran|french/i.test((v.name || "") + " " + (v.lang || ""));
+  }) || null;
+}
 
 function stop(){
   synth.cancel();
@@ -1600,16 +1626,25 @@ function stop(){
 function play(){
   synth.cancel();
 
-  utt = new SpeechSynthesisUtterance(TEXTE);
+  utt = new SpeechSynthesisUtterance(digiyAudioPronounce(TEXTE));
   utt.lang = 'fr-FR';
-  utt.rate = 0.9;
+  utt.rate = 0.88;
+  utt.pitch = 1.04;
+
+  var voice = pickFrenchVoice();
+  if(voice) utt.voice = voice;
 
   utt.onend = stop;
+  utt.onerror = stop;
 
   synth.speak(utt);
 
   playing = true;
   btn.innerHTML = "■ Arrêter";
+}
+
+if(synth.onvoiceschanged !== undefined){
+  synth.onvoiceschanged = function(){ pickFrenchVoice(); };
 }
 
 btn.onclick = function(){
