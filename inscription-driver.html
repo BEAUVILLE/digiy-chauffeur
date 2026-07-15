@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#123c2d"/>
   <meta name="robots" content="index,follow"/>
-  <meta name="digiy-version" content="inscription-driver-fiche-verifiee-no-precheck-20260608"/>
+  <meta name="digiy-version" content="inscription-driver-france-senegal-grille-pays-no-jakarta-france-20260629"/>
 
   <title>Inscription chauffeur — DIGIY DRIVER</title>
-  <meta name="description" content="Inscription chauffeur DIGIY DRIVER : Jakarta, bus, taxi-local, VTC, chauffeur privé. Contact direct, 0% commission, fiche chauffeur et QR."/>
+  <meta name="description" content="Inscription chauffeur DIGIY DRIVER : Sénégal et France, fiche chauffeur vérifiée, QR, contact direct, 0% commission. Jakarta disponible au Sénégal uniquement ; France sans Jakarta."/>
 
   <style>
     :root{
@@ -74,6 +74,33 @@
       display:flex;
       gap:8px;
       flex-wrap:wrap;
+    }
+
+    .lang-switch{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      flex:0 0 auto;
+      padding:3px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.08);
+    }
+
+    .lang-switch button{
+      min-width:42px;
+      min-height:40px;
+      border:0;
+      border-radius:10px;
+      background:transparent;
+      color:var(--text);
+      font-weight:1000;
+      cursor:pointer;
+    }
+
+    .lang-switch button[aria-pressed="true"]{
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#102016;
     }
 
     .btn{
@@ -260,6 +287,28 @@
       font-weight:850;
     }
 
+    .tarif.disabled{
+      opacity:.42;
+      filter:grayscale(.2);
+      cursor:not-allowed;
+      position:relative;
+    }
+
+    .tarif.disabled:after{
+      content:attr(data-unavailable-label);
+      display:block;
+      margin-top:8px;
+      width:max-content;
+      max-width:100%;
+      border-radius:999px;
+      border:1px solid rgba(250,204,21,.38);
+      background:rgba(250,204,21,.12);
+      color:#fff8db;
+      padding:6px 9px;
+      font-size:11px;
+      font-weight:1000;
+    }
+
     .waveHero{
       margin-top:10px;
       padding:18px;
@@ -400,6 +449,10 @@
         width:100%;
       }
 
+      .top{
+        align-items:flex-start;
+      }
+
       .sticky .inner{
         display:grid;
         grid-template-columns:1fr;
@@ -424,200 +477,219 @@
 <body>
   <main class="wrap">
     <header class="top">
-      <a class="brand" href="./">🚗 DIGIY DRIVER · Inscription chauffeur</a>
+      <a class="brand" id="brandLink" href="./?lang=fr" data-i18n="nav_brand">🚗 DIGIY DRIVER · Inscription chauffeur</a>
 
       <nav class="nav">
-        <a class="btn" href="./">← Galerie</a>
-        <a class="btn" href="https://digiylyfe.com/">🌍 Site</a>
+        <a class="btn" id="galleryReturn" href="./?lang=fr" data-i18n="nav_gallery">← Galerie</a>
+        <a class="btn" href="https://digiylyfe.com/" data-i18n="nav_site">🌍 Site</a>
+        <div class="lang-switch" data-i18n-aria-label="language_selector" aria-label="Langue">
+          <button type="button" data-lang="fr" aria-pressed="true">FR</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
       </nav>
     </header>
 
     <section class="hero">
-      <h1>Inscription chauffeur</h1>
-      <p>
+      <h1 data-i18n="hero_title">Inscription chauffeur</h1>
+      <p data-i18n="hero_intro">
         Remplis ta fiche chauffeur. DIGIY prépare le message propre avec tes infos,
         ton tarif choisi volontairement, ton paiement Wave et ta demande d’inscription.
         Le paiement ne publie pas automatiquement la fiche : DIGIY vérifie d’abord que la présentation est complète, lisible et cohérente.
       </p>
 
       <div class="pills">
-        <span class="pill">Fiche chauffeur vérifiée</span>
-        <span class="pill">QR & carte digitale</span>
-        <span class="pill">0% commission</span>
-        <span class="pill">Contact direct WhatsApp</span>
-        <span class="pill">Aucun tarif précoché</span>
+        <span class="pill" data-i18n="pill_verified">Fiche chauffeur vérifiée</span>
+        <span class="pill" data-i18n="pill_qr">QR & carte digitale</span>
+        <span class="pill" data-i18n="pill_commission">0% commission</span>
+        <span class="pill" data-i18n="pill_whatsapp">Contact direct WhatsApp</span>
+        <span class="pill" data-i18n="pill_no_preselect">Aucun tarif précoché</span>
+        <span class="pill" data-i18n="pill_no_jakarta_france">France : pas de Jakarta</span>
+        <span class="pill" data-i18n="pill_country_grid">Grille pays · pas taux de change</span>
       </div>
     </section>
 
     <section class="grid">
       <form class="card" id="driverForm">
-        <h2>1 · Mon profil chauffeur</h2>
+        <h2 data-i18n="profile_title">1 · Mon profil chauffeur</h2>
 
         <div class="row">
           <div class="field">
-            <label for="fullName">Nom complet</label>
-            <input id="fullName" placeholder="Ex : Lamine Diop" autocomplete="name" required/>
+            <label for="fullName" data-i18n="label_name">Nom complet</label>
+            <input id="fullName" data-i18n-placeholder="placeholder_name" placeholder="Ex : Lamine Diop" autocomplete="name" required/>
           </div>
 
           <div class="field">
-            <label for="phone">Téléphone WhatsApp</label>
-            <input id="phone" placeholder="Ex : +221 77 000 00 00" autocomplete="tel" inputmode="tel" required/>
+            <label for="phone" data-i18n="label_phone">Téléphone WhatsApp</label>
+            <input id="phone" data-i18n-placeholder="placeholder_phone" placeholder="Ex : +221 77 000 00 00" autocomplete="tel" inputmode="tel" required/>
           </div>
         </div>
 
         <div class="row">
           <div class="field">
-            <label for="city">Ville principale</label>
-            <input id="city" placeholder="Ex : Saly, Dakar, Mbour" autocomplete="address-level2"/>
-          </div>
-
-          <div class="field">
-            <label for="zone">Zone de travail</label>
-            <input id="zone" placeholder="Ex : Petite Côte, AIBD, Dakar" autocomplete="address-level2"/>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="field">
-            <label for="transportType">Type de transport</label>
-            <select id="transportType">
-              <option>Chauffeur privé</option>
-              <option>Taxi local</option>
-              <option>VTC</option>
-              <option>Jakarta</option>
-              <option>Bus / minibus</option>
-              <option>Transport touristique</option>
+            <label for="country" data-i18n="label_country">Pays du chauffeur</label>
+            <select id="country">
+              <option value="Senegal" data-i18n="country_senegal">🇸🇳 Sénégal</option>
+              <option value="France" data-i18n="country_france">🇫🇷 France</option>
             </select>
           </div>
 
           <div class="field">
-            <label for="vehicle">Véhicule</label>
-            <input id="vehicle" placeholder="Ex : Toyota, Hyundai, Jakarta, bus"/>
+            <label for="city" data-i18n="label_city">Ville principale</label>
+            <input id="city" data-i18n-placeholder="placeholder_city" placeholder="Ex : Saly, Dakar, Mbour, Sarlat, Bordeaux, Paris" autocomplete="address-level2"/>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="zone" data-i18n="label_zone">Zone de travail</label>
+          <input id="zone" data-i18n-placeholder="placeholder_zone" placeholder="Ex : Petite Côte, AIBD, Dakar, Sarlat, Arcachon, Bordeaux, Paris" autocomplete="address-level2"/>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="transportType" data-i18n="label_transport">Type de transport</label>
+            <select id="transportType">
+              <option value="private_driver" data-i18n="transport_private">Chauffeur privé</option>
+              <option value="local_taxi" data-i18n="transport_taxi">Taxi local</option>
+              <option value="vtc" data-i18n="transport_vtc">VTC</option>
+              <option value="jakarta" data-country="Senegal" data-i18n="transport_jakarta">Jakarta</option>
+              <option value="bus_minibus" data-i18n="transport_bus">Bus / minibus</option>
+              <option value="tourism_transport" data-i18n="transport_tourism">Transport touristique</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="vehicle" data-i18n="label_vehicle">Véhicule</label>
+            <input id="vehicle" data-i18n-placeholder="placeholder_vehicle" placeholder="Ex : Toyota, Hyundai, bus, van, berline"/>
           </div>
         </div>
 
         <div class="row">
           <div class="field">
-            <label for="places">Nombre de places</label>
-            <input id="places" placeholder="Ex : 4 places"/>
+            <label for="places" data-i18n="label_places">Nombre de places</label>
+            <input id="places" data-i18n-placeholder="placeholder_places" placeholder="Ex : 4 places"/>
           </div>
 
           <div class="field">
-            <label for="services">Services</label>
-            <input id="services" placeholder="Ex : AIBD, courses, circuits, nuit"/>
+            <label for="services" data-i18n="label_services">Services</label>
+            <input id="services" data-i18n-placeholder="placeholder_services" placeholder="Ex : AIBD, courses, circuits, nuit"/>
           </div>
         </div>
 
         <div class="field">
-          <label for="bio">Petite présentation</label>
-          <textarea id="bio" placeholder="Ex : Chauffeur sérieux, ponctuel, disponible pour transferts AIBD et déplacements sur la Petite Côte."></textarea>
+          <label for="bio" data-i18n="label_bio">Petite présentation</label>
+          <textarea id="bio" data-i18n-placeholder="placeholder_bio" placeholder="Ex : Chauffeur sérieux, ponctuel, disponible pour transferts AIBD et déplacements sur la Petite Côte."></textarea>
         </div>
       </form>
 
       <aside class="card gold">
-        <h2>2 · Tarif & paiement Wave</h2>
-        <p class="note">
-          Choisis volontairement ton niveau DRIVER, puis paie par Wave. Aucun tarif n’est précoché.
-          Après paiement, indique la preuve : nom utilisé, montant, date/heure ou référence Wave.
+        <h2 data-i18n="pricing_title">2 · Grille pays & règlement</h2>
+        <p class="note" data-i18n="pricing_intro">
+          Choisis volontairement ton niveau DRIVER. La grille Sénégal est en FCFA ; la grille France est en euros,
+          adaptée au marché France et au pouvoir d’achat. Ce n’est pas une conversion au taux de change.
+          France : règlement par Sendwave vers le Wave Sénégal officiel.
         </p>
 
-        <div class="tarifs" role="radiogroup" aria-label="Choix tarif chauffeur">
-          <label class="tarif">
-            <input type="radio" name="plan" value="DRIVER Jakarta" data-code="1A" data-amount="5500" data-eur="9"/>
-            1A · Jakarta
+        <div class="tarifs" role="radiogroup" data-i18n-aria-label="pricing_aria" aria-label="Choix tarif chauffeur">
+          <label class="tarif" data-senegal-only="1" data-unavailable-label="Non proposé en France">
+            <input type="radio" name="plan" value="DRIVER Jakarta" data-code="1A" data-amount="5500" data-eur-fr="" data-country="Senegal"/>
+            <span data-i18n="plan_jakarta">1A · Jakarta</span>
             <strong>5 500 FCFA</strong>
-            <small>9 € · présence simple</small>
+            <small data-i18n="plan_jakarta_note">Sénégal uniquement · pas proposé en France</small>
           </label>
 
           <label class="tarif">
-            <input type="radio" name="plan" value="DRIVER Bus" data-code="1B" data-amount="12000" data-eur="19"/>
-            1B · Bus
-            <strong>12 000 FCFA</strong>
-            <small>19 € · transport groupe</small>
+            <input type="radio" name="plan" value="DRIVER Bus" data-code="1B" data-amount="12000" data-eur-fr="35"/>
+            <span data-i18n="plan_bus">1B · Bus / groupe</span>
+            <strong>12 000 FCFA · 35 €</strong>
+            <small data-i18n="plan_bus_note">Sénégal : 12 000 FCFA · France : 35 €</small>
           </label>
 
           <label class="tarif">
-            <input type="radio" name="plan" value="DRIVER" data-code="1C" data-amount="19900" data-eur="29"/>
-            1C · Driver
-            <strong>19 900 FCFA</strong>
-            <small>29 € · chauffeur pro</small>
+            <input type="radio" name="plan" value="DRIVER" data-code="1C" data-amount="19900" data-eur-fr="45"/>
+            <span data-i18n="plan_driver">1C · Driver</span>
+            <strong>19 900 FCFA · 45 €</strong>
+            <small data-i18n="plan_driver_note">Sénégal : 19 900 FCFA · France : 45 €</small>
           </label>
         </div>
 
         <div class="waveHero">
-          <small>Paiement Wave officiel</small>
-          <strong>Wave : JB BEAUVILLE · +221 77 134 28 89</strong>
+          <small data-i18n="payment_official">Paiement officiel</small>
+          <strong data-i18n="payment_summary">France : Sendwave → Wave Sénégal · Sénégal : Wave direct</strong>
         </div>
 
-        <div class="paybox" aria-label="Paiement Wave DIGIY">
+        <div class="paybox" data-i18n-aria-label="payment_aria" aria-label="Paiement Wave DIGIY">
           <div class="payline">
-            <b>Nom Wave</b>
+            <b data-i18n="wave_name">Nom Wave</b>
             <span>JB BEAUVILLE</span>
           </div>
 
           <div class="payline">
-            <b>Téléphone Wave</b>
+            <b data-i18n="wave_phone">Téléphone Wave</b>
             <span>+221 77 134 28 89</span>
           </div>
 
           <div class="payline">
-            <b>Montant choisi</b>
-            <span id="payAmount">Choisis un tarif</span>
+            <b data-i18n="payment_mode_label">Mode de règlement</b>
+            <span id="payMode">Sénégal : Wave direct</span>
+          </div>
+
+          <div class="payline">
+            <b data-i18n="payment_amount_label">Montant choisi</b>
+            <span id="payAmount" data-i18n="choose_plan">Choisis un tarif</span>
           </div>
         </div>
 
-        <div class="proofHint">
-          Après paiement Wave, envoie la capture ou la preuve sur WhatsApp.
-          DIGIY vérifie le paiement et la qualité de présentation avant affichage public.
+        <div class="proofHint" id="paymentHint" data-i18n="payment_hint_default">
+          Sénégal : paie directement par Wave. France : télécharge ou ouvre Sendwave, choisis Sénégal,
+          puis règle vers Wave Sénégal au nom de JB BEAUVILLE · +221 77 134 28 89.
+          Après règlement, envoie la capture ou la preuve sur WhatsApp.
         </div>
 
         <div class="proofHint">
-          <strong>Fiche vérifiée DIGIY.</strong><br>
-          DIGIY vérifie que les informations sont complètes, lisibles et cohérentes.
-          DIGIY ne remplace pas les obligations légales du chauffeur : véhicule, documents,
-          conduite et service restent sous la responsabilité du professionnel.
+          <strong data-i18n="verified_title">Fiche vérifiée DIGIY.</strong><br>
+          <span data-i18n="verified_note">DIGIY vérifie que les informations sont complètes, lisibles et cohérentes. DIGIY ne remplace pas les obligations légales du chauffeur : véhicule, documents, conduite et service restent sous la responsabilité du professionnel.</span>
         </div>
 
         <div class="field">
-          <label for="paymentRef">📝 Note / preuve paiement</label>
-          <textarea id="paymentRef" placeholder="Ex : Paiement Wave envoyé pour DRIVER 1C — 19 900 FCFA — au nom de Lamine Diop — tél +221 77 000 00 00."></textarea>
+          <label for="paymentRef" data-i18n="payment_ref_label">📝 Note / preuve paiement</label>
+          <textarea id="paymentRef" data-i18n-placeholder="payment_ref_placeholder" placeholder="Ex Sénégal : paiement Wave DRIVER 1C — 19 900 FCFA. Ex France : Sendwave DRIVER 1C — 45 € vers Wave Sénégal JB BEAUVILLE."></textarea>
         </div>
 
         <div class="actions">
-          <button class="btn gold" type="button" id="buildMsg">Préparer mon message</button>
-          <button class="btn" type="button" id="saveLocal">Sauvegarder ici</button>
+          <button class="btn gold" type="button" id="buildMsg" data-i18n="build_message">Préparer mon message</button>
+          <button class="btn" type="button" id="saveLocal" data-i18n="save_local">Sauvegarder ici</button>
         </div>
       </aside>
     </section>
 
     <section class="card green" style="margin-top:14px;">
-      <h2>3 · Message prêt à envoyer</h2>
+      <h2 data-i18n="result_title">3 · Message prêt à envoyer</h2>
 
-      <div class="result" id="resultBox">
+      <div class="result" id="resultBox" data-i18n="result_empty">
         Remplis la fiche, choisis ton tarif, puis clique sur “Préparer mon message”.
       </div>
 
       <div class="actions">
-        <button class="btn gold" type="button" id="copyMsg">Copier le message</button>
-        <a class="btn green" id="waBtn" target="_blank" rel="noopener" href="https://wa.me/221771342889">Envoyer sur WhatsApp DIGIY</a>
+        <button class="btn gold" type="button" id="copyMsg" data-i18n="copy_message">Copier le message</button>
+        <a class="btn green" id="waBtn" target="_blank" rel="noopener" href="https://wa.me/221771342889" data-i18n="send_whatsapp">Envoyer sur WhatsApp DIGIY</a>
       </div>
 
-      <p class="note">
+      <p class="note" data-i18n="activation_note">
         Rien n’est activé automatiquement : DIGIY reçoit ta demande, vérifie le paiement
         et vérifie seulement la fiche de présentation. Le chauffeur reste responsable de son véhicule,
         de ses documents, de sa conduite et de son service.
       </p>
     </section>
 
-    <footer class="footer">
+    <footer class="footer" data-i18n="footer">
       DIGIY DRIVER — Le chauffeur garde son nom, son client, son argent et sa relation. 🦅
     </footer>
   </main>
 
   <div class="sticky">
     <div class="inner">
-      <button class="btn gold" type="button" id="stickyBuild">Préparer inscription</button>
-      <a class="btn green" href="https://wa.me/221771342889" id="stickyWa" target="_blank" rel="noopener">WhatsApp DIGIY</a>
+      <button class="btn gold" type="button" id="stickyBuild" data-i18n="sticky_build">Préparer inscription</button>
+      <a class="btn green" href="https://wa.me/221771342889" id="stickyWa" target="_blank" rel="noopener" data-i18n="sticky_whatsapp">WhatsApp DIGIY</a>
     </div>
   </div>
 
@@ -632,12 +704,61 @@
     (function(){
       "use strict";
 
+      const I18N = {
+        fr: {
+          meta_title:"Inscription chauffeur — DIGIY DRIVER",
+          meta_description:"Inscription chauffeur DIGIY DRIVER : Sénégal et France, fiche chauffeur vérifiée, QR, contact direct, 0% commission. Jakarta disponible au Sénégal uniquement ; France sans Jakarta.",
+          nav_brand:"🚗 DIGIY DRIVER · Inscription chauffeur", nav_gallery:"← Galerie", nav_site:"🌍 Site", language_selector:"Langue",
+          hero_title:"Inscription chauffeur",
+          hero_intro:"Remplis ta fiche chauffeur. DIGIY prépare le message propre avec tes infos, ton tarif choisi volontairement, ton paiement Wave et ta demande d’inscription. Le paiement ne publie pas automatiquement la fiche : DIGIY vérifie d’abord que la présentation est complète, lisible et cohérente.",
+          pill_verified:"Fiche chauffeur vérifiée", pill_qr:"QR & carte digitale", pill_commission:"0% commission", pill_whatsapp:"Contact direct WhatsApp", pill_no_preselect:"Aucun tarif précoché", pill_no_jakarta_france:"France : pas de Jakarta", pill_country_grid:"Grille pays · pas taux de change",
+          profile_title:"1 · Mon profil chauffeur", label_name:"Nom complet", placeholder_name:"Ex : Lamine Diop", label_phone:"Téléphone WhatsApp", placeholder_phone:"Ex : +221 77 000 00 00", label_country:"Pays du chauffeur", country_senegal:"🇸🇳 Sénégal", country_france:"🇫🇷 France", label_city:"Ville principale", placeholder_city:"Ex : Saly, Dakar, Mbour, Sarlat, Bordeaux, Paris", label_zone:"Zone de travail", placeholder_zone:"Ex : Petite Côte, AIBD, Dakar, Sarlat, Arcachon, Bordeaux, Paris",
+          label_transport:"Type de transport", transport_private:"Chauffeur privé", transport_taxi:"Taxi local", transport_vtc:"VTC", transport_jakarta:"Jakarta", transport_bus:"Bus / minibus", transport_tourism:"Transport touristique", label_vehicle:"Véhicule", placeholder_vehicle:"Ex : Toyota, Hyundai, bus, van, berline", label_places:"Nombre de places", placeholder_places:"Ex : 4 places", label_services:"Services", placeholder_services:"Ex : AIBD, courses, circuits, nuit", label_bio:"Petite présentation", placeholder_bio:"Ex : Chauffeur sérieux, ponctuel, disponible pour transferts AIBD et déplacements sur la Petite Côte.",
+          pricing_title:"2 · Grille pays & règlement", pricing_intro:"Choisis volontairement ton niveau DRIVER. La grille Sénégal est en FCFA ; la grille France est en euros, adaptée au marché France et au pouvoir d’achat. Ce n’est pas une conversion au taux de change. France : règlement par Sendwave vers le Wave Sénégal officiel.", pricing_aria:"Choix tarif chauffeur", plan_jakarta:"1A · Jakarta", plan_jakarta_note:"Sénégal uniquement · pas proposé en France", plan_bus:"1B · Bus / groupe", plan_bus_name:"DRIVER Bus", plan_bus_note:"Sénégal : 12 000 FCFA · France : 35 €", plan_driver:"1C · Driver", plan_driver_name:"DRIVER", plan_driver_note:"Sénégal : 19 900 FCFA · France : 45 €", plan_jakarta_name:"DRIVER Jakarta",
+          payment_official:"Paiement officiel", payment_summary:"France : Sendwave → Wave Sénégal · Sénégal : Wave direct", payment_aria:"Paiement Wave DIGIY", wave_name:"Nom Wave", wave_phone:"Téléphone Wave", payment_mode_label:"Mode de règlement", payment_amount_label:"Montant choisi", choose_plan:"Choisis un tarif", payment_mode_france:"Sendwave France → Wave Sénégal JB BEAUVILLE +221 77 134 28 89", payment_mode_senegal:"Wave direct Sénégal → JB BEAUVILLE +221 77 134 28 89", payment_hint_france:"France : télécharge ou ouvre Sendwave, choisis Sénégal, puis règle vers le Wave Sénégal officiel au nom de JB BEAUVILLE · +221 77 134 28 89. Envoie ensuite la preuve sur WhatsApp.", payment_hint_senegal:"Sénégal : paie directement par Wave au nom de JB BEAUVILLE · +221 77 134 28 89. Envoie ensuite la preuve sur WhatsApp.", payment_hint_default:"Sénégal : paie directement par Wave. France : télécharge ou ouvre Sendwave, choisis Sénégal, puis règle vers Wave Sénégal au nom de JB BEAUVILLE · +221 77 134 28 89. Après règlement, envoie la capture ou la preuve sur WhatsApp.", verified_title:"Fiche vérifiée DIGIY.", verified_note:"DIGIY vérifie que les informations sont complètes, lisibles et cohérentes. DIGIY ne remplace pas les obligations légales du chauffeur : véhicule, documents, conduite et service restent sous la responsabilité du professionnel.", payment_ref_label:"📝 Note / preuve paiement", payment_ref_placeholder:"Ex Sénégal : paiement Wave DRIVER 1C — 19 900 FCFA. Ex France : Sendwave DRIVER 1C — 45 € vers Wave Sénégal JB BEAUVILLE.",
+          build_message:"Préparer mon message", save_local:"Sauvegarder ici", result_title:"3 · Message prêt à envoyer", result_empty:"Remplis la fiche, choisis ton tarif, puis clique sur “Préparer mon message”.", copy_message:"Copier le message", send_whatsapp:"Envoyer sur WhatsApp DIGIY", activation_note:"Rien n’est activé automatiquement : DIGIY reçoit ta demande, vérifie le paiement et vérifie seulement la fiche de présentation. Le chauffeur reste responsable de son véhicule, de ses documents, de sa conduite et de son service.", footer:"DIGIY DRIVER — Le chauffeur garde son nom, son client, son argent et sa relation. 🦅", sticky_build:"Préparer inscription", sticky_whatsapp:"WhatsApp DIGIY",
+          missing:"à compléter", confirm_needed:"à confirmer", plan_unavailable_france:"Non proposé en France", france_rate:"tarif France", senegal_rate:"tarif Sénégal", payment_note_missing:"à compléter après paiement Wave", plan_missing:"à choisir volontairement", copied:"Message copié ✅", copy_failed:"Copie impossible automatiquement. Sélectionne le message puis copie-le.", saved:"Fiche sauvegardée sur ce téléphone ✅", save_failed:"Sauvegarde locale impossible sur cet appareil.",
+          msg_intro:"Bonjour JB, je souhaite faire mon inscription chauffeur DIGIY DRIVER.", msg_status:"STATUT : dossier reçu · paiement et fiche à vérifier avant affichage public.", msg_scope:"DIGIY vérifie la fiche de présentation, pas une certification chauffeur officielle.", msg_date:"Date de demande", msg_module:"Module", msg_amount:"Montant choisi", msg_country:"Pays chauffeur", msg_payment_mode:"Mode de règlement", msg_payment_note:"Note / preuve paiement", msg_name:"Nom chauffeur", msg_phone:"Téléphone", msg_city:"Ville", msg_zone:"Zone", msg_type:"Type", msg_vehicle:"Véhicule", msg_places:"Places", msg_services:"Services", msg_bio:"Présentation", msg_final:"Merci de vérifier mon règlement, la cohérence de ma fiche, puis de préparer mon accès DIGIY DRIVER."
+        },
+        en: {
+          meta_title:"Driver registration — DIGIY DRIVER",
+          meta_description:"DIGIY DRIVER registration for Senegal and France: verified driver profile, QR code, direct contact and 0% commission. Jakarta is available in Senegal only.",
+          nav_brand:"🚗 DIGIY DRIVER · Driver registration", nav_gallery:"← Gallery", nav_site:"🌍 Website", language_selector:"Language",
+          hero_title:"Driver registration",
+          hero_intro:"Complete your driver profile. DIGIY prepares a clear message with your details, your chosen plan, your Wave payment and your registration request. Payment does not publish the profile automatically: DIGIY first checks that the presentation is complete, readable and consistent.",
+          pill_verified:"Verified driver profile", pill_qr:"QR code & digital card", pill_commission:"0% commission", pill_whatsapp:"Direct WhatsApp contact", pill_no_preselect:"No plan preselected", pill_no_jakarta_france:"France: no Jakarta", pill_country_grid:"Country pricing · not an exchange rate",
+          profile_title:"1 · My driver profile", label_name:"Full name", placeholder_name:"Example: Lamine Diop", label_phone:"WhatsApp number", placeholder_phone:"Example: +221 77 000 00 00", label_country:"Driver’s country", country_senegal:"🇸🇳 Senegal", country_france:"🇫🇷 France", label_city:"Main city", placeholder_city:"Example: Saly, Dakar, Mbour, Sarlat, Bordeaux, Paris", label_zone:"Service area", placeholder_zone:"Example: Petite Côte, AIBD, Dakar, Sarlat, Arcachon, Bordeaux, Paris",
+          label_transport:"Transport type", transport_private:"Private driver", transport_taxi:"Local taxi", transport_vtc:"Private hire vehicle", transport_jakarta:"Jakarta", transport_bus:"Bus / minibus", transport_tourism:"Tourist transport", label_vehicle:"Vehicle", placeholder_vehicle:"Example: Toyota, Hyundai, bus, van, saloon car", label_places:"Number of seats", placeholder_places:"Example: 4 seats", label_services:"Services", placeholder_services:"Example: AIBD, rides, tours, night service", label_bio:"Short presentation", placeholder_bio:"Example: Reliable and punctual driver, available for AIBD transfers and journeys across the Petite Côte.",
+          pricing_title:"2 · Country pricing & payment", pricing_intro:"Choose your DRIVER plan freely. Senegal pricing is in FCFA; France pricing is in euros and is adapted to the French market and purchasing power. It is not an exchange-rate conversion. In France, payment is made through Sendwave to the official Senegal Wave account.", pricing_aria:"Driver plan selection", plan_jakarta:"1A · Jakarta", plan_jakarta_note:"Senegal only · not available in France", plan_bus:"1B · Bus / group", plan_bus_name:"DRIVER Bus", plan_bus_note:"Senegal: 12 000 FCFA · France: €35", plan_driver:"1C · Driver", plan_driver_name:"DRIVER", plan_driver_note:"Senegal: 19 900 FCFA · France: €45", plan_jakarta_name:"DRIVER Jakarta",
+          payment_official:"Official payment", payment_summary:"France: Sendwave → Senegal Wave · Senegal: direct Wave", payment_aria:"DIGIY Wave payment", wave_name:"Wave account name", wave_phone:"Wave phone number", payment_mode_label:"Payment method", payment_amount_label:"Selected amount", choose_plan:"Choose a plan", payment_mode_france:"Sendwave France → Senegal Wave JB BEAUVILLE +221 77 134 28 89", payment_mode_senegal:"Direct Wave Senegal → JB BEAUVILLE +221 77 134 28 89", payment_hint_france:"France: download or open Sendwave, select Senegal, then pay the official Senegal Wave account held by JB BEAUVILLE · +221 77 134 28 89. Send your proof on WhatsApp afterwards.", payment_hint_senegal:"Senegal: pay JB BEAUVILLE directly through Wave at +221 77 134 28 89. Send your proof on WhatsApp afterwards.", payment_hint_default:"Senegal: pay directly through Wave. France: download or open Sendwave, select Senegal, then pay the Senegal Wave account held by JB BEAUVILLE · +221 77 134 28 89. Send the screenshot or proof on WhatsApp afterwards.", verified_title:"DIGIY verified profile.", verified_note:"DIGIY checks that the information is complete, readable and consistent. DIGIY does not replace the driver’s legal obligations: the vehicle, documents, driving and service remain the professional’s responsibility.", payment_ref_label:"📝 Payment note / proof", payment_ref_placeholder:"Senegal example: Wave payment DRIVER 1C — 19 900 FCFA. France example: Sendwave DRIVER 1C — €45 to Senegal Wave JB BEAUVILLE.",
+          build_message:"Prepare my message", save_local:"Save on this device", result_title:"3 · Message ready to send", result_empty:"Complete the profile, choose your plan, then select “Prepare my message”.", copy_message:"Copy message", send_whatsapp:"Send to DIGIY on WhatsApp", activation_note:"Nothing is activated automatically: DIGIY receives your request, checks the payment and checks the presentation profile only. The driver remains responsible for the vehicle, documents, driving and service.", footer:"DIGIY DRIVER — The driver keeps their name, client, money and relationship. 🦅", sticky_build:"Prepare registration", sticky_whatsapp:"DIGIY WhatsApp",
+          missing:"to be completed", confirm_needed:"to be confirmed", plan_unavailable_france:"Not available in France", france_rate:"France rate", senegal_rate:"Senegal rate", payment_note_missing:"to be completed after the Wave payment", plan_missing:"to be chosen freely", copied:"Message copied ✅", copy_failed:"Automatic copy failed. Select the message and copy it manually.", saved:"Profile saved on this device ✅", save_failed:"Local saving is unavailable on this device.",
+          msg_intro:"Hello JB, I would like to register as a DIGIY DRIVER.", msg_status:"STATUS: application received · payment and profile to be checked before public display.", msg_scope:"DIGIY checks the presentation profile; this is not an official driver certification.", msg_date:"Application date", msg_module:"Module", msg_amount:"Selected amount", msg_country:"Driver’s country", msg_payment_mode:"Payment method", msg_payment_note:"Payment note / proof", msg_name:"Driver name", msg_phone:"Phone number", msg_city:"City", msg_zone:"Area", msg_type:"Type", msg_vehicle:"Vehicle", msg_places:"Seats", msg_services:"Services", msg_bio:"Presentation", msg_final:"Please check my payment and the consistency of my profile, then prepare my DIGIY DRIVER access."
+        }
+      };
+
+      const LANGUAGE_KEY = "digiy_lang";
+
+      function readStoredLanguage(){
+        try{
+          const value = localStorage.getItem(LANGUAGE_KEY);
+          return ["fr","en"].includes(value) ? value : null;
+        }catch(_){
+          return null;
+        }
+      }
+
+      const urlLang = new URLSearchParams(location.search).get("lang");
+      const storedLang = readStoredLanguage();
+      let currentLang = ["fr","en"].includes(urlLang) ? urlLang : (storedLang || "fr");
+
       const DIGIY_WA = "221771342889";
-      const WAVE_LABEL = "Wave : JB BEAUVILLE · +221 77 134 28 89";
+      const WAVE_LABEL = "JB BEAUVILLE · +221 77 134 28 89";
 
       const els = {
         fullName: document.getElementById("fullName"),
         phone: document.getElementById("phone"),
+        country: document.getElementById("country"),
         city: document.getElementById("city"),
         zone: document.getElementById("zone"),
         transportType: document.getElementById("transportType"),
@@ -647,10 +768,74 @@
         bio: document.getElementById("bio"),
         paymentRef: document.getElementById("paymentRef"),
         payAmount: document.getElementById("payAmount"),
+        payMode: document.getElementById("payMode"),
+        paymentHint: document.getElementById("paymentHint"),
         resultBox: document.getElementById("resultBox"),
         waBtn: document.getElementById("waBtn"),
         stickyWa: document.getElementById("stickyWa")
       };
+
+      function t(key){
+        return I18N[currentLang]?.[key] ?? I18N.fr[key] ?? key;
+      }
+
+      function updateGalleryReturnLinks(){
+        const href = "./?lang=" + currentLang;
+        document.getElementById("brandLink").href = href;
+        document.getElementById("galleryReturn").href = href;
+      }
+
+      function applyLanguage(lang, rebuildMessage){
+        currentLang = lang === "en" ? "en" : "fr";
+        try{ localStorage.setItem(LANGUAGE_KEY, currentLang); }catch(_){}
+
+        document.documentElement.lang = currentLang;
+        document.title = t("meta_title");
+        const description = document.querySelector('meta[name="description"]');
+        if(description) description.content = t("meta_description");
+
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+          el.textContent = t(el.dataset.i18n);
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+          el.placeholder = t(el.dataset.i18nPlaceholder);
+        });
+        document.querySelectorAll("[data-i18n-aria-label]").forEach(el => {
+          el.setAttribute("aria-label", t(el.dataset.i18nAriaLabel));
+        });
+        document.querySelectorAll('[data-senegal-only="1"]').forEach(el => {
+          el.setAttribute("data-unavailable-label", t("plan_unavailable_france"));
+        });
+        document.querySelectorAll("[data-lang]").forEach(button => {
+          button.setAttribute("aria-pressed", String(button.dataset.lang === currentLang));
+        });
+
+        updateGalleryReturnLinks();
+        updateAmount();
+        if(rebuildMessage || els.resultBox.dataset.messageBuilt === "1") buildMessage();
+      }
+
+      function transportLabel(value){
+        const keys = {
+          private_driver:"transport_private", local_taxi:"transport_taxi", vtc:"transport_vtc",
+          jakarta:"transport_jakarta", bus_minibus:"transport_bus", tourism_transport:"transport_tourism"
+        };
+        return t(keys[value] || "missing");
+      }
+
+      function planLabel(plan){
+        if(!plan) return t("plan_missing");
+        const keys = {"1A":"plan_jakarta_name", "1B":"plan_bus_name", "1C":"plan_driver_name"};
+        return t(keys[plan.code]);
+      }
+
+      function currentCountry(){
+        return (els.country?.value || "Senegal").trim();
+      }
+
+      function isFrance(){
+        return currentCountry() === "France";
+      }
 
       function chosenPlan(){
         const c = document.querySelector('input[name="plan"]:checked');
@@ -663,7 +848,8 @@
           code: c.dataset.code,
           name: c.value,
           amount: c.dataset.amount,
-          eur: c.dataset.eur
+          eurFr: c.dataset.eurFr || "",
+          country: c.dataset.country || "All"
         };
       }
 
@@ -675,55 +861,97 @@
         return (els[id]?.value || "").trim();
       }
 
-      function nowFr(){
-        return new Date().toLocaleString("fr-FR", {
+      function nowLocalized(){
+        return new Date().toLocaleString(currentLang === "en" ? "en-GB" : "fr-FR", {
           dateStyle:"full",
           timeStyle:"short"
         });
       }
 
+      function amountLineFor(plan){
+        if(!plan) return t("missing");
+
+        if(isFrance()){
+          if(plan.code === "1A") return t("plan_unavailable_france");
+          return (plan.eurFr || t("confirm_needed")) + " € · " + t("france_rate");
+        }
+
+        return fmtFcfa(plan.amount) + " FCFA · " + t("senegal_rate");
+      }
+
+      function paymentModeLine(){
+        return isFrance() ? t("payment_mode_france") : t("payment_mode_senegal");
+      }
+
+      function updateCountryRules(){
+        const france = isFrance();
+
+        document.querySelectorAll('label.tarif[data-senegal-only="1"]').forEach(label => {
+          const input = label.querySelector('input[name="plan"]');
+          label.classList.toggle("disabled", france);
+          if(input){
+            input.disabled = france;
+            if(france && input.checked) input.checked = false;
+          }
+        });
+
+        const jakartaOption = els.transportType?.querySelector('option[data-country="Senegal"]');
+        if(jakartaOption){
+          jakartaOption.disabled = france;
+          if(france && els.transportType.value === "jakarta") els.transportType.value = "private_driver";
+        }
+
+        if(els.payMode) els.payMode.textContent = paymentModeLine();
+
+        if(els.paymentHint){
+          els.paymentHint.textContent = france ? t("payment_hint_france") : t("payment_hint_senegal");
+        }
+      }
+
       function updateAmount(){
+        updateCountryRules();
         const p = chosenPlan();
-        els.payAmount.textContent = p
-          ? fmtFcfa(p.amount) + " FCFA · " + p.eur + " €"
-          : "Choisis un tarif";
+        els.payAmount.textContent = p ? amountLineFor(p) : t("choose_plan");
       }
 
       function buildMessage(){
         const p = chosenPlan();
-        const paymentNote = val("paymentRef") || "à compléter après paiement Wave";
-        const planLine = p ? (p.code + " · " + p.name) : "à choisir volontairement";
-        const amountLine = p ? (fmtFcfa(p.amount) + " FCFA · " + p.eur + " €") : "à compléter";
+        const paymentNote = val("paymentRef") || t("payment_note_missing");
+        const planLine = p ? (p.code + " · " + planLabel(p)) : t("plan_missing");
+        const amountLine = p ? amountLineFor(p) : t("missing");
+        const missing = t("missing");
 
         const msg = [
-          "Bonjour JB, je souhaite faire mon inscription chauffeur DIGIY DRIVER.",
+          t("msg_intro"),
           "",
-          "STATUT : dossier reçu · paiement et fiche à vérifier avant affichage public.",
-          "DIGIY vérifie la fiche de présentation, pas une certification chauffeur officielle.",
+          t("msg_status"),
+          t("msg_scope"),
           "",
-          "Date de demande : " + nowFr(),
+          t("msg_date") + " : " + nowLocalized(),
           "",
-          "🚗 Module : " + planLine,
-          "💳 Montant choisi : " + amountLine,
-          "🏦 Paiement Wave : " + WAVE_LABEL,
-          "📝 Note / preuve paiement : " + paymentNote,
+          "🚗 " + t("msg_module") + " : " + planLine,
+          "💳 " + t("msg_amount") + " : " + amountLine,
+          "🌍 " + t("msg_country") + " : " + (currentCountry() === "France" ? t("country_france").replace("🇫🇷 ","") : t("country_senegal").replace("🇸🇳 ","")),
+          "🏦 " + t("msg_payment_mode") + " : " + paymentModeLine(),
+          "📝 " + t("msg_payment_note") + " : " + paymentNote,
           "",
-          "👤 Nom chauffeur : " + (val("fullName") || "à compléter"),
-          "📞 Téléphone : " + (val("phone") || "à compléter"),
-          "🏙️ Ville : " + (val("city") || "à compléter"),
-          "📍 Zone : " + (val("zone") || "à compléter"),
-          "🚕 Type : " + (val("transportType") || "à compléter"),
-          "🚘 Véhicule : " + (val("vehicle") || "à compléter"),
-          "👥 Places : " + (val("places") || "à compléter"),
-          "🧭 Services : " + (val("services") || "à compléter"),
+          "👤 " + t("msg_name") + " : " + (val("fullName") || missing),
+          "📞 " + t("msg_phone") + " : " + (val("phone") || missing),
+          "🏙️ " + t("msg_city") + " : " + (val("city") || missing),
+          "📍 " + t("msg_zone") + " : " + (val("zone") || missing),
+          "🚕 " + t("msg_type") + " : " + (transportLabel(val("transportType")) || missing),
+          "🚘 " + t("msg_vehicle") + " : " + (val("vehicle") || missing),
+          "👥 " + t("msg_places") + " : " + (val("places") || missing),
+          "🧭 " + t("msg_services") + " : " + (val("services") || missing),
           "",
-          "📝 Présentation :",
-          val("bio") || "à compléter",
+          "📝 " + t("msg_bio") + " :",
+          val("bio") || missing,
           "",
-          "Merci de vérifier mon paiement, la cohérence de ma fiche, puis de préparer mon accès DIGIY DRIVER."
+          t("msg_final")
         ].join("\n");
 
         els.resultBox.textContent = msg;
+        els.resultBox.dataset.messageBuilt = "1";
 
         const url = "https://wa.me/" + DIGIY_WA + "?text=" + encodeURIComponent(msg);
         els.waBtn.href = url;
@@ -734,6 +962,15 @@
         }catch(_){}
 
         return msg;
+      }
+
+
+      if(els.country){
+        els.country.addEventListener("change", function(){
+          updateAmount();
+          buildMessage();
+          saveLocalDraft(true);
+        });
       }
 
       document.querySelectorAll('input[name="plan"]').forEach(r => {
@@ -751,10 +988,16 @@
 
         try{
           await navigator.clipboard.writeText(msg);
-          alert("Message copié ✅");
+          alert(t("copied"));
         }catch(_){
-          alert("Copie impossible automatiquement. Sélectionne le message puis copie-le.");
+          alert(t("copy_failed"));
         }
+      });
+
+      document.querySelectorAll("[data-lang]").forEach(button => {
+        button.addEventListener("click", function(){
+          applyLanguage(button.dataset.lang, false);
+        });
       });
 
       document.getElementById("saveLocal").addEventListener("click", function(){
@@ -767,6 +1010,7 @@
         [
           "fullName",
           "phone",
+          "country",
           "city",
           "zone",
           "transportType",
@@ -781,9 +1025,9 @@
 
         try{
           localStorage.setItem("digiy_driver_inscription_form", JSON.stringify(data));
-          if(!silent) alert("Fiche sauvegardée sur ce téléphone ✅");
+          if(!silent) alert(t("saved"));
         }catch(_){
-          if(!silent) alert("Sauvegarde locale impossible sur cet appareil.");
+          if(!silent) alert(t("save_failed"));
         }
       }
 
@@ -795,7 +1039,15 @@
 
           Object.keys(data || {}).forEach(k => {
             if(els[k] && typeof data[k] === "string"){
-              els[k].value = data[k];
+              if(k === "transportType"){
+                const legacyTransportValues = {
+                  "Chauffeur privé":"private_driver", "Taxi local":"local_taxi", "VTC":"vtc",
+                  "Jakarta":"jakarta", "Bus / minibus":"bus_minibus", "Transport touristique":"tourism_transport"
+                };
+                els[k].value = legacyTransportValues[data[k]] || data[k];
+              }else{
+                els[k].value = data[k];
+              }
             }
           });
 
@@ -813,9 +1065,14 @@
         el.addEventListener("change", () => saveLocalDraft(true));
       });
 
-      updateAmount();
+      applyLanguage(currentLang, false);
     })();
   </script>
 </body>
 </html>
 
+
+
+
+
+   
