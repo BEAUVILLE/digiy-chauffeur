@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#123c2d"/>
   <meta name="robots" content="index,follow"/>
-  <meta name="digiy-version" content="inscription-driver-presence-45eur-metier-15eur-20260718"/>
+  <meta name="digiy-version" content="inscription-driver-grille-pays-coherente-20260723"/>
 
   <title>Inscription chauffeur — DIGIY DRIVER</title>
   <meta name="description" content="Inscription chauffeur DIGIY DRIVER : Sénégal et France, fiche chauffeur vérifiée, QR, contact direct, 0% commission. Jakarta disponible au Sénégal uniquement ; France sans Jakarta."/>
@@ -584,20 +584,17 @@
 
       <aside class="card gold">
         <h2 data-i18n="pricing_title">2 · Présence et option métier</h2>
-        <p class="note" data-i18n="pricing_intro">
+        <p class="note" id="pricingIntro">
           Commence proprement avec DIGIY PRÉSENCE. Ajoute DIGIY MÉTIER seulement si tu veux le logiciel chauffeur.
-          Le socle est à 19 900 FCFA par mois. L’option métier est à +8 000 FCFA par mois.
-          Total standard Présence + Métier : 27 900 FCFA par mois. Aucun module supplémentaire n’est imposé.
-          Pour la France, DIGIY PRÉSENCE reste à 45 € et DIGIY MÉTIER est fixé à +15 € ; total 60 € par mois.
         </p>
 
         <div class="proofHint">
-          <strong data-i18n="doctrine_presence_title">1 · SOCLE — DIGIY PRÉSENCE · 19 900 FCFA / mois</strong><br>
+          <strong id="doctrinePresenceTitle">1 · SOCLE — DIGIY PRÉSENCE</strong><br>
           <span data-i18n="doctrine_presence_text">Fiche professionnelle personnalisée, QR officiel, lien partageable, contact direct, présence dans l’écosystème DIGIY et maintenance essentielle.</span>
         </div>
 
         <div class="proofHint">
-          <strong data-i18n="doctrine_metier_title">2 · OPTION MÉTIER — DIGIY MÉTIER · +8 000 FCFA / mois</strong><br>
+          <strong id="doctrineMetierTitle">2 · OPTION MÉTIER — DIGIY MÉTIER</strong><br>
           <span data-i18n="doctrine_metier_text">Logiciel chauffeur : organisation des courses, clients, disponibilités et suivi opérationnel. Cette option reste facultative.</span>
         </div>
 
@@ -605,21 +602,26 @@
           <label class="tarif">
             <input type="radio" name="plan" value="DIGIY PRÉSENCE DRIVER" data-code="PRESENCE" data-amount="19900" data-eur-fr="45"/>
             <span data-i18n="plan_presence">1 · DIGIY PRÉSENCE</span>
-            <strong>19 900 FCFA · 45 €</strong>
+            <strong id="priceBase">19 900 FCFA / mois</strong>
             <small data-i18n="plan_presence_note">Socle DRIVER : fiche, QR, lien partageable, contact direct et maintenance essentielle.</small>
           </label>
 
           <label class="tarif disabled" id="softwareCard" data-unavailable-label="Choisir d’abord DIGIY PRÉSENCE">
             <input type="checkbox" id="softwareOption" data-code="METIER" data-amount="8000" data-eur-fr="15" disabled/>
             <span data-i18n="plan_metier">2 · DIGIY MÉTIER</span>
-            <strong>+8 000 FCFA · +15 €</strong>
+            <strong id="priceSoft">+8 000 FCFA / mois</strong>
             <small data-i18n="plan_metier_note">Option facultative : logiciel chauffeur. France : +15 € par mois.</small>
           </label>
         </div>
 
         <div class="proofHint">
-          <strong data-i18n="standard_total">Total standard Présence + Métier : 27 900 FCFA / mois · France : 60 € / mois.</strong><br>
+          <strong id="standardTotal">Total standard Présence + Métier : 27 900 FCFA / mois.</strong><br>
           <span data-i18n="no_forced_module">Aucun module supplémentaire n’est imposé. PRO CARNET reste séparé.</span>
+        </div>
+
+        <div class="proofHint">
+          <strong data-i18n="country_grid_title">Grille pays · pas un taux de change</strong><br>
+          <span id="countryGridNote">Chaque pays a sa propre grille, calée sur les recettes réelles du terrain local. Le tarif Sénégal et le tarif France sont deux décisions séparées, pas une conversion de devise.</span>
         </div>
 
         <div class="waveHero">
@@ -662,7 +664,7 @@
 
         <div class="field">
           <label for="paymentRef" data-i18n="payment_ref_label">📝 Note / preuve paiement</label>
-          <textarea id="paymentRef" data-i18n-placeholder="payment_ref_placeholder" placeholder="Ex Sénégal : DIGIY PRÉSENCE DRIVER — 19 900 FCFA ; option métier ajoutée — total 27 900 FCFA. Ex France : DIGIY PRÉSENCE 45 € ; DIGIY MÉTIER +15 € ; total 60 €."></textarea>
+          <textarea id="paymentRef" placeholder="Ex : DIGIY PRÉSENCE DRIVER — 19 900 FCFA ; option métier ajoutée — total 27 900 FCFA."></textarea>
         </div>
 
         <div class="actions">
@@ -724,8 +726,8 @@
           pill_verified:"Fiche chauffeur vérifiée", pill_qr:"QR & carte digitale", pill_commission:"0% commission", pill_whatsapp:"Contact direct WhatsApp", pill_no_preselect:"Option métier non précochée", pill_no_jakarta_france:"France : pas de Jakarta", pill_country_grid:"Grille pays · pas taux de change",
           profile_title:"1 · Mon profil chauffeur", label_name:"Nom complet", placeholder_name:"Ex : Lamine Diop", label_phone:"Téléphone WhatsApp", placeholder_phone:"Ex : +221 77 000 00 00", label_country:"Pays du chauffeur", country_senegal:"🇸🇳 Sénégal", country_france:"🇫🇷 France", label_city:"Ville principale", placeholder_city:"Ex : Saly, Dakar, Mbour, Sarlat, Bordeaux, Paris", label_zone:"Zone de travail", placeholder_zone:"Ex : Petite Côte, AIBD, Dakar, Sarlat, Arcachon, Bordeaux, Paris",
           label_transport:"Type de transport", transport_private:"Chauffeur privé", transport_taxi:"Taxi local", transport_vtc:"VTC", transport_jakarta:"Jakarta", transport_bus:"Bus / minibus", transport_tourism:"Transport touristique", label_vehicle:"Véhicule", placeholder_vehicle:"Ex : Toyota, Hyundai, bus, van, berline", label_places:"Nombre de places", placeholder_places:"Ex : 4 places", label_services:"Services", placeholder_services:"Ex : AIBD, courses, circuits, nuit", label_bio:"Petite présentation", placeholder_bio:"Ex : Chauffeur sérieux, ponctuel, disponible pour transferts AIBD et déplacements sur la Petite Côte.",
-          pricing_title:"2 · Présence et option métier", pricing_intro:"Commence proprement avec DIGIY PRÉSENCE. Ajoute DIGIY MÉTIER seulement si tu veux le logiciel chauffeur. Le socle est à 19 900 FCFA par mois. L’option métier est à +8 000 FCFA par mois. Total standard Présence + Métier : 27 900 FCFA par mois. Aucun module supplémentaire n’est imposé. Pour la France, DIGIY PRÉSENCE reste à 45 € et DIGIY MÉTIER est fixé à +15 € ; total 60 € par mois.", pricing_aria:"Choix Présence et option métier DRIVER", doctrine_presence_title:"1 · SOCLE — DIGIY PRÉSENCE · 19 900 FCFA / mois", doctrine_presence_text:"Fiche professionnelle personnalisée, QR officiel, lien partageable, contact direct, présence dans l’écosystème DIGIY et maintenance essentielle.", doctrine_metier_title:"2 · OPTION MÉTIER — DIGIY MÉTIER · +8 000 FCFA / mois", doctrine_metier_text:"Logiciel chauffeur : organisation des courses, clients, disponibilités et suivi opérationnel. Cette option reste facultative.", plan_presence:"1 · DIGIY PRÉSENCE", plan_presence_name:"DIGIY PRÉSENCE DRIVER", plan_presence_note:"Socle DRIVER : fiche, QR, lien partageable, contact direct et maintenance essentielle.", plan_metier:"2 · DIGIY MÉTIER", plan_metier_note:"Option facultative : logiciel chauffeur. France : +15 € par mois.", standard_total:"Total standard Présence + Métier : 27 900 FCFA / mois · France : 60 € / mois.", no_forced_module:"Aucun module supplémentaire n’est imposé. PRO CARNET reste séparé.", choose_presence_first:"Choisir d’abord DIGIY PRÉSENCE", software_added:"Ajoutée · +8 000 FCFA / mois", software_not_added:"Non ajoutée", software_euro_price:"+15 € / mois", msg_base:"Socle", msg_software:"Option métier",
-          payment_official:"Paiement officiel", payment_summary:"France : Sendwave → Wave Sénégal · Sénégal : Wave direct", payment_aria:"Paiement Wave DIGIY", wave_name:"Nom Wave", wave_phone:"Téléphone Wave", payment_mode_label:"Mode de règlement", payment_amount_label:"Montant choisi", choose_plan:"Choisis un tarif", payment_mode_france:"Sendwave France → Wave Sénégal JB BEAUVILLE +221 77 134 28 89", payment_mode_senegal:"Wave direct Sénégal → JB BEAUVILLE +221 77 134 28 89", payment_hint_france:"France : télécharge ou ouvre Sendwave, choisis Sénégal, puis règle vers le Wave Sénégal officiel au nom de JB BEAUVILLE · +221 77 134 28 89. Envoie ensuite la preuve sur WhatsApp.", payment_hint_senegal:"Sénégal : paie directement par Wave au nom de JB BEAUVILLE · +221 77 134 28 89. Envoie ensuite la preuve sur WhatsApp.", payment_hint_default:"Sénégal : paie directement par Wave. France : télécharge ou ouvre Sendwave, choisis Sénégal, puis règle vers Wave Sénégal au nom de JB BEAUVILLE · +221 77 134 28 89. Après règlement, envoie la capture ou la preuve sur WhatsApp.", verified_title:"Fiche vérifiée DIGIY.", verified_note:"DIGIY vérifie que les informations sont complètes, lisibles et cohérentes. DIGIY ne remplace pas les obligations légales du chauffeur : véhicule, documents, conduite et service restent sous la responsabilité du professionnel.", payment_ref_label:"📝 Note / preuve paiement", payment_ref_placeholder:"Ex Sénégal : DIGIY PRÉSENCE DRIVER — 19 900 FCFA ; option métier ajoutée — total 27 900 FCFA. Ex France : DIGIY PRÉSENCE 45 € ; DIGIY MÉTIER +15 € ; total 60 €.",
+          pricing_title:"2 · Présence et option métier", pricing_intro_tpl:"Commence proprement avec DIGIY PRÉSENCE. Ajoute DIGIY MÉTIER seulement si tu veux le logiciel chauffeur. Grille {country} : le socle est à {base} par mois, l’option métier à {soft} par mois. Total standard Présence + Métier : {total} par mois. Aucun module supplémentaire n’est imposé.", pricing_aria:"Choix Présence et option métier DRIVER", doctrine_presence_title_tpl:"1 · SOCLE — DIGIY PRÉSENCE · {base} / mois", doctrine_presence_text:"Fiche professionnelle personnalisée, QR officiel, lien partageable, contact direct, présence dans l’écosystème DIGIY et maintenance essentielle.", doctrine_metier_title_tpl:"2 · OPTION MÉTIER — DIGIY MÉTIER · {soft} / mois", doctrine_metier_text:"Logiciel chauffeur : organisation des courses, clients, disponibilités et suivi opérationnel. Cette option reste facultative.", plan_presence:"1 · DIGIY PRÉSENCE", plan_presence_name:"DIGIY PRÉSENCE DRIVER", plan_presence_note:"Socle DRIVER : fiche, QR, lien partageable, contact direct et maintenance essentielle.", plan_metier:"2 · DIGIY MÉTIER", plan_metier_note:"Option facultative : logiciel chauffeur, au tarif de ton pays.", standard_total_tpl:"Total standard Présence + Métier : {total} / mois · grille {country}.", no_forced_module:"Aucun module supplémentaire n’est imposé. PRO CARNET reste séparé.", choose_presence_first:"Choisir d’abord DIGIY PRÉSENCE", software_added:"Ajoutée", software_not_added:"Non ajoutée", per_month:"/ mois", country_grid_title:"Grille pays · pas un taux de change", country_grid_note:"Chaque pays a sa propre grille, calée sur les recettes réelles du terrain local. Le tarif Sénégal et le tarif France sont deux décisions séparées, pas une conversion de devise.", msg_base:"Socle", msg_software:"Option métier",
+          payment_official:"Paiement officiel", payment_summary:"France : Sendwave → Wave Sénégal · Sénégal : Wave direct", payment_aria:"Paiement Wave DIGIY", wave_name:"Nom Wave", wave_phone:"Téléphone Wave", payment_mode_label:"Mode de règlement", payment_amount_label:"Montant choisi", choose_plan:"Choisis un tarif", payment_mode_france:"Sendwave France → Wave Sénégal JB BEAUVILLE +221 77 134 28 89", payment_mode_senegal:"Wave direct Sénégal → JB BEAUVILLE +221 77 134 28 89", payment_hint_france:"France : télécharge ou ouvre Sendwave, choisis Sénégal, puis règle vers le Wave Sénégal officiel au nom de JB BEAUVILLE · +221 77 134 28 89. Envoie ensuite la preuve sur WhatsApp.", payment_hint_senegal:"Sénégal : paie directement par Wave au nom de JB BEAUVILLE · +221 77 134 28 89. Envoie ensuite la preuve sur WhatsApp.", payment_hint_default:"Sénégal : paie directement par Wave. France : télécharge ou ouvre Sendwave, choisis Sénégal, puis règle vers Wave Sénégal au nom de JB BEAUVILLE · +221 77 134 28 89. Après règlement, envoie la capture ou la preuve sur WhatsApp.", verified_title:"Fiche vérifiée DIGIY.", verified_note:"DIGIY vérifie que les informations sont complètes, lisibles et cohérentes. DIGIY ne remplace pas les obligations légales du chauffeur : véhicule, documents, conduite et service restent sous la responsabilité du professionnel.", payment_ref_label:"📝 Note / preuve paiement", payment_ref_placeholder_tpl:"Ex : DIGIY PRÉSENCE DRIVER — {base} ; option métier ajoutée — total {total}.",
           build_message:"Préparer mon message", save_local:"Sauvegarder ici", result_title:"3 · Message prêt à envoyer", result_empty:"Remplis la fiche, choisis ton tarif, puis clique sur “Préparer mon message”.", copy_message:"Copier le message", send_whatsapp:"Envoyer sur WhatsApp DIGIY", activation_note:"Rien n’est activé automatiquement : DIGIY reçoit ta demande, vérifie le paiement et vérifie seulement la fiche de présentation. Le chauffeur reste responsable de son véhicule, de ses documents, de sa conduite et de son service.", footer:"DIGIY DRIVER — Le chauffeur garde son nom, son client, son argent et sa relation. 🦅", sticky_build:"Préparer inscription", sticky_whatsapp:"WhatsApp DIGIY",
           missing:"à compléter", confirm_needed:"à confirmer", plan_unavailable_france:"Non proposé en France", france_rate:"tarif France", senegal_rate:"tarif Sénégal", payment_note_missing:"à compléter après paiement Wave", plan_missing:"DIGIY PRÉSENCE à choisir volontairement", copied:"Message copié ✅", copy_failed:"Copie impossible automatiquement. Sélectionne le message puis copie-le.", saved:"Fiche sauvegardée sur ce téléphone ✅", save_failed:"Sauvegarde locale impossible sur cet appareil.",
           msg_intro:"Bonjour JB, je souhaite faire mon inscription chauffeur DIGIY DRIVER.", msg_status:"STATUT : dossier reçu · paiement et fiche à vérifier avant affichage public.", msg_scope:"DIGIY vérifie la fiche de présentation, pas une certification chauffeur officielle.", msg_date:"Date de demande", msg_module:"Module", msg_amount:"Montant total", msg_country:"Pays chauffeur", msg_payment_mode:"Mode de règlement", msg_payment_note:"Note / preuve paiement", msg_name:"Nom chauffeur", msg_phone:"Téléphone", msg_city:"Ville", msg_zone:"Zone", msg_type:"Type", msg_vehicle:"Véhicule", msg_places:"Places", msg_services:"Services", msg_bio:"Présentation", msg_final:"Merci de vérifier mon règlement, la cohérence de ma fiche et les options choisies, puis de préparer mon accès DIGIY DRIVER."
@@ -739,8 +741,8 @@
           pill_verified:"Verified driver profile", pill_qr:"QR code & digital card", pill_commission:"0% commission", pill_whatsapp:"Direct WhatsApp contact", pill_no_preselect:"Business option not preselected", pill_no_jakarta_france:"France: no Jakarta", pill_country_grid:"Country pricing · not an exchange rate",
           profile_title:"1 · My driver profile", label_name:"Full name", placeholder_name:"Example: Lamine Diop", label_phone:"WhatsApp number", placeholder_phone:"Example: +221 77 000 00 00", label_country:"Driver’s country", country_senegal:"🇸🇳 Senegal", country_france:"🇫🇷 France", label_city:"Main city", placeholder_city:"Example: Saly, Dakar, Mbour, Sarlat, Bordeaux, Paris", label_zone:"Service area", placeholder_zone:"Example: Petite Côte, AIBD, Dakar, Sarlat, Arcachon, Bordeaux, Paris",
           label_transport:"Transport type", transport_private:"Private driver", transport_taxi:"Local taxi", transport_vtc:"Private hire vehicle", transport_jakarta:"Jakarta", transport_bus:"Bus / minibus", transport_tourism:"Tourist transport", label_vehicle:"Vehicle", placeholder_vehicle:"Example: Toyota, Hyundai, bus, van, saloon car", label_places:"Number of seats", placeholder_places:"Example: 4 seats", label_services:"Services", placeholder_services:"Example: AIBD, rides, tours, night service", label_bio:"Short presentation", placeholder_bio:"Example: Reliable and punctual driver, available for AIBD transfers and journeys across the Petite Côte.",
-          pricing_title:"2 · Presence and business option", pricing_intro:"Start with DIGIY PRESENCE. Add DIGIY BUSINESS only if you want the driver software. The base is 19,900 FCFA per month. The business option is +8,000 FCFA per month. Standard Presence + Business total: 27,900 FCFA per month. No additional module is imposed. For France, DIGIY PRESENCE remains €45 and DIGIY BUSINESS is set at +€15; total €60 per month.", pricing_aria:"DRIVER Presence and business option selection", doctrine_presence_title:"1 · BASE — DIGIY PRESENCE · 19,900 FCFA / month", doctrine_presence_text:"Personalized professional profile, official QR code, shareable link, direct contact, presence in the DIGIY ecosystem and essential maintenance.", doctrine_metier_title:"2 · BUSINESS OPTION — DIGIY BUSINESS · +8,000 FCFA / month", doctrine_metier_text:"Driver software for trips, clients, availability and operational tracking. This option remains optional.", plan_presence:"1 · DIGIY PRESENCE", plan_presence_name:"DIGIY PRESENCE DRIVER", plan_presence_note:"DRIVER base: profile, QR code, shareable link, direct contact and essential maintenance.", plan_metier:"2 · DIGIY BUSINESS", plan_metier_note:"Optional driver software. France: +€15 per month.", standard_total:"Standard Presence + Business total: 27,900 FCFA / month · France: €60 / month.", no_forced_module:"No additional module is imposed. PRO CARNET remains separate.", choose_presence_first:"Choose DIGIY PRESENCE first", software_added:"Added · +8,000 FCFA / month", software_not_added:"Not added", software_euro_price:"+€15 / month", msg_base:"Base", msg_software:"Business option",
-          payment_official:"Official payment", payment_summary:"France: Sendwave → Senegal Wave · Senegal: direct Wave", payment_aria:"DIGIY Wave payment", wave_name:"Wave account name", wave_phone:"Wave phone number", payment_mode_label:"Payment method", payment_amount_label:"Selected amount", choose_plan:"Choose a plan", payment_mode_france:"Sendwave France → Senegal Wave JB BEAUVILLE +221 77 134 28 89", payment_mode_senegal:"Direct Wave Senegal → JB BEAUVILLE +221 77 134 28 89", payment_hint_france:"France: download or open Sendwave, select Senegal, then pay the official Senegal Wave account held by JB BEAUVILLE · +221 77 134 28 89. Send your proof on WhatsApp afterwards.", payment_hint_senegal:"Senegal: pay JB BEAUVILLE directly through Wave at +221 77 134 28 89. Send your proof on WhatsApp afterwards.", payment_hint_default:"Senegal: pay directly through Wave. France: download or open Sendwave, select Senegal, then pay the Senegal Wave account held by JB BEAUVILLE · +221 77 134 28 89. Send the screenshot or proof on WhatsApp afterwards.", verified_title:"DIGIY verified profile.", verified_note:"DIGIY checks that the information is complete, readable and consistent. DIGIY does not replace the driver’s legal obligations: the vehicle, documents, driving and service remain the professional’s responsibility.", payment_ref_label:"📝 Payment note / proof", payment_ref_placeholder:"Senegal example: DIGIY PRESENCE DRIVER — 19,900 FCFA; business option added — total 27,900 FCFA. France example: DIGIY PRESENCE €45; DIGIY BUSINESS +€15; total €60.",
+          pricing_title:"2 · Presence and business option", pricing_intro_tpl:"Start with DIGIY PRESENCE. Add DIGIY BUSINESS only if you want the driver software. {country} pricing: the base is {base} per month and the business option {soft} per month. Standard Presence + Business total: {total} per month. No additional module is imposed.", pricing_aria:"DRIVER Presence and business option selection", doctrine_presence_title_tpl:"1 · BASE — DIGIY PRESENCE · {base} / month", doctrine_presence_text:"Personalized professional profile, official QR code, shareable link, direct contact, presence in the DIGIY ecosystem and essential maintenance.", doctrine_metier_title_tpl:"2 · BUSINESS OPTION — DIGIY BUSINESS · {soft} / month", doctrine_metier_text:"Driver software for trips, clients, availability and operational tracking. This option remains optional.", plan_presence:"1 · DIGIY PRESENCE", plan_presence_name:"DIGIY PRESENCE DRIVER", plan_presence_note:"DRIVER base: profile, QR code, shareable link, direct contact and essential maintenance.", plan_metier:"2 · DIGIY BUSINESS", plan_metier_note:"Optional driver software, priced with your country grid.", standard_total_tpl:"Standard Presence + Business total: {total} / month · {country} pricing.", no_forced_module:"No additional module is imposed. PRO CARNET remains separate.", choose_presence_first:"Choose DIGIY PRESENCE first", software_added:"Added", software_not_added:"Not added", per_month:"/ month", country_grid_title:"Country pricing · not an exchange rate", country_grid_note:"Each country has its own grid, based on real local earnings. The Senegal rate and the France rate are two separate decisions, not a currency conversion.", msg_base:"Base", msg_software:"Business option",
+          payment_official:"Official payment", payment_summary:"France: Sendwave → Senegal Wave · Senegal: direct Wave", payment_aria:"DIGIY Wave payment", wave_name:"Wave account name", wave_phone:"Wave phone number", payment_mode_label:"Payment method", payment_amount_label:"Selected amount", choose_plan:"Choose a plan", payment_mode_france:"Sendwave France → Senegal Wave JB BEAUVILLE +221 77 134 28 89", payment_mode_senegal:"Direct Wave Senegal → JB BEAUVILLE +221 77 134 28 89", payment_hint_france:"France: download or open Sendwave, select Senegal, then pay the official Senegal Wave account held by JB BEAUVILLE · +221 77 134 28 89. Send your proof on WhatsApp afterwards.", payment_hint_senegal:"Senegal: pay JB BEAUVILLE directly through Wave at +221 77 134 28 89. Send your proof on WhatsApp afterwards.", payment_hint_default:"Senegal: pay directly through Wave. France: download or open Sendwave, select Senegal, then pay the Senegal Wave account held by JB BEAUVILLE · +221 77 134 28 89. Send the screenshot or proof on WhatsApp afterwards.", verified_title:"DIGIY verified profile.", verified_note:"DIGIY checks that the information is complete, readable and consistent. DIGIY does not replace the driver’s legal obligations: the vehicle, documents, driving and service remain the professional’s responsibility.", payment_ref_label:"📝 Payment note / proof", payment_ref_placeholder_tpl:"Example: DIGIY PRESENCE DRIVER — {base}; business option added — total {total}.",
           build_message:"Prepare my message", save_local:"Save on this device", result_title:"3 · Message ready to send", result_empty:"Complete the profile, choose your plan, then select “Prepare my message”.", copy_message:"Copy message", send_whatsapp:"Send to DIGIY on WhatsApp", activation_note:"Nothing is activated automatically: DIGIY receives your request, checks the payment and checks the presentation profile only. The driver remains responsible for the vehicle, documents, driving and service.", footer:"DIGIY DRIVER — The driver keeps their name, client, money and relationship. 🦅", sticky_build:"Prepare registration", sticky_whatsapp:"DIGIY WhatsApp",
           missing:"to be completed", confirm_needed:"to be confirmed", plan_unavailable_france:"Not available in France", france_rate:"France rate", senegal_rate:"Senegal rate", payment_note_missing:"to be completed after the Wave payment", plan_missing:"DIGIY PRESENCE to be chosen freely", copied:"Message copied ✅", copy_failed:"Automatic copy failed. Select the message and copy it manually.", saved:"Profile saved on this device ✅", save_failed:"Local saving is unavailable on this device.",
           msg_intro:"Hello JB, I would like to register as a DIGIY DRIVER.", msg_status:"STATUS: application received · payment and profile to be checked before public display.", msg_scope:"DIGIY checks the presentation profile; this is not an official driver certification.", msg_date:"Application date", msg_module:"Module", msg_amount:"Total amount", msg_country:"Driver’s country", msg_payment_mode:"Payment method", msg_payment_note:"Payment note / proof", msg_name:"Driver name", msg_phone:"Phone number", msg_city:"City", msg_zone:"Area", msg_type:"Type", msg_vehicle:"Vehicle", msg_places:"Seats", msg_services:"Services", msg_bio:"Presentation", msg_final:"Please check my payment, profile consistency and selected options, then prepare my DIGIY DRIVER access."
@@ -882,35 +884,80 @@
         });
       }
 
+      /* ---- GRILLE PAYS : une seule source de vérité ----
+         Les montants restent portés par les attributs data-amount (FCFA)
+         et data-eur-fr (€) des champs de choix. Aucune conversion de devise :
+         deux grilles indépendantes, une par pays. */
+      function fmtMoney(n){
+        return isFrance()
+          ? Number(n || 0).toLocaleString("fr-FR") + " €"
+          : fmtFcfa(Number(n || 0)) + " FCFA";
+      }
+
+      function countryLabel(){
+        return (isFrance() ? t("country_france") : t("country_senegal"))
+          .replace("🇫🇷 ", "").replace("🇸🇳 ", "").trim();
+      }
+
+      function pricingGrid(){
+        const baseInput = document.querySelector('input[name="plan"]');
+        const softInput = els.softwareOption;
+        const france = isFrance();
+        const base = Number((france ? baseInput?.dataset.eurFr : baseInput?.dataset.amount) || 0);
+        const soft = Number((france ? softInput?.dataset.eurFr : softInput?.dataset.amount) || 0);
+        return {
+          baseValue: base,
+          softValue: soft,
+          base: fmtMoney(base),
+          soft: "+" + fmtMoney(soft),
+          softRaw: fmtMoney(soft),
+          total: fmtMoney(base + soft),
+          country: countryLabel()
+        };
+      }
+
+      function fillGrid(text, grid){
+        return String(text || "")
+          .replace(/\{base\}/g, grid.base)
+          .replace(/\{soft\}/g, grid.soft)
+          .replace(/\{total\}/g, grid.total)
+          .replace(/\{country\}/g, grid.country);
+      }
+
+      function renderPricing(){
+        const grid = pricingGrid();
+        const set = (id, text) => { const el = document.getElementById(id); if(el) el.textContent = text; };
+
+        set("pricingIntro", fillGrid(t("pricing_intro_tpl"), grid));
+        set("doctrinePresenceTitle", fillGrid(t("doctrine_presence_title_tpl"), grid));
+        set("doctrineMetierTitle", fillGrid(t("doctrine_metier_title_tpl"), grid));
+        set("priceBase", grid.base + " " + t("per_month"));
+        set("priceSoft", grid.soft + " " + t("per_month"));
+        set("standardTotal", fillGrid(t("standard_total_tpl"), grid));
+        set("countryGridNote", t("country_grid_note"));
+
+        if(els.paymentRef){
+          els.paymentRef.placeholder = fillGrid(t("payment_ref_placeholder_tpl"), grid);
+        }
+      }
+
       function baseLineFor(plan){
         if(!plan) return t("missing");
-        if(isFrance()) return (plan.eurFr || t("confirm_needed")) + " €";
-        return fmtFcfa(plan.amount) + " FCFA";
+        return pricingGrid().base + " " + t("per_month");
       }
 
       function softwareLineFor(plan){
         if(!plan || !plan.software) return t("software_not_added");
-        if(isFrance()) return t("software_added") + " · " + t("software_euro_price");
-        return t("software_added");
+        return t("software_added") + " · " + pricingGrid().soft + " " + t("per_month");
       }
 
       function amountLineFor(plan){
         if(!plan) return t("missing");
-
-        if(isFrance()){
-          const base = Number(plan.eurFr || 0);
-          const supplement = Number(plan.softwareEur || 15);
-          const total = base + (plan.software ? supplement : 0);
-          return plan.software
-            ? total.toLocaleString("fr-FR") + " € (" + base.toLocaleString("fr-FR") + " + " + supplement.toLocaleString("fr-FR") + ")"
-            : base.toLocaleString("fr-FR") + " € · " + t("france_rate");
-        }
-
-        const total = Number(plan.amount || 0) + (plan.software ? Number(plan.softwareAmount || 0) : 0);
+        const grid = pricingGrid();
         if(plan.software){
-          return fmtFcfa(total) + " FCFA (" + fmtFcfa(plan.amount) + " + " + fmtFcfa(plan.softwareAmount) + ")";
+          return grid.total + " " + t("per_month") + " (" + grid.base + " + " + grid.softRaw + ")";
         }
-        return fmtFcfa(total) + " FCFA · " + t("senegal_rate");
+        return grid.base + " " + t("per_month") + " · " + t(isFrance() ? "france_rate" : "senegal_rate");
       }
 
       function paymentModeLine(){
@@ -931,6 +978,8 @@
         if(els.paymentHint){
           els.paymentHint.textContent = france ? t("payment_hint_france") : t("payment_hint_senegal");
         }
+
+        renderPricing();
       }
 
       function updateAmount(){
@@ -1123,6 +1172,59 @@
   </script>
 </body>
 </html>
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+   
+
 
 
 
