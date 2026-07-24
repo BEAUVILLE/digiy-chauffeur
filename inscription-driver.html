@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#123c2d"/>
   <meta name="robots" content="index,follow"/>
-  <meta name="digiy-version" content="inscription-driver-grille-pays-coherente-20260723"/>
+  <meta name="digiy-version" content="inscription-driver-direct-sms-coordonnees-obligatoires-20260724-v2"/>
 
-  <title>Inscription chauffeur — DIGIY DRIVER</title>
+  <title>Inscription chauffeur — Coordonnées obligatoires · SMS direct</title>
   <meta name="description" content="Inscription chauffeur DIGIY DRIVER : Sénégal et France, fiche chauffeur vérifiée, QR, contact direct, 0% commission. Jakarta disponible au Sénégal uniquement ; France sans Jakarta."/>
 
   <style>
@@ -249,6 +249,62 @@
 
     .field{
       margin-top:10px;
+    }
+
+    .profileIntro{
+      margin:0 0 8px;
+      padding:11px 12px;
+      border-radius:15px;
+      border:1px solid rgba(250,204,21,.38);
+      background:rgba(250,204,21,.10);
+      color:#fff8db;
+      font-size:14px;
+      line-height:1.45;
+      font-weight:950;
+    }
+
+    label[for="fullName"]::after,
+    label[for="phone"]::after,
+    label[for="city"]::after,
+    label[for="zone"]::after{
+      content:" *";
+      color:#fecaca;
+      font-weight:1000;
+    }
+
+    .sendBlocked{
+      opacity:.48!important;
+      filter:grayscale(.28);
+      cursor:not-allowed!important;
+    }
+
+    .smsDirectHelp{
+      margin:10px 0 0;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(250,204,21,.38);
+      background:rgba(7,27,20,.52);
+      color:#fff8db;
+      font-size:13px;
+      line-height:1.45;
+      font-weight:900;
+      text-align:center;
+    }
+
+    .formWarning{
+      display:none;
+      margin-top:10px;
+      padding:11px 12px;
+      border-radius:14px;
+      border:1px solid rgba(248,113,113,.46);
+      background:rgba(127,29,29,.48);
+      color:#fee2e2;
+      line-height:1.45;
+      font-weight:950;
+    }
+
+    .formWarning.show{
+      display:block;
     }
 
     .tarifs{
@@ -513,6 +569,11 @@
       <form class="card" id="driverForm">
         <h2 data-i18n="profile_title">1 · Mon profil chauffeur</h2>
 
+        <p class="profileIntro" id="profileIntro">
+          Renseigne d’abord ton nom, ton téléphone, ta ville et ta zone de travail.
+          Aucun SMS ou WhatsApp ne peut partir sans ces informations et sans une formule choisie.
+        </p>
+
         <div class="row">
           <div class="field">
             <label for="fullName" data-i18n="label_name">Nom complet</label>
@@ -536,13 +597,13 @@
 
           <div class="field">
             <label for="city" data-i18n="label_city">Ville principale</label>
-            <input id="city" data-i18n-placeholder="placeholder_city" placeholder="Ex : Saly, Dakar, Mbour, Sarlat, Bordeaux, Paris" autocomplete="address-level2"/>
+            <input id="city" data-i18n-placeholder="placeholder_city" placeholder="Ex : Saly, Dakar, Mbour, Sarlat, Bordeaux, Paris" autocomplete="address-level2" required/>
           </div>
         </div>
 
         <div class="field">
           <label for="zone" data-i18n="label_zone">Zone de travail</label>
-          <input id="zone" data-i18n-placeholder="placeholder_zone" placeholder="Ex : Petite Côte, AIBD, Dakar, Sarlat, Arcachon, Bordeaux, Paris" autocomplete="address-level2"/>
+          <input id="zone" data-i18n-placeholder="placeholder_zone" placeholder="Ex : Petite Côte, AIBD, Dakar, Sarlat, Arcachon, Bordeaux, Paris" autocomplete="address-level2" required/>
         </div>
 
         <div class="row">
@@ -682,9 +743,17 @@
       </div>
 
       <div class="actions">
-        <button class="btn gold" type="button" id="copyMsg" data-i18n="copy_message">Copier le message</button>
+        <button class="btn gold" type="button" id="smsBtn">📱 Ouvrir mon SMS déjà rempli</button>
         <a class="btn green" id="waBtn" target="_blank" rel="noopener" href="https://wa.me/221771342889" data-i18n="send_whatsapp">Envoyer sur WhatsApp DIGIY</a>
+        <button class="btn" type="button" id="copyMsg" data-i18n="copy_message">Autre solution : copier le message</button>
       </div>
+
+      <div class="smsDirectHelp" id="smsDirectHelp">
+        Sur téléphone, aucun copier-coller : Messages s’ouvre avec le numéro DIGIY
+        et une demande DRIVER courte déjà remplie. Il reste seulement à appuyer sur Envoyer.
+      </div>
+
+      <div class="formWarning" id="formWarning" role="alert" aria-live="assertive"></div>
 
       <p class="note" data-i18n="activation_note">
         Rien n’est activé automatiquement : DIGIY reçoit ta demande, vérifie le paiement
@@ -700,8 +769,9 @@
 
   <div class="sticky">
     <div class="inner">
-      <button class="btn gold" type="button" id="stickyBuild" data-i18n="sticky_build">Préparer inscription</button>
+      <button class="btn gold" type="button" id="stickySms">📱 SMS direct</button>
       <a class="btn green" href="https://wa.me/221771342889" id="stickyWa" target="_blank" rel="noopener" data-i18n="sticky_whatsapp">WhatsApp DIGIY</a>
+      <button class="btn" type="button" id="stickyBuild" data-i18n="sticky_build">Préparer inscription</button>
     </div>
   </div>
 
@@ -766,6 +836,12 @@
 
       const DIGIY_WA = "221771342889";
       const WAVE_LABEL = "JB BEAUVILLE · +221 77 134 28 89";
+      const IS_IOS_OR_IPADOS =
+        /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      const MOBILE_DEVICE =
+        /Android|Windows Phone|Mobile/i.test(navigator.userAgent) ||
+        IS_IOS_OR_IPADOS;
 
       const els = {
         fullName: document.getElementById("fullName"),
@@ -785,6 +861,10 @@
         resultBox: document.getElementById("resultBox"),
         waBtn: document.getElementById("waBtn"),
         stickyWa: document.getElementById("stickyWa"),
+        smsBtn: document.getElementById("smsBtn"),
+        stickySms: document.getElementById("stickySms"),
+        copyMsg: document.getElementById("copyMsg"),
+        formWarning: document.getElementById("formWarning"),
         softwareOption: document.getElementById("softwareOption"),
         softwareCard: document.getElementById("softwareCard")
       };
@@ -820,9 +900,41 @@
         if(els.softwareCard && !document.querySelector('input[name="plan"]:checked')){
           els.softwareCard.setAttribute("data-unavailable-label", t("choose_presence_first"));
         }
-        document.querySelectorAll("[data-lang]").forEach(button => {
+        [els.waBtn, els.stickyWa].forEach(link => {
+        if(!link) return;
+        link.addEventListener("click", function(event){
+          if(!validateBeforeSend(true)){
+            event.preventDefault();
+            return;
+          }
+          buildMessage();
+        });
+      });
+
+      document.querySelectorAll("[data-lang]").forEach(button => {
           button.setAttribute("aria-pressed", String(button.dataset.lang === currentLang));
         });
+
+        const profileIntro = document.getElementById("profileIntro");
+        if(profileIntro){
+          profileIntro.textContent = currentLang === "en"
+            ? "Complete your name, phone number, city and service area first. No SMS or WhatsApp message can be sent without this information and a selected plan."
+            : "Renseigne d’abord ton nom, ton téléphone, ta ville et ta zone de travail. Aucun SMS ou WhatsApp ne peut partir sans ces informations et sans une formule choisie.";
+        }
+
+        const smsHelp = document.getElementById("smsDirectHelp");
+        if(smsHelp){
+          smsHelp.textContent = currentLang === "en"
+            ? "On mobile, no copy and paste: Messages opens with the DIGIY number and a short DRIVER application already filled in. You only need to tap Send."
+            : "Sur téléphone, aucun copier-coller : Messages s’ouvre avec le numéro DIGIY et une demande DRIVER courte déjà remplie. Il reste seulement à appuyer sur Envoyer.";
+        }
+
+        if(els.smsBtn) els.smsBtn.textContent = currentLang === "en"
+          ? "📱 Open my pre-filled SMS"
+          : "📱 Ouvrir mon SMS déjà rempli";
+        if(els.stickySms) els.stickySms.textContent = currentLang === "en"
+          ? "📱 Direct SMS"
+          : "📱 SMS direct";
 
         updateGalleryReturnLinks();
         updateAmount();
@@ -998,6 +1110,125 @@
 
         const updatedPlan = chosenPlan();
         els.payAmount.textContent = updatedPlan ? amountLineFor(updatedPlan) : t("choose_plan");
+        updateSendState();
+      }
+
+      function requiredProfileFields(){
+        return [els.fullName, els.phone, els.city, els.zone].filter(Boolean);
+      }
+
+      function profileComplete(){
+        return requiredProfileFields().every(
+          field => String(field.value || "").trim() && field.checkValidity()
+        );
+      }
+
+      function showFormWarning(message){
+        if(!els.formWarning) return;
+        els.formWarning.textContent = message || "";
+        els.formWarning.classList.toggle("show", Boolean(message));
+      }
+
+      function validateBeforeSend(showMessage){
+        const invalidField = requiredProfileFields().find(
+          field => !String(field.value || "").trim() || !field.checkValidity()
+        );
+
+        if(invalidField){
+          if(showMessage){
+            showFormWarning(
+              currentLang === "en"
+                ? "⚠️ Complete your name, phone number, city and service area first."
+                : "⚠️ Renseigne d’abord ton nom, ton téléphone, ta ville et ta zone de travail."
+            );
+            invalidField.focus({preventScroll:true});
+            invalidField.scrollIntoView({behavior:"smooth",block:"center"});
+            invalidField.reportValidity();
+          }
+          return false;
+        }
+
+        if(!chosenPlan()){
+          if(showMessage){
+            showFormWarning(
+              currentLang === "en"
+                ? "⚠️ Choose DIGIY PRESENCE before sending."
+                : "⚠️ Choisis DIGIY PRÉSENCE avant d’envoyer."
+            );
+            document.querySelector(".tarifs")?.scrollIntoView({behavior:"smooth",block:"center"});
+          }
+          return false;
+        }
+
+        showFormWarning("");
+        return true;
+      }
+
+      function updateSendState(){
+        const ready = profileComplete() && Boolean(chosenPlan());
+
+        [els.smsBtn, els.stickySms, els.waBtn, els.stickyWa].forEach(el => {
+          if(!el) return;
+          el.classList.toggle("sendBlocked", !ready);
+          el.setAttribute("aria-disabled", String(!ready));
+        });
+      }
+
+      function shortText(value,maxLength){
+        const clean = String(value || "").replace(/\s+/g," ").trim();
+        return clean.length > maxLength ? clean.slice(0,maxLength - 1) + "…" : clean;
+      }
+
+      function smsMessage(){
+        const p = chosenPlan();
+        const amount = p ? amountLineFor(p) : t("missing");
+        const transport = transportLabel(val("transportType")) || t("missing");
+
+        if(currentLang === "en"){
+          return [
+            "DIGIY DRIVER APPLICATION",
+            "Country: " + countryLabel(),
+            "Plan: " + (p ? planLabel(p) : t("missing")),
+            "Business option: " + (p && p.software ? "Yes" : "No"),
+            "Total: " + amount,
+            "Driver: " + shortText(val("fullName"),55),
+            "Phone: " + shortText(val("phone"),28),
+            "City: " + shortText(val("city"),45),
+            "Area: " + shortText(val("zone"),55),
+            "Transport: " + shortText(transport,45),
+            val("vehicle") ? "Vehicle: " + shortText(val("vehicle"),55) : "",
+            "Please contact me to validate my DIGIY DRIVER activation.",
+            "0% DIGIY commission."
+          ].filter(Boolean).join("\n");
+        }
+
+        return [
+          "DEMANDE DIGIY DRIVER",
+          "Pays: " + countryLabel(),
+          "Formule: " + (p ? planLabel(p) : t("missing")),
+          "Option metier: " + (p && p.software ? "Oui" : "Non"),
+          "Total: " + amount,
+          "Chauffeur: " + shortText(val("fullName"),55),
+          "Telephone candidat: " + shortText(val("phone"),28),
+          "Ville: " + shortText(val("city"),45),
+          "Zone: " + shortText(val("zone"),55),
+          "Transport: " + shortText(transport,45),
+          val("vehicle") ? "Vehicule: " + shortText(val("vehicle"),55) : "",
+          "Je demande a etre recontacte pour valider mon activation DIGIY DRIVER.",
+          "0% commission DIGIY."
+        ].filter(Boolean).join("\n");
+      }
+
+      function buildSmsHref(message){
+        const separator = IS_IOS_OR_IPADOS ? "&" : "?";
+        return "sms:+" + DIGIY_WA + separator + "body=" + encodeURIComponent(message);
+      }
+
+      function openDirectSms(event){
+        if(event) event.preventDefault();
+        if(!validateBeforeSend(true)) return;
+        buildMessage();
+        window.location.href = buildSmsHref(smsMessage());
       }
 
       function buildMessage(){
@@ -1078,11 +1309,26 @@
         });
       }
 
-      document.getElementById("buildMsg").addEventListener("click", buildMessage);
-      document.getElementById("stickyBuild").addEventListener("click", buildMessage);
+      document.getElementById("buildMsg").addEventListener("click", function(){
+        if(!validateBeforeSend(true)) return;
+        buildMessage();
+        els.resultBox.scrollIntoView({behavior:"smooth",block:"center"});
+      });
+
+      document.getElementById("stickyBuild").addEventListener("click", function(){
+        if(!validateBeforeSend(true)) return;
+        buildMessage();
+        els.resultBox.scrollIntoView({behavior:"smooth",block:"center"});
+      });
+
+      if(els.smsBtn) els.smsBtn.addEventListener("click", openDirectSms);
+      if(els.stickySms) els.stickySms.addEventListener("click", openDirectSms);
+
+      if(els.copyMsg) els.copyMsg.hidden = MOBILE_DEVICE;
 
       document.getElementById("copyMsg").addEventListener("click", async function(){
-        const msg = els.resultBox.textContent || buildMessage();
+        if(!validateBeforeSend(true)) return;
+        const msg = buildMessage();
 
         try{
           await navigator.clipboard.writeText(msg);
@@ -1163,15 +1409,180 @@
       Object.keys(els).forEach(k => {
         const el = els[k];
         if(!el || !el.addEventListener) return;
-        el.addEventListener("input", () => saveLocalDraft(true));
-        el.addEventListener("change", () => saveLocalDraft(true));
+        el.addEventListener("input", () => {
+          saveLocalDraft(true);
+          updateSendState();
+        });
+        el.addEventListener("change", () => {
+          saveLocalDraft(true);
+          updateSendState();
+        });
       });
 
       applyLanguage(currentLang, false);
+      updateSendState();
     })();
   </script>
 </body>
 </html>
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
+
+   
+
+
+
+
 
 
 
