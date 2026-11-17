@@ -1,0 +1,23 @@
+name: DIGIY DRIVER Ambassadeur · navigation public et PRO
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'tests/driver-gallery-navigation.test.cjs'
+      - '.github/workflows/driver-gallery-navigation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'tests/driver-gallery-navigation.test.cjs'
+      - '.github/workflows/driver-gallery-navigation.yml'
+permissions:
+  contents: read
+jobs:
+  validate-gallery-navigation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Valider les portes chauffeur et fiches publiques
+        run: node --test tests/driver-gallery-navigation.test.cjs
